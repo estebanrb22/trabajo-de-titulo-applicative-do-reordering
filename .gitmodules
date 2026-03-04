@@ -1,0 +1,3 @@
+[submodule "vendor/ghc"]
+	path = vendor/ghc
+	url = https://github.com/ghc/ghc.git
