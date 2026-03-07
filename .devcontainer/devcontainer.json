@@ -1,0 +1,27 @@
+{
+  "name": "ghc-dev-container",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".",
+    "options": [
+      "--tag=ghc-dev-container-image"
+    ]
+  },
+  "runArgs": [
+    "--name=ghc-dev-container"
+  ],
+  "remoteUser": "vscode",
+  "postCreateCommand": "bash .devcontainer/verify_dev_toolchain.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "haskell.haskell",
+        "eamodio.gitlens"
+      ],
+      "settings": {
+        "haskell.manageHLS": "GHCup",
+        "haskell.plugin.importLens.globalOn": true
+      }
+    }
+  }
+}

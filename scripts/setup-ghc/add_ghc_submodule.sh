@@ -3,7 +3,7 @@ set -euo pipefail
 
 readonly SUBMODULE_URL="https://github.com/ghc/ghc.git"
 readonly SUBMODULE_PATH="vendor/ghc"
-readonly TARGET_COMMIT="8ecf6d8f7dfee9e5b1844cd196f83f00f3b6b879"
+readonly TARGET_COMMIT="0b36e96cb93db71f201aaa055c4a90b75a8110ef"
 
 die() {
   echo "ERROR: $*" >&2
@@ -60,8 +60,12 @@ else
   fi
 fi
 
-echo "[run] Initializing/updating submodules recursively."
-git submodule update --init --recursive
+if [[ -e "${SUBMODULE_PATH}/.git" ]]; then
+  echo "[ok] ${SUBMODULE_PATH} is already initialized."
+else
+  echo "[run] Initializing top-level submodule ${SUBMODULE_PATH}."
+  git submodule update --init "${SUBMODULE_PATH}"
+fi
 
 echo "[run] Pinning ${SUBMODULE_PATH} to ${TARGET_COMMIT}."
 git -C "${SUBMODULE_PATH}" fetch --all --tags --prune
@@ -79,10 +83,19 @@ fi
 current_commit="$(git -C "${SUBMODULE_PATH}" rev-parse HEAD)"
 [[ "${current_commit}" == "${TARGET_COMMIT}" ]] || die "Submodule checkout failed. Current: ${current_commit}"
 
+if [[ "${INIT_GHC_NESTED_SUBMODULES:-0}" == "1" ]]; then
+  echo "[run] INIT_GHC_NESTED_SUBMODULES=1: initializing nested submodules under ${SUBMODULE_PATH}."
+  git -C "${SUBMODULE_PATH}" submodule sync --recursive
+  git -C "${SUBMODULE_PATH}" submodule update --init --recursive
+else
+  # Keep a clean, non-recursive state unless explicitly requested.
+  git -C "${SUBMODULE_PATH}" submodule deinit -f --all >/dev/null 2>&1 || true
+fi
+
 echo "[info] Superproject submodule pointer status:"
 git status --short -- .gitmodules "${SUBMODULE_PATH}" || true
 
 echo "[done] GHC submodule is ready."
 echo "[next] Stage and commit manually:"
 echo "       git add .gitmodules ${SUBMODULE_PATH}"
-echo "       git commit -m \"Add GHC as submodule pinned to ApplicativeDo commit\""
+echo "       git commit -m \"Update GHC submodule baseline\""
