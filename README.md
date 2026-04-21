@@ -7,26 +7,19 @@ Los parches de este repositorio serán los artefactos principales de aporte para
 
 ## Seteo del submódulo GHC
 
-La lógica de preparación y validación del submódulo GHC está en `scripts/setup-ghc/`.
+El repositorio contiene un archivo Makefile, así que para preparar e iniciar el submódulo de GHC, ejecutar:
 
-Desde la raíz del repositorio, ejecuta en este orden:
+```bash
+make setup-ghc-submodule
+```
 
-1. `bash scripts/setup-ghc/add_ghc_submodule.sh`
-2. `bash scripts/setup-ghc/init_submodules.sh`
-3. `bash scripts/setup-ghc/verify_ghc_commit.sh`
-
-Si prefieres Makefile, estos pasos equivalen a:
+El comando anterior realiza la tarea de añadir e iniciar de forma recursiva todos los submódulos de GHC, equivalente a esta
+serie de comandos unitarios:
 
 ```bash
 make add-submodule
 make init-submodule
 make verify-submodule
-```
-
-Atajo equivalente:
-
-```bash
-make setup-ghc-submodule
 ```
 
 ## Uso del Dev Container
@@ -43,14 +36,6 @@ Este repositorio incluye una configuración de desarrollo en `.devcontainer/` pa
 1. Abre este repositorio en VS Code.
 2. Ejecuta `Dev Containers: Reopen in Container` desde la paleta de comandos.
 3. Espera a que termine el build del contenedor y la validación inicial.
-
-### Comando para entrar por consola al contenedor
-
-Con el contenedor en ejecución, desde una terminal del host usa:
-
-```bash
-docker exec -it ghc-dev-container bash
-```
 
 ## Reproducibilidad con Makefile
 
@@ -70,4 +55,12 @@ Tambien existe un comando compacto para ejecutar todo el flujo:
 
 ```bash
 make reproduce
+```
+
+### Comando para entrar por consola al contenedor
+
+Con el contenedor en ejecución, desde una terminal del host usa:
+
+```bash
+make shell
 ```

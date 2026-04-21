@@ -15,13 +15,8 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "haskell.haskell",
-        "eamodio.gitlens"
-      ],
-      "settings": {
-        "haskell.manageHLS": "GHCup",
-        "haskell.plugin.importLens.globalOn": true
-      }
+        "justusadam.language-haskell"
+      ]
     }
   }
 }

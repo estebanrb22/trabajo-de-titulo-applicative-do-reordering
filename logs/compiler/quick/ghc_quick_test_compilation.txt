@@ -1,0 +1,911 @@
+-j --flavour=quick test --test-root-dirs=testsuite/tests/ado/
+Up to date
+Created semaphore called cabal_semaphore_3 with 16 slots.
+| Run Testsuite GetExtraDeps: none
+| Copy file: testsuite/timeout/timeout.py => _build/testsuite/timeout/install-inplace/bin/timeout.py
+| Make '_build/testsuite/timeout/install-inplace/bin/timeout' executable.
+# cabal-read (for OracleQ (PackageDataKey (Package {pkgType = Library, pkgName = "ghc-bignum", pkgPath = "libraries/ghc-bignum"})))
+# cabal-read (for OracleQ (PackageDataKey (Package {pkgType = Library, pkgName = "ghc-compact", pkgPath = "libraries/ghc-compact"})))
+# cabal-read (for OracleQ (PackageDataKey (Package {pkgType = Library, pkgName = "integer-gmp", pkgPath = "libraries/integer-gmp"})))
+# cabal-read (for OracleQ (PackageDataKey (Package {pkgType = Library, pkgName = "parsec", pkgPath = "libraries/parsec"})))
+| Configure package 'haddock-library'
+| Configure package 'integer-gmp'
+| Configure package 'ghc-compact'
+| Configure package 'parsec'
+| Configure package 'Cabal-syntax'
+| Configure package 'Cabal'
+| Configure package 'haddock-api'
+| Configure package 'ghc-bignum'
+| Configure package 'template-haskell-quasiquoter'
+| Configure package 'xhtml'
+# cabal-read (for OracleQ (PackageDataKey (Package {pkgType = Program, pkgName = "hp2ps", pkgPath = "utils/hp2ps"})))
+# cabal-read (for OracleQ (PackageDataKey (Package {pkgType = Program, pkgName = "hpc-bin", pkgPath = "utils/hpc"})))
+# cabal-read (for OracleQ (PackageDataKey (Package {pkgType = Program, pkgName = "ghc-toolchain-bin", pkgPath = "utils/ghc-toolchain/exe"})))
+| Successfully generated utils/runghc/runghc.cabal from its template
+# cabal-read (for OracleQ (PackageDataKey (Package {pkgType = Program, pkgName = "runghc", pkgPath = "utils/runghc"})))
+| Copy file: utils/haddock/haddock-api/resources/html/Linuwial.std-theme/synopsis.png => _build/stage1/lib/html/Linuwial.std-theme/synopsis.png
+| Copy file: utils/haddock/haddock-api/resources/html/js-src/cookies.ts => _build/stage1/lib/html/js-src/cookies.ts
+| Copy file: utils/haddock/haddock-api/resources/html/Classic.theme/minus.gif => _build/stage1/lib/html/Classic.theme/minus.gif
+| Copy file: utils/haddock/haddock-api/resources/latex/haddock.sty => _build/stage1/lib/latex/haddock.sty
+| Copy file: utils/haddock/haddock-api/resources/html/highlight.js => _build/stage1/lib/html/highlight.js
+| Copy file: utils/haddock/haddock-api/resources/html/README.md => _build/stage1/lib/html/README.md
+| Copy file: utils/haddock/haddock-api/resources/html/haddock-bundle.min.js => _build/stage1/lib/html/haddock-bundle.min.js
+| Copy file: utils/haddock/haddock-api/resources/html/package-lock.json => _build/stage1/lib/html/package-lock.json
+| Copy file: utils/haddock/haddock-api/resources/html/quick-jump.css => _build/stage1/lib/html/quick-jump.css
+# cabal-read (for OracleQ (PackageDataKey (Package {pkgType = Program, pkgName = "haddock", pkgPath = "utils/haddock"})))
+| Copy file: utils/haddock/haddock-api/resources/html/Ocean.theme/ocean.css => _build/stage1/lib/html/Ocean.theme/ocean.css
+| Copy file: utils/haddock/haddock-api/resources/html/js-src/quick-jump.tsx => _build/stage1/lib/html/js-src/quick-jump.tsx
+| Copy file: utils/haddock/haddock-api/resources/html/Linuwial.std-theme/linuwial.css => _build/stage1/lib/html/Linuwial.std-theme/linuwial.css
+| Copy file: utils/haddock/haddock-api/resources/html/Ocean.theme/hslogo-16.png => _build/stage1/lib/html/Ocean.theme/hslogo-16.png
+| Copy file: utils/haddock/haddock-api/resources/html/quick-jump.min.js => _build/stage1/lib/html/quick-jump.min.js
+| Copy file: utils/haddock/haddock-api/resources/html/js-src/details-helper.tsx => _build/stage1/lib/html/js-src/details-helper.tsx
+| Copy file: utils/haddock/haddock-api/resources/html/js-src/style-menu.tsx => _build/stage1/lib/html/js-src/style-menu.tsx
+| Copy file: utils/haddock/haddock-api/resources/html/Classic.theme/xhaddock.css => _build/stage1/lib/html/Classic.theme/xhaddock.css
+| Copy file: utils/haddock/haddock-api/resources/html/Ocean.theme/synopsis.png => _build/stage1/lib/html/Ocean.theme/synopsis.png
+| Copy file: utils/haddock/haddock-api/resources/html/package.json => _build/stage1/lib/html/package.json
+| Copy file: utils/haddock/haddock-api/resources/html/js-src/init.ts => _build/stage1/lib/html/js-src/init.ts
+| Copy file: utils/haddock/haddock-api/resources/html/solarized.css => _build/stage1/lib/html/solarized.css
+| Copy file: utils/haddock/haddock-api/resources/html/Ocean.theme/minus.gif => _build/stage1/lib/html/Ocean.theme/minus.gif
+| Copy file: utils/haddock/haddock-api/resources/html/Classic.theme/plus.gif => _build/stage1/lib/html/Classic.theme/plus.gif
+| Copy file: utils/haddock/haddock-api/resources/html/Ocean.theme/plus.gif => _build/stage1/lib/html/Ocean.theme/plus.gif
+| Copy file: utils/haddock/haddock-api/resources/html/tsconfig.json => _build/stage1/lib/html/tsconfig.json
+| Copy file: utils/haddock/haddock-api/resources/html/Classic.theme/haskell_icon.gif => _build/stage1/lib/html/Classic.theme/haskell_icon.gif
+| Copy file: utils/haddock/haddock-api/resources/html/gulpfile.js => _build/stage1/lib/html/gulpfile.js
+| Configure package 'hp2ps'
+| Configure package 'unlit'
+# cabal-configure (for _build/stage1/utils/hp2ps/setup-config)
+Configuring hp2ps-0.1...
+# cabal-configure (for _build/stage1/utils/unlit/setup-config)
+Configuring unlit-0.1...
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/Reorder.c => _build/stage1/utils/hp2ps/build/c/Reorder.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/Axes.c => _build/stage1/utils/hp2ps/build/c/Axes.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/unlit/unlit.c => _build/stage1/utils/unlit/build/c/unlit.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/Deviation.c => _build/stage1/utils/hp2ps/build/c/Deviation.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/Curves.c => _build/stage1/utils/hp2ps/build/c/Curves.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/TopTwenty.c => _build/stage1/utils/hp2ps/build/c/TopTwenty.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/Dimensions.c => _build/stage1/utils/hp2ps/build/c/Dimensions.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/HpFile.c => _build/stage1/utils/hp2ps/build/c/HpFile.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/unlit/fs.c => _build/stage1/utils/unlit/build/c/fs.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/Shade.c => _build/stage1/utils/hp2ps/build/c/Shade.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/AuxFile.c => _build/stage1/utils/hp2ps/build/c/AuxFile.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/AreaBelow.c => _build/stage1/utils/hp2ps/build/c/AreaBelow.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/Marks.c => _build/stage1/utils/hp2ps/build/c/Marks.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/Error.c => _build/stage1/utils/hp2ps/build/c/Error.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/Main.c => _build/stage1/utils/hp2ps/build/c/Main.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/Key.c => _build/stage1/utils/hp2ps/build/c/Key.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/TraceElement.c => _build/stage1/utils/hp2ps/build/c/TraceElement.dyn_o.d
+# cabal-autogen (for _build/stage1/utils/hp2ps/build/hp2ps/autogen/cabal_macros.h)
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/PsFile.c => _build/stage1/utils/hp2ps/build/c/PsFile.dyn_o.d
+# cabal-autogen (for _build/stage1/utils/unlit/build/unlit/autogen/cabal_macros.h)
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/Utilities.c => _build/stage1/utils/hp2ps/build/c/Utilities.dyn_o.d
+| Run Cc (FindCDependencies CDep) Stage1: utils/hp2ps/Scale.c => _build/stage1/utils/hp2ps/build/c/Scale.dyn_o.d
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/Axes.c => _build/stage1/utils/hp2ps/build/c/Axes.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/TopTwenty.c => _build/stage1/utils/hp2ps/build/c/TopTwenty.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/unlit/unlit.c => _build/stage1/utils/unlit/build/c/unlit.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/Reorder.c => _build/stage1/utils/hp2ps/build/c/Reorder.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/Deviation.c => _build/stage1/utils/hp2ps/build/c/Deviation.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/HpFile.c => _build/stage1/utils/hp2ps/build/c/HpFile.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/Shade.c => _build/stage1/utils/hp2ps/build/c/Shade.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/Curves.c => _build/stage1/utils/hp2ps/build/c/Curves.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/Marks.c => _build/stage1/utils/hp2ps/build/c/Marks.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/Error.c => _build/stage1/utils/hp2ps/build/c/Error.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/AuxFile.c => _build/stage1/utils/hp2ps/build/c/AuxFile.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/Key.c => _build/stage1/utils/hp2ps/build/c/Key.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/Main.c => _build/stage1/utils/hp2ps/build/c/Main.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/PsFile.c => _build/stage1/utils/hp2ps/build/c/PsFile.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/Utilities.c => _build/stage1/utils/hp2ps/build/c/Utilities.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/AreaBelow.c => _build/stage1/utils/hp2ps/build/c/AreaBelow.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/TraceElement.c => _build/stage1/utils/hp2ps/build/c/TraceElement.dyn_o
+# cabal-configure (for _build/stage1/libraries/ghc-bignum/setup-config)
+Configuring ghc-bignum-1.4...
+# cabal-configure (for _build/stage1/libraries/integer-gmp/setup-config)
+Configuring integer-gmp-1.1...
+| Run Ghc CompileCWithGhc Stage1: utils/unlit/fs.c => _build/stage1/utils/unlit/build/c/fs.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/Dimensions.c => _build/stage1/utils/hp2ps/build/c/Dimensions.dyn_o
+| Run Ghc CompileCWithGhc Stage1: utils/hp2ps/Scale.c => _build/stage1/utils/hp2ps/build/c/Scale.dyn_o
+| Run Ghc LinkHs Stage1: _build/stage1/utils/unlit/build/c/fs.dyn_o (and 1 more) => _build/stage1/bin/unlit
+| Run Ghc LinkHs Stage1: _build/stage1/utils/hp2ps/build/c/AreaBelow.dyn_o (and 17 more) => _build/stage1/bin/hp2ps
+/----------------------------------------------\
+| Successfully built program 'unlit' (Stage1). |
+| Executable: _build/stage1/bin/unlit          |
+| Program synopsis: Literate program filter.   |
+\----------------------------------------------/
+/---------------------------------------------------------\
+| Successfully built program 'hp2ps' (Stage1).            |
+| Executable: _build/stage1/bin/hp2ps                     |
+| Program synopsis: Heap Profile to PostScript converter. |
+\---------------------------------------------------------/
+# cabal-autogen (for _build/stage1/libraries/ghc-bignum/build/autogen/cabal_macros.h)
+# cabal-autogen (for _build/stage1/libraries/integer-gmp/build/autogen/cabal_macros.h)
+# cabal-configure (for _build/stage1/libraries/template-haskell-quasiquoter/setup-config)
+Configuring template-haskell-quasiquoter-0.1.0.0...
+| Run Ghc FindHsDependencies Stage1: libraries/ghc-bignum/Dummy.hs => _build/stage1/libraries/ghc-bignum/.dependencies.mk
+| Remove file _build/stage1/libraries/ghc-bignum/.dependencies.mk.bak
+| Run GhcPkg Update Stage1: _build/stage1/libraries/ghc-bignum/inplace-pkg-config => none
+| Run Ghc FindHsDependencies Stage1: libraries/integer-gmp/src/GHC/Integer/GMP/Internals.hs => _build/stage1/libraries/integer-gmp/.dependencies.mk
+| Run Ghc CompileHs Stage1: libraries/ghc-bignum/Dummy.hs => _build/stage1/libraries/ghc-bignum/build/Dummy.o
+# cabal-configure (for _build/stage1/libraries/ghc-compact/setup-config)
+| Remove file _build/stage1/libraries/integer-gmp/.dependencies.mk.bak
+Configuring ghc-compact-0.1.0.0...
+| Run GhcPkg Update Stage1: _build/stage1/libraries/integer-gmp/inplace-pkg-config => none
+| Remove file _build/stage1/libraries/ghc-bignum/build/libHSghc-bignum-1.4-inplace.a
+| Run Ar Pack Stage1: _build/stage1/libraries/ghc-bignum/build/Dummy.o => _build/stage1/libraries/ghc-bignum/build/libHSghc-bignum-1.4-inplace.a
+/---------------------------------------------------------------------------------\
+| Successfully built library 'ghc-bignum' (Stage1, way v).                        |
+| Library: _build/stage1/libraries/ghc-bignum/build/libHSghc-bignum-1.4-inplace.a |
+| Library synopsis: GHC BigNum library.                                           |
+\---------------------------------------------------------------------------------/
+# cabal-configure (for _build/stage1/libraries/xhtml/setup-config)
+Configuring xhtml-3000.4.0.0...
+# cabal-configure (for _build/stage1/libraries/parsec/setup-config)
+Configuring parsec-3.1.18.0...
+# cabal-autogen (for _build/stage1/libraries/template-haskell-quasiquoter/build/autogen/cabal_macros.h)
+| Run Ghc CompileHs Stage1: libraries/integer-gmp/src/GHC/Integer/GMP/Internals.hs => _build/stage1/libraries/integer-gmp/build/GHC/Integer/GMP/Internals.o
+| Run Ghc FindHsDependencies Stage1: libraries/template-haskell-quasiquoter/src/Language/Haskell/TH/QuasiQuoter.hs => _build/stage1/libraries/template-haskell-quasiquoter/.dependencies.mk
+| Remove file _build/stage1/libraries/template-haskell-quasiquoter/.dependencies.mk.bak
+| Run GhcPkg Update Stage1: _build/stage1/libraries/template-haskell-quasiquoter/inplace-pkg-config => none
+# cabal-autogen (for _build/stage1/libraries/ghc-compact/build/autogen/cabal_macros.h)
+# cabal-autogen (for _build/stage1/libraries/xhtml/build/autogen/cabal_macros.h)
+# cabal-autogen (for _build/stage1/libraries/parsec/build/autogen/cabal_macros.h)
+| Remove file _build/stage1/libraries/integer-gmp/build/libHSinteger-gmp-1.1-inplace.a
+| Run Ar Pack Stage1: _build/stage1/libraries/integer-gmp/build/GHC/Integer/GMP/Internals.o => _build/stage1/libraries/integer-gmp/build/libHSinteger-gmp-1.1-inplace.a
+| Run Ghc LinkHs Stage1: _build/stage1/libraries/ghc-bignum/build/Dummy.dyn_o => _build/stage1/libraries/ghc-bignum/build/libHSghc-bignum-1.4-inplace-ghc9.15.20260306.so
+| Run GhcPkg Update Stage1: _build/stage1/libraries/parsec/inplace-pkg-config => none
+/-----------------------------------------------------------------------------------\
+| Successfully built library 'integer-gmp' (Stage1, way v).                         |
+| Library: _build/stage1/libraries/integer-gmp/build/libHSinteger-gmp-1.1-inplace.a |
+| Library synopsis: Integer library based on GMP.                                   |
+\-----------------------------------------------------------------------------------/
+| Run Ghc FindHsDependencies Stage1: libraries/ghc-compact/GHC/Compact.hs (and 1 more) => _build/stage1/libraries/ghc-compact/.dependencies.mk
+| Run Ghc CompileHs Stage1: libraries/template-haskell-quasiquoter/src/Language/Haskell/TH/QuasiQuoter.hs => _build/stage1/libraries/template-haskell-quasiquoter/build/Language/Haskell/TH/QuasiQuoter.o
+| Run GhcPkg Update Stage1: _build/stage1/libraries/xhtml/inplace-pkg-config => none
+| Run Ghc LinkHs Stage1: _build/stage1/libraries/integer-gmp/build/GHC/Integer/GMP/Internals.dyn_o => _build/stage1/libraries/integer-gmp/build/libHSinteger-gmp-1.1-inplace-ghc9.15.20260306.so
+# cabal-configure (for _build/stage1/utils/haddock/haddock-library/setup-config)
+Configuring haddock-library-1.11.0...
+| Remove file _build/stage1/libraries/ghc-compact/.dependencies.mk.bak
+/---------------------------------------------------------------------------------------------------\
+| Successfully built library 'ghc-bignum' (Stage1, way dyn).                                        |
+| Library: _build/stage1/libraries/ghc-bignum/build/libHSghc-bignum-1.4-inplace-ghc9.15.20260306.so |
+| Library synopsis: GHC BigNum library.                                                             |
+\---------------------------------------------------------------------------------------------------/
+| Copy package 'ghc-bignum'
+# cabal-copy (for _build/stage1/lib/package.conf.d/ghc-bignum-1.4-inplace.conf)
+| Run Ghc FindHsDependencies Stage1: libraries/parsec/src/Text/Parsec.hs (and 24 more) => _build/stage1/libraries/parsec/.dependencies.mk
+Installing library in _build/stage1/lib/../lib/x86_64-linux-ghc-9.15.20260306-inplace/ghc-bignum-1.4-inplace
+| Remove file _build/stage1/libraries/template-haskell-quasiquoter/build/libHStemplate-haskell-quasiquoter-0.1.0.0-inplace.a
+| Run Ar Pack Stage1: _build/stage1/libraries/template-haskell-quasiquoter/build/Language/Haskell/TH/QuasiQuoter.o => _build/stage1/libraries/template-haskell-quasiquoter/build/libHStemplate-haskell-quasiquoter-0.1.0.0-inplace.a
+/-------------------------------------------------------------------------------------------------------------------------\
+| Successfully built library 'template-haskell-quasiquoter' (Stage1, way v).                                              |
+| Library: _build/stage1/libraries/template-haskell-quasiquoter/build/libHStemplate-haskell-quasiquoter-0.1.0.0-inplace.a |
+| Library synopsis: The 'QuasiQuoter' interface.                                                                          |
+\-------------------------------------------------------------------------------------------------------------------------/
+| Run GhcPkg Recache Stage1: none => none
+| Run GhcPkg Update Stage1: _build/stage1/libraries/ghc-compact/inplace-pkg-config => none
+/-----------------------------------------------------------------------------------------------------\
+| Successfully built library 'integer-gmp' (Stage1, way dyn).                                         |
+| Library: _build/stage1/libraries/integer-gmp/build/libHSinteger-gmp-1.1-inplace-ghc9.15.20260306.so |
+| Library synopsis: Integer library based on GMP.                                                     |
+\-----------------------------------------------------------------------------------------------------/
+| Copy package 'integer-gmp'
+# cabal-copy (for _build/stage1/lib/package.conf.d/integer-gmp-1.1-inplace.conf)
+Installing library in _build/stage1/lib/../lib/x86_64-linux-ghc-9.15.20260306-inplace/integer-gmp-1.1-inplace
+| Run GhcPkg Recache Stage1: none => none
+# cabal-configure (for _build/stage1/libraries/Cabal/Cabal-syntax/setup-config)
+Configuring Cabal-syntax-3.16.1.0...
+| Remove file _build/stage1/libraries/parsec/.dependencies.mk.bak
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec/Pos.hs => _build/stage1/libraries/parsec/build/Text/Parsec/Pos.o
+# cabal-autogen (for _build/stage1/utils/haddock/haddock-library/build/autogen/cabal_macros.h)
+| Run GhcPkg Update Stage1: _build/stage1/utils/haddock/haddock-library/inplace-pkg-config => none
+| Run Ghc CompileHs Stage1: libraries/ghc-compact/GHC/Compact.hs => _build/stage1/libraries/ghc-compact/build/GHC/Compact.o
+| Run Ghc FindHsDependencies Stage1: utils/haddock/haddock-library/src/Documentation/Haddock/Doc.hs (and 6 more) => _build/stage1/utils/haddock/haddock-library/.dependencies.mk
+| Run Ghc LinkHs Stage1: _build/stage1/libraries/template-haskell-quasiquoter/build/Language/Haskell/TH/QuasiQuoter.dyn_o => _build/stage1/libraries/template-haskell-quasiquoter/build/libHStemplate-haskell-quasiquoter-0.1.0.0-inplace-ghc9.15.20260306.so
+| Remove file _build/stage1/utils/haddock/haddock-library/.dependencies.mk.bak
+| Run Ghc FindHsDependencies Stage1: libraries/xhtml/Text/XHtml.hs (and 14 more) => _build/stage1/libraries/xhtml/.dependencies.mk
+# cabal-autogen (for _build/stage1/libraries/Cabal/Cabal-syntax/build/autogen/cabal_macros.h)
+| Run GhcPkg Update Stage1: _build/stage1/libraries/Cabal/Cabal-syntax/inplace-pkg-config => none
+| Remove file _build/stage1/libraries/xhtml/.dependencies.mk.bak
+/-------------------------------------------------------------------------------------------------------------------------------------------\
+| Successfully built library 'template-haskell-quasiquoter' (Stage1, way dyn).                                                              |
+| Library: _build/stage1/libraries/template-haskell-quasiquoter/build/libHStemplate-haskell-quasiquoter-0.1.0.0-inplace-ghc9.15.20260306.so |
+| Library synopsis: The 'QuasiQuoter' interface.                                                                                            |
+\-------------------------------------------------------------------------------------------------------------------------------------------/
+| Copy package 'template-haskell-quasiquoter'
+# cabal-copy (for _build/stage1/lib/package.conf.d/template-haskell-quasiquoter-0.1.0.0-inplace.conf)
+| Run Alex: libraries/Cabal/Cabal-syntax/src/Distribution/Fields/Lexer.x => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Fields/Lexer.hs
+Installing library in _build/stage1/lib/../lib/x86_64-linux-ghc-9.15.20260306-inplace/template-haskell-quasiquoter-0.1.0.0-inplace
+| Run Ghc CompileHs Stage1: libraries/ghc-compact/GHC/Compact/Serialized.hs => _build/stage1/libraries/ghc-compact/build/GHC/Compact/Serialized.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/ParserCombinators/Parsec/Pos.hs => _build/stage1/libraries/parsec/build/Text/ParserCombinators/Parsec/Pos.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec/Error.hs => _build/stage1/libraries/parsec/build/Text/Parsec/Error.o
+| Run Ghc FindHsDependencies Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Backpack.hs (and 138 more) => _build/stage1/libraries/Cabal/Cabal-syntax/.dependencies.mk
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-library/src/Documentation/Haddock/Types.hs => _build/stage1/utils/haddock/haddock-library/build/Documentation/Haddock/Types.o
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml/BlockTable.hs => _build/stage1/libraries/xhtml/build/Text/XHtml/BlockTable.o
+| Run GhcPkg Recache Stage1: none => none
+# cabal-configure (for _build/stage1/utils/haddock/haddock-api/setup-config)
+Configuring haddock-api-2.30.0...
+# cabal-configure (for _build/stage1/libraries/Cabal/Cabal/setup-config)
+Configuring Cabal-3.16.1.0...
+| Remove file _build/stage1/libraries/ghc-compact/build/libHSghc-compact-0.1.0.0-inplace.a
+| Run Ar Pack Stage1: _build/stage1/libraries/ghc-compact/build/GHC/Compact.o (and 1 more) => _build/stage1/libraries/ghc-compact/build/libHSghc-compact-0.1.0.0-inplace.a
+/---------------------------------------------------------------------------------------\
+| Successfully built library 'ghc-compact' (Stage1, way v).                             |
+| Library: _build/stage1/libraries/ghc-compact/build/libHSghc-compact-0.1.0.0-inplace.a |
+| Library synopsis: In memory storage of deeply evaluated data structure.               |
+\---------------------------------------------------------------------------------------/
+| Run Ghc LinkHs Stage1: _build/stage1/libraries/ghc-compact/build/GHC/Compact.dyn_o (and 1 more) => _build/stage1/libraries/ghc-compact/build/libHSghc-compact-0.1.0.0-inplace-ghc9.15.20260306.so
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/ParserCombinators/Parsec/Error.hs => _build/stage1/libraries/parsec/build/Text/ParserCombinators/Parsec/Error.o
+/---------------------------------------------------------------------------------------------------------\
+| Successfully built library 'ghc-compact' (Stage1, way dyn).                                             |
+| Library: _build/stage1/libraries/ghc-compact/build/libHSghc-compact-0.1.0.0-inplace-ghc9.15.20260306.so |
+| Library synopsis: In memory storage of deeply evaluated data structure.                                 |
+\---------------------------------------------------------------------------------------------------------/
+| Copy package 'ghc-compact'
+# cabal-copy (for _build/stage1/lib/package.conf.d/ghc-compact-0.1.0.0-inplace.conf)
+# cabal-autogen (for _build/stage1/utils/haddock/haddock-api/build/autogen/cabal_macros.h)
+Installing library in _build/stage1/lib/../lib/x86_64-linux-ghc-9.15.20260306-inplace/ghc-compact-0.1.0.0-inplace
+# cabal-autogen (for _build/stage1/libraries/Cabal/Cabal/build/autogen/cabal_macros.h)
+| Run GhcPkg Recache Stage1: none => none
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml/Internals.hs => _build/stage1/libraries/xhtml/build/Text/XHtml/Internals.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec/Prim.hs => _build/stage1/libraries/parsec/build/Text/Parsec/Prim.o
+| Remove file _build/stage1/libraries/Cabal/Cabal-syntax/.dependencies.mk.bak
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Utils/Base62.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Utils/Base62.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Compat/Newtype.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Compat/Newtype.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Utils/MD5.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Utils/MD5.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Utils/String.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Utils/String.o
+| Run Ghc FindHsDependencies Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/ComponentsGraph.hs (and 149 more) => _build/stage1/libraries/Cabal/Cabal/.dependencies.mk
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Compat/MonadFail.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Compat/MonadFail.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Compat/Binary.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Compat/Binary.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Compat/Exception.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Compat/Exception.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/PackageDescription/Utils.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/PackageDescription/Utils.o
+| Run Ghc FindHsDependencies Stage1: utils/haddock/haddock-api/src/Documentation/Haddock.hs (and 40 more) => _build/stage1/utils/haddock/haddock-api/.dependencies.mk
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Utils/Structured.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Utils/Structured.o
+| Configure package 'runghc'
+| Configure package 'hsc2hs'
+| Configure package 'hpc-bin'
+# cabal-configure (for _build/stage1/utils/runghc/setup-config)
+Configuring runghc-9.15.20260306...
+# cabal-configure (for _build/stage1/utils/hsc2hs/setup-config)
+Configuring hsc2hs-0.68.10...
+# cabal-configure (for _build/stage1/utils/hpc/setup-config)
+Configuring hpc-bin-0.69...
+| Configure package 'ghc-toolchain-bin'
+| Remove file _build/stage1/utils/haddock/haddock-api/.dependencies.mk.bak
+# cabal-configure (for _build/stage1/utils/ghc-toolchain/exe/setup-config)
+Configuring ghc-toolchain-bin-0.1.0.0...
+| Remove file _build/stage1/libraries/Cabal/Cabal/.dependencies.mk.bak
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec/Text.hs => _build/stage1/libraries/parsec/build/Text/Parsec/Text.o
+| Run GhcPkg Update Stage1: _build/stage1/utils/haddock/haddock-api/inplace-pkg-config => none
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec/Char.hs => _build/stage1/libraries/parsec/build/Text/Parsec/Char.o
+| Run Cc (FindCDependencies CDep) Stage1: utils/hsc2hs/cbits/utils.c => _build/stage1/utils/hsc2hs/build/c/cbits/utils.dyn_o.d
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec/String.hs => _build/stage1/libraries/parsec/build/Text/Parsec/String.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec/ByteString/Lazy.hs => _build/stage1/libraries/parsec/build/Text/Parsec/ByteString/Lazy.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec/Combinator.hs => _build/stage1/libraries/parsec/build/Text/Parsec/Combinator.o
+# cabal-autogen (for _build/stage1/utils/runghc/build/runghc/autogen/cabal_macros.h)
+# cabal-autogen (for _build/stage1/utils/hsc2hs/build/hsc2hs/autogen/cabal_macros.h)
+| Run Ghc CompileCWithGhc Stage1: utils/hsc2hs/cbits/utils.c => _build/stage1/utils/hsc2hs/build/c/cbits/utils.dyn_o
+| Run GhcPkg Update Stage1: _build/stage1/libraries/Cabal/Cabal/inplace-pkg-config => none
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-library/src/Documentation/Haddock/Markup.hs => _build/stage1/utils/haddock/haddock-library/build/Documentation/Haddock/Markup.o
+| Run Ghc FindHsDependencies Stage1: utils/runghc/Main.hs => _build/stage1/utils/runghc/.dependencies.mk
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/ParserCombinators/Parsec/Prim.hs => _build/stage1/libraries/parsec/build/Text/ParserCombinators/Parsec/Prim.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-library/src/Documentation/Haddock/Doc.hs => _build/stage1/utils/haddock/haddock-library/build/Documentation/Haddock/Doc.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec/Text/Lazy.hs => _build/stage1/libraries/parsec/build/Text/Parsec/Text/Lazy.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec/ByteString.hs => _build/stage1/libraries/parsec/build/Text/Parsec/ByteString.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/ParserCombinators/Parsec/Char.hs => _build/stage1/libraries/parsec/build/Text/ParserCombinators/Parsec/Char.o
+| Remove file _build/stage1/utils/runghc/.dependencies.mk.bak
+# cabal-autogen (for _build/stage1/utils/ghc-toolchain/exe/build/ghc-toolchain-bin/autogen/cabal_macros.h)
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml/Strict/Elements.hs => _build/stage1/libraries/xhtml/build/Text/XHtml/Strict/Elements.o
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml/Frameset/Attributes.hs => _build/stage1/libraries/xhtml/build/Text/XHtml/Frameset/Attributes.o
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml/Transitional/Attributes.hs => _build/stage1/libraries/xhtml/build/Text/XHtml/Transitional/Attributes.o
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml/Transitional/Elements.hs => _build/stage1/libraries/xhtml/build/Text/XHtml/Transitional/Elements.o
+| Run Ghc CompileHs Stage1: utils/runghc/Main.hs => _build/stage1/utils/runghc/build/Main.o
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml/Frameset/Elements.hs => _build/stage1/libraries/xhtml/build/Text/XHtml/Frameset/Elements.o
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml/Strict/Attributes.hs => _build/stage1/libraries/xhtml/build/Text/XHtml/Strict/Attributes.o
+| Run Ghc FindHsDependencies Stage1: utils/hsc2hs/src/ATTParser.hs (and 11 more) => _build/stage1/utils/hsc2hs/.dependencies.mk
+# cabal-autogen (for _build/stage1/utils/hpc/build/hpc/autogen/cabal_macros.h)
+| Run Ghc FindHsDependencies Stage1: utils/ghc-toolchain/exe/Main.hs => _build/stage1/utils/ghc-toolchain/exe/.dependencies.mk
+| Remove file _build/stage1/utils/ghc-toolchain/exe/.dependencies.mk.bak
+| Run Happy: utils/hpc/src/Trace/Hpc/Parser.y => _build/stage1/utils/hpc/build/Trace/Hpc/Parser.hs
+| Run Ghc FindHsDependencies Stage1: utils/hpc/src/Lucid.hs (and 17 more) => _build/stage1/utils/hpc/.dependencies.mk
+| Run Ghc CompileHs Stage1: utils/ghc-toolchain/exe/Main.hs => _build/stage1/utils/ghc-toolchain/exe/build/Main.o
+| Run Ghc LinkHs Stage1: _build/stage1/utils/runghc/build/Main.dyn_o => _build/stage1/bin/runghc
+| Remove file _build/stage1/utils/hsc2hs/.dependencies.mk.bak
+| Run Ghc CompileHs Stage1: utils/hsc2hs/src/HSCParser.hs => _build/stage1/utils/hsc2hs/build/HSCParser.o
+| Run Ghc CompileHs Stage1: _build/stage1/utils/hsc2hs/build/hsc2hs/autogen/Paths_hsc2hs.hs => _build/stage1/utils/hsc2hs/build/Paths_hsc2hs.o
+| Run Ghc CompileHs Stage1: utils/hsc2hs/src/Compat/TempFile.hs => _build/stage1/utils/hsc2hs/build/Compat/TempFile.o
+| Run Ghc CompileHs Stage1: utils/hsc2hs/src/ATTParser.hs => _build/stage1/utils/hsc2hs/build/ATTParser.o
+| Run Ghc CompileHs Stage1: utils/hsc2hs/src/Flags.hs => _build/stage1/utils/hsc2hs/build/Flags.o
+| Run Ghc CompileHs Stage1: utils/hsc2hs/src/Compat/ResponseFile.hs => _build/stage1/utils/hsc2hs/build/Compat/ResponseFile.o
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml/Table.hs => _build/stage1/libraries/xhtml/build/Text/XHtml/Table.o
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml/Extras.hs => _build/stage1/libraries/xhtml/build/Text/XHtml/Extras.o
+| Remove file _build/stage1/utils/hpc/.dependencies.mk.bak
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Compat/Semigroup.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Compat/Semigroup.o
+| Run Ghc CompileHs Stage1: utils/hpc/src/Trace/Hpc/Lexer.hs => _build/stage1/utils/hpc/build/Trace/Hpc/Lexer.o
+| Run Ghc CompileHs Stage1: utils/hsc2hs/src/Common.hs => _build/stage1/utils/hsc2hs/build/Common.o
+| Run Ghc CompileHs Stage1: utils/hpc/src/Lucid.hs => _build/stage1/utils/hpc/build/Lucid.o
+| Run Ghc CompileHs Stage1: utils/hpc/src/Trace/Hpc/Flags.hs => _build/stage1/utils/hpc/build/Trace/Hpc/Flags.o
+| Run Ghc CompileHs Stage1: _build/stage1/utils/hpc/build/hpc/autogen/Paths_hpc_bin.hs => _build/stage1/utils/hpc/build/Paths_hpc_bin.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Compat/NonEmptySet.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Compat/NonEmptySet.o
+/----------------------------------------------------------------------------------\
+| Successfully built program 'runghc' (Stage1).                                    |
+| Executable: _build/stage1/bin/runghc                                             |
+| Program synopsis: A wrapper around GHC allowing convenient execution of scripts. |
+\----------------------------------------------------------------------------------/
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec.hs => _build/stage1/libraries/parsec/build/Text/Parsec.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec/Expr.hs => _build/stage1/libraries/parsec/build/Text/Parsec/Expr.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/ParserCombinators/Parsec/Combinator.hs => _build/stage1/libraries/parsec/build/Text/ParserCombinators/Parsec/Combinator.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec/Token.hs => _build/stage1/libraries/parsec/build/Text/Parsec/Token.o
+| Run Ghc CompileHs Stage1: _build/stage1/utils/hpc/build/Trace/Hpc/Parser.hs => _build/stage1/utils/hpc/build/Trace/Hpc/Parser.o
+| Run Ghc CompileHs Stage1: utils/hsc2hs/src/C.hs => _build/stage1/utils/hsc2hs/build/C.o
+| Run Ghc LinkHs Stage1: _build/stage1/utils/ghc-toolchain/exe/build/Main.dyn_o => _build/stage1/bin/ghc-toolchain-bin
+| Run Ghc CompileHs Stage1: utils/hpc/src/Trace/Hpc/Markup/Summary.hs => _build/stage1/utils/hpc/build/Trace/Hpc/Markup/Summary.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-library/src/Documentation/Haddock/Parser/Monad.hs => _build/stage1/utils/haddock/haddock-library/build/Documentation/Haddock/Parser/Monad.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec/Perm.hs => _build/stage1/libraries/parsec/build/Text/Parsec/Perm.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/ParserCombinators/Parsec.hs => _build/stage1/libraries/parsec/build/Text/ParserCombinators/Parsec.o
+| Run Ghc CompileHs Stage1: utils/hpc/src/Trace/Hpc/Plugin.hs => _build/stage1/utils/hpc/build/Trace/Hpc/Plugin.o
+| Run Ghc CompileHs Stage1: utils/hpc/src/Trace/Hpc/Utils.hs => _build/stage1/utils/hpc/build/Trace/Hpc/Utils.o
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml/Frameset.hs => _build/stage1/libraries/xhtml/build/Text/XHtml/Frameset.o
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml/Strict.hs => _build/stage1/libraries/xhtml/build/Text/XHtml/Strict.o
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml/Transitional.hs => _build/stage1/libraries/xhtml/build/Text/XHtml/Transitional.o
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml/Debug.hs => _build/stage1/libraries/xhtml/build/Text/XHtml/Debug.o
+| Run Ghc CompileHs Stage1: utils/hsc2hs/src/UtilsCodegen.hs => _build/stage1/utils/hsc2hs/build/UtilsCodegen.o
+| Run Ghc CompileHs Stage1: utils/hsc2hs/src/CrossCodegen.hs => _build/stage1/utils/hsc2hs/build/CrossCodegen.o
+| Run Ghc CompileHs Stage1: utils/hpc/src/Trace/Hpc/Report.hs => _build/stage1/utils/hpc/build/Trace/Hpc/Report.o
+| Run Ghc CompileHs Stage1: utils/hpc/src/Trace/Hpc/ShowTix.hs => _build/stage1/utils/hpc/build/Trace/Hpc/ShowTix.o
+| Run Ghc CompileHs Stage1: utils/hpc/src/Trace/Hpc/Map.hs => _build/stage1/utils/hpc/build/Trace/Hpc/Map.o
+/---------------------------------------------------------------\
+| Successfully built program 'ghc-toolchain-bin' (Stage1).      |
+| Executable: _build/stage1/bin/ghc-toolchain-bin               |
+| Program synopsis: Utility for managing GHC target toolchains. |
+\---------------------------------------------------------------/
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Compat/Prelude.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Compat/Prelude.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/ParserCombinators/Parsec/Perm.hs => _build/stage1/libraries/parsec/build/Text/ParserCombinators/Parsec/Perm.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-library/src/Documentation/Haddock/Parser/Util.hs => _build/stage1/utils/haddock/haddock-library/build/Documentation/Haddock/Parser/Util.o
+| Run Ghc CompileHs Stage1: utils/hpc/src/Trace/Hpc/Draft.hs => _build/stage1/utils/hpc/build/Trace/Hpc/Draft.o
+| Run Ghc CompileHs Stage1: utils/hpc/src/Trace/Hpc/Sum.hs => _build/stage1/utils/hpc/build/Trace/Hpc/Sum.o
+| Run Ghc CompileHs Stage1: utils/hpc/src/Trace/Hpc/Overlay.hs => _build/stage1/utils/hpc/build/Trace/Hpc/Overlay.o
+| Run Ghc CompileHs Stage1: utils/hpc/src/Trace/Hpc/Combine.hs => _build/stage1/utils/hpc/build/Trace/Hpc/Combine.o
+| Run Ghc CompileHs Stage1: utils/hpc/src/Trace/Hpc/Markup.hs => _build/stage1/utils/hpc/build/Trace/Hpc/Markup.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-library/src/Documentation/Haddock/Parser/Identifier.hs => _build/stage1/utils/haddock/haddock-library/build/Documentation/Haddock/Parser/Identifier.o
+| Run Ghc CompileHs Stage1: utils/hsc2hs/src/DirectCodegen.hs => _build/stage1/utils/hsc2hs/build/DirectCodegen.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/ParserCombinators/Parsec/Expr.hs => _build/stage1/libraries/parsec/build/Text/ParserCombinators/Parsec/Expr.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Compat/Graph.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Compat/Graph.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/CabalSpecVersion.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/CabalSpecVersion.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/Condition.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/Condition.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Utils/ShortText.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Utils/ShortText.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Utils/Generic.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Utils/Generic.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/PackageDescription/Quirks.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/PackageDescription/Quirks.o
+| Run Ghc CompileHs Stage1: libraries/xhtml/Text/XHtml.hs => _build/stage1/libraries/xhtml/build/Text/XHtml.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Parsec/Position.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Parsec/Position.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Compat/DList.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Compat/DList.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Compat/Parsing.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Compat/Parsing.o
+| Remove file _build/stage1/libraries/xhtml/build/libHSxhtml-3000.4.0.0-inplace.a
+| Run Ar Pack Stage1: _build/stage1/libraries/xhtml/build/Text/XHtml.o (and 14 more) => _build/stage1/libraries/xhtml/build/libHSxhtml-3000.4.0.0-inplace.a
+| Run Ghc LinkHs Stage1: _build/stage1/libraries/xhtml/build/Text/XHtml.dyn_o (and 14 more) => _build/stage1/libraries/xhtml/build/libHSxhtml-3000.4.0.0-inplace-ghc9.15.20260306.so
+| Run Ghc CompileHs Stage1: utils/hpc/src/Trace/Hpc/Main.hs => _build/stage1/utils/hpc/build/Trace/Hpc/Main.o
+/------------------------------------------------------------------------------\
+| Successfully built library 'xhtml' (Stage1, way v).                          |
+| Library: _build/stage1/libraries/xhtml/build/libHSxhtml-3000.4.0.0-inplace.a |
+| Library synopsis: An XHTML combinator library.                               |
+\------------------------------------------------------------------------------/
+| Run Ghc CompileHs Stage1: utils/hsc2hs/src/Main.hs => _build/stage1/utils/hsc2hs/build/Main.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Compat/Lens.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Compat/Lens.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Parsec/Error.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Parsec/Error.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-library/src/Documentation/Haddock/Parser.hs => _build/stage1/utils/haddock/haddock-library/build/Documentation/Haddock/Parser.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Parsec/Warning.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Parsec/Warning.o
+/------------------------------------------------------------------------------------------------\
+| Successfully built library 'xhtml' (Stage1, way dyn).                                          |
+| Library: _build/stage1/libraries/xhtml/build/libHSxhtml-3000.4.0.0-inplace-ghc9.15.20260306.so |
+| Library synopsis: An XHTML combinator library.                                                 |
+\------------------------------------------------------------------------------------------------/
+| Copy package 'xhtml'
+# cabal-copy (for _build/stage1/lib/package.conf.d/xhtml-3000.4.0.0-inplace.conf)
+Installing library in _build/stage1/lib/../lib/x86_64-linux-ghc-9.15.20260306-inplace/xhtml-3000.4.0.0-inplace
+| Run Ghc CompileHs Stage1: utils/hpc/app/Main.hs => _build/stage1/utils/hpc/build/Main.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Parsec/FieldLineStream.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Parsec/FieldLineStream.o
+| Run Ghc LinkHs Stage1: _build/stage1/utils/hsc2hs/build/c/cbits/utils.dyn_o (and 12 more) => _build/stage1/bin/hsc2hs
+| Run GhcPkg Recache Stage1: none => none
+| Run Ghc LinkHs Stage1: _build/stage1/utils/hpc/build/Main.dyn_o (and 17 more) => _build/stage1/bin/hpc
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Compat/CharParsing.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Compat/CharParsing.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/CondTree.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/CondTree.o
+/--------------------------------------------------------------------------------------\
+| Successfully built program 'hsc2hs' (Stage1).                                        |
+| Executable: _build/stage1/bin/hsc2hs                                                 |
+| Program synopsis: A preprocessor that helps with writing Haskell bindings to C code. |
+\--------------------------------------------------------------------------------------/
+/---------------------------------------------------------------------------------------\
+| Successfully built program 'hpc-bin' (Stage1).                                        |
+| Executable: _build/stage1/bin/hpc                                                     |
+| Program synopsis: Hpc is a tool for generating coverage reports for Haskell projects. |
+\---------------------------------------------------------------------------------------/
+# cabal-read (for OracleQ (PackageDataKey (Package {pkgType = Program, pkgName = "ghc-config", pkgPath = "testsuite/ghc-config"})))
+| Configure package 'ghc-config'
+# cabal-configure (for _build/stage0/testsuite/ghc-config/setup-config)
+Configuring ghc-config-0.1.0.0...
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Pretty.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Pretty.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/SPDX/LicenseListVersion.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/SPDX/LicenseListVersion.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Fields/Field.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Fields/Field.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Fields/LexerMonad.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Fields/LexerMonad.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Parsec.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Parsec.o
+# cabal-autogen (for _build/stage0/testsuite/ghc-config/build/ghc-config/autogen/cabal_macros.h)
+| Run Ghc FindHsDependencies (Stage0 InTreeLibs): testsuite/ghc-config/ghc-config.hs => _build/stage0/testsuite/ghc-config/.dependencies.mk
+| Remove file _build/stage0/testsuite/ghc-config/.dependencies.mk.bak
+| Run Ghc CompileHs (Stage0 InTreeLibs): testsuite/ghc-config/ghc-config.hs => _build/stage0/testsuite/ghc-config/build/Main.o
+| Run Ghc CompileHs Stage1: _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Fields/Lexer.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Fields/Lexer.o
+| Run Ghc LinkHs (Stage0 InTreeLibs): _build/stage0/testsuite/ghc-config/build/Main.o => _build/stage0/bin/ghc-config
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/ParserCombinators/Parsec/Token.hs => _build/stage1/libraries/parsec/build/Text/ParserCombinators/Parsec/Token.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/Parsec/Language.hs => _build/stage1/libraries/parsec/build/Text/Parsec/Language.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Fields/Parser.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Fields/Parser.o
+/-----------------------------------------------------------------------------------------------------\
+| Successfully built program 'ghc-config' (Stage0 InTreeLibs).                                        |
+| Executable: _build/stage0/bin/ghc-config                                                            |
+| Program synopsis: A utility used by GHC's testsuite driver to extract information from @ghc --info. |
+\-----------------------------------------------------------------------------------------------------/
+# ghc-config (for _build/test/ghcconfig)
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/PackageName.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/PackageName.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/SourceRepo.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/SourceRepo.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/ForeignLibType.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/ForeignLibType.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/ExecutableScope.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/ExecutableScope.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Text.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Text.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Language/Haskell/Extension.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Language/Haskell/Extension.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/LibraryVisibility.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/LibraryVisibility.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/AbiHash.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/AbiHash.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/SPDX/LicenseId.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/SPDX/LicenseId.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/ModuleName.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/ModuleName.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/PkgconfigName.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/PkgconfigName.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/Version.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/Version.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/SPDX/LicenseExceptionId.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/SPDX/LicenseExceptionId.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/Flag.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/Flag.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Fields/Pretty.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Fields/Pretty.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/UnqualComponentName.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/UnqualComponentName.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/SPDX/LicenseReference.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/SPDX/LicenseReference.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/System.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/System.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/PkgconfigVersion.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/PkgconfigVersion.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/BuildType.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/BuildType.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/ModuleRenaming.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/ModuleRenaming.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Utils/Path.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Utils/Path.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/LibraryName.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/LibraryName.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/ForeignLibOption.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/ForeignLibOption.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/VersionRange/Internal.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/VersionRange/Internal.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/ModuleReexport.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/ModuleReexport.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/ComponentId.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/ComponentId.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/MissingDependencyReason.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/MissingDependencyReason.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/ComponentName.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/ComponentName.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/MungedPackageName.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/MungedPackageName.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/IncludeRenaming.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/IncludeRenaming.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/DependencySatisfaction.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/DependencySatisfaction.o
+| Run Ghc CompileHs Stage1: libraries/parsec/src/Text/ParserCombinators/Parsec/Language.hs => _build/stage1/libraries/parsec/build/Text/ParserCombinators/Parsec/Language.o
+| Remove file _build/stage1/libraries/parsec/build/libHSparsec-3.1.18.0-inplace.a
+| Run Ar Pack Stage1: _build/stage1/libraries/parsec/build/Text/Parsec.o (and 24 more) => _build/stage1/libraries/parsec/build/libHSparsec-3.1.18.0-inplace.a
+| Run Ghc LinkHs Stage1: _build/stage1/libraries/parsec/build/Text/Parsec.dyn_o (and 24 more) => _build/stage1/libraries/parsec/build/libHSparsec-3.1.18.0-inplace-ghc9.15.20260306.so
+/------------------------------------------------------------------------------\
+| Successfully built library 'parsec' (Stage1, way v).                         |
+| Library: _build/stage1/libraries/parsec/build/libHSparsec-3.1.18.0-inplace.a |
+| Library synopsis: Monadic parser combinators.                                |
+\------------------------------------------------------------------------------/
+| Remove file _build/stage1/utils/haddock/haddock-library/build/libHShaddock-library-1.11.0-inplace.a
+| Run Ar Pack Stage1: _build/stage1/utils/haddock/haddock-library/build/Documentation/Haddock/Doc.o (and 6 more) => _build/stage1/utils/haddock/haddock-library/build/libHShaddock-library-1.11.0-inplace.a
+/--------------------------------------------------------------------------------------------------\
+| Successfully built library 'haddock-library' (Stage1, way v).                                    |
+| Library: _build/stage1/utils/haddock/haddock-library/build/libHShaddock-library-1.11.0-inplace.a |
+| Library synopsis: Library exposing some functionality of Haddock.                                |
+\--------------------------------------------------------------------------------------------------/
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/SourceRepo/Lens.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/SourceRepo/Lens.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/Mixin.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/Mixin.o
+/------------------------------------------------------------------------------------------------\
+| Successfully built library 'parsec' (Stage1, way dyn).                                         |
+| Library: _build/stage1/libraries/parsec/build/libHSparsec-3.1.18.0-inplace-ghc9.15.20260306.so |
+| Library synopsis: Monadic parser combinators.                                                  |
+\------------------------------------------------------------------------------------------------/
+| Copy package 'parsec'
+# cabal-copy (for _build/stage1/lib/package.conf.d/parsec-3.1.18.0-inplace.conf)
+Installing library in _build/stage1/lib/../lib/x86_64-linux-ghc-9.15.20260306-inplace/parsec-3.1.18.0-inplace
+| Run GhcPkg Recache Stage1: none => none
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/VersionInterval/Legacy.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/VersionInterval/Legacy.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/VersionInterval.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/VersionInterval.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/VersionRange.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/VersionRange.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Version.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Version.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/PkgconfigVersionRange.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/PkgconfigVersionRange.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Fields/ParseResult.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Fields/ParseResult.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/ExeDependency.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/ExeDependency.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/TestType.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/TestType.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/LegacyExeDependency.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/LegacyExeDependency.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/Dependency.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/Dependency.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/BenchmarkType.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/BenchmarkType.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/PackageId.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/PackageId.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Fields.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Fields.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/BenchmarkInterface.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/BenchmarkInterface.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/PackageId/Lens.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/PackageId/Lens.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/UnitId.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/UnitId.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/MungedPackageId.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/MungedPackageId.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/PackageVersionConstraint.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/PackageVersionConstraint.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/TestSuiteInterface.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/TestSuiteInterface.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/SetupBuildInfo.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/SetupBuildInfo.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/MissingDependency.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/MissingDependency.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/PkgconfigDependency.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/PkgconfigDependency.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/DependencyMap.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/DependencyMap.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/Module.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/Module.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/SetupBuildInfo/Lens.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/SetupBuildInfo/Lens.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Compiler.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Compiler.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Backpack.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Backpack.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Package.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Package.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/SPDX/LicenseExpression.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/SPDX/LicenseExpression.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/AbiDependency.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/AbiDependency.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/ExposedModule.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/ExposedModule.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/SPDX/License.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/SPDX/License.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/BuildInfo.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/BuildInfo.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/ConfVar.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/ConfVar.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/SPDX.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/SPDX.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/License.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/License.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Fields/ConfVar.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Fields/ConfVar.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/InstalledPackageInfo.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/InstalledPackageInfo.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/FieldGrammar/Newtypes.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/FieldGrammar/Newtypes.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/BuildInfo/Lens.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/BuildInfo/Lens.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/HookedBuildInfo.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/HookedBuildInfo.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/FieldGrammar/Class.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/FieldGrammar/Class.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/FieldGrammar/Pretty.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/FieldGrammar/Pretty.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/FieldGrammar/Parsec.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/FieldGrammar/Parsec.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/Library.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/Library.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/TestSuite.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/TestSuite.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/ForeignLib.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/ForeignLib.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/Executable.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/Executable.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/Benchmark.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/Benchmark.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/InstalledPackageInfo/Lens.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/InstalledPackageInfo/Lens.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/FieldGrammar.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/FieldGrammar.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/FieldGrammar/FieldDescrs.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/FieldGrammar/FieldDescrs.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/InstalledPackageInfo/FieldGrammar.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/InstalledPackageInfo/FieldGrammar.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/TestSuite/Lens.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/TestSuite/Lens.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/Executable/Lens.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/Executable/Lens.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/Benchmark/Lens.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/Benchmark/Lens.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/Library/Lens.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/Library/Lens.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/Component.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/Component.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/ForeignLib/Lens.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/ForeignLib/Lens.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/InstalledPackageInfo.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/InstalledPackageInfo.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/ComponentRequestedSpec.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/ComponentRequestedSpec.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/PackageDescription.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/PackageDescription.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/compat/posix/Haddock/Compat.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Compat.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Hyperlinker/Types.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Hyperlinker/Types.o
+| Run Ghc CompileHs Stage1: _build/stage1/utils/haddock/haddock-api/build/autogen/Paths_haddock_api.hs => _build/stage1/utils/haddock/haddock-api/build/Paths_haddock_api.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Xhtml/Types.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Xhtml/Types.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Utils/Json/Types.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Utils/Json/Types.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Types.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Types.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Utils/Progress.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Utils/Progress.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/TestSuite.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/TestSuite.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Compat/FilePath.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Compat/FilePath.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Glob/Internal.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Glob/Internal.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Types/ComponentLocalBuildInfo.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Types/ComponentLocalBuildInfo.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Types/PackageName/Magic.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Types/PackageName/Magic.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Types/AnnotatedId.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Types/AnnotatedId.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Compat/GetShortPathName.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Compat/GetShortPathName.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Compat/SnocList.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Compat/SnocList.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Utils/MapAccum.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Utils/MapAccum.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Types/ParStrat.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Types/ParStrat.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/FullUnitId.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/FullUnitId.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/BuildWay.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/BuildWay.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Utils/UnionFind.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Utils/UnionFind.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/CCompiler.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/CCompiler.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Utils/IOData.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Utils/IOData.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Verbosity/Internal.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Verbosity/Internal.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Types/DumpBuildInfo.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Types/DumpBuildInfo.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Compat/ResponseFile.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Compat/ResponseFile.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/ReadE.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/ReadE.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Compat/Stack.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Compat/Stack.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program/Internal.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program/Internal.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Compat/CreatePipe.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Compat/CreatePipe.o
+| Run Ghc CompileHs Stage1: _build/stage1/libraries/Cabal/Cabal/build/autogen/Paths_Cabal.hs => _build/stage1/libraries/Cabal/Cabal/build/Paths_Cabal.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Lex.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Lex.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/ZinzaPrelude.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/ZinzaPrelude.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/InstallDirs/Internal.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/InstallDirs/Internal.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Types/GivenComponent.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Types/GivenComponent.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Compat/Directory.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Compat/Directory.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Utils/Json.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Utils/Json.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Compat/Async.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Compat/Async.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/ModSubst.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/ModSubst.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Compat/Prelude/Internal.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Compat/Prelude/Internal.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Compat/Process.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Compat/Process.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/GetOpt.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/GetOpt.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/PackageDescription/Check/Warning.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/PackageDescription/Check/Warning.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Compat/Internal/TempFile.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Compat/Internal/TempFile.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Version.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Version.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Compat/Environment.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Compat/Environment.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Build/Macros/Z.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Build/Macros/Z.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Types/ComponentInclude.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Types/ComponentInclude.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Build/PackageInfoModule/Z.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Build/PackageInfoModule/Z.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Utils/Json/Parser.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Utils/Json/Parser.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Compat/CopyFile.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Compat/CopyFile.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/FileMonitor/Types.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/FileMonitor/Types.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/ModuleScope.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/ModuleScope.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/ModuleShape.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/ModuleShape.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Build/PathsModule/Z.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Build/PathsModule/Z.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Types/TargetInfo.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Types/TargetInfo.o
+| Run Ghc LinkHs Stage1: _build/stage1/utils/haddock/haddock-library/build/Documentation/Haddock/Doc.dyn_o (and 6 more) => _build/stage1/utils/haddock/haddock-library/build/libHShaddock-library-1.11.0-inplace-ghc9.15.20260306.so
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Verbosity.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Verbosity.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Flag.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Flag.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Utils/Json.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Utils/Json.o
+/--------------------------------------------------------------------------------------------------------------------\
+| Successfully built library 'haddock-library' (Stage1, way dyn).                                                    |
+| Library: _build/stage1/utils/haddock/haddock-library/build/libHShaddock-library-1.11.0-inplace-ghc9.15.20260306.so |
+| Library synopsis: Library exposing some functionality of Haddock.                                                  |
+\--------------------------------------------------------------------------------------------------------------------/
+| Copy package 'haddock-library'
+# cabal-copy (for _build/stage1/lib/package.conf.d/haddock-library-1.11.0-inplace.conf)
+Installing library in _build/stage1/lib/../lib/x86_64-linux-ghc-9.15.20260306-inplace/haddock-library-1.11.0-inplace
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/InstallDirs.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/InstallDirs.o
+| Run GhcPkg Recache Stage1: none => none
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/PreExistingComponent.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/PreExistingComponent.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/PreModuleShape.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/PreModuleShape.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/PackageDescription/Lens.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/PackageDescription/Lens.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/GenericPackageDescription.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/GenericPackageDescription.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/GhcUtils.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/GhcUtils.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Parser.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Parser.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Utils.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Utils.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/ModuleTree.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/ModuleTree.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Interface/RenameType.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Interface/RenameType.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/SetupHooks/Rule.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/SetupHooks/Rule.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/PreProcess/Types.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/PreProcess/Types.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Interface/ParseModuleHeader.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Interface/ParseModuleHeader.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Xhtml/Meta.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Xhtml/Meta.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Interface/LexParseRn.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Interface/LexParseRn.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/GenericPackageDescription/Lens.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/GenericPackageDescription/Lens.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/PackageDescription.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/PackageDescription.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Xhtml/Utils.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Xhtml/Utils.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Options.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Options.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Doc.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Doc.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program/Types.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program/Types.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/UnifyM.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/UnifyM.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/BuildToolDepends.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/BuildToolDepends.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/Types/Lens.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Types/Lens.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/PackageDescription/Configuration.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/PackageDescription/Configuration.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Convert.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Convert.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Hoogle.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Hoogle.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Hyperlinker/Parser.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Hyperlinker/Parser.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/LaTeX.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/LaTeX.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/PackageDescription/FieldGrammar.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/PackageDescription/FieldGrammar.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Xhtml/Names.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Xhtml/Names.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Hyperlinker/Utils.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Hyperlinker/Utils.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/InterfaceFile.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/InterfaceFile.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Xhtml/Themes.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Xhtml/Themes.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Hyperlinker/Renderer.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Hyperlinker/Renderer.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/MixLink.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/MixLink.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Interface/Create.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Interface/Create.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Interface/AttachInstances.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Interface/AttachInstances.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Interface/Rename.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Interface/Rename.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Xhtml/DocMarkup.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Xhtml/DocMarkup.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/SetupHooks/Errors.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/SetupHooks/Errors.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Errors.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Errors.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Hyperlinker.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Hyperlinker.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Interface/Json.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Interface/Json.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Xhtml/Layout.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Xhtml/Layout.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Interface.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Interface.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Utils.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Utils.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/PreProcess/Unlit.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/PreProcess/Unlit.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Xhtml/Decl.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Xhtml/Decl.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Utils/LogProgress.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Utils/LogProgress.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Glob.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Glob.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Compat/Time.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Compat/Time.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program/Run.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program/Run.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program/ResponseFile.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program/ResponseFile.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Command.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Command.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Utils/NubList.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Utils/NubList.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/PackageIndex.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/PackageIndex.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/DescribeUnitId.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/DescribeUnitId.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program/Find.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program/Find.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Compiler.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Compiler.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/PackageDescription/PrettyPrint.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/PackageDescription/PrettyPrint.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal-syntax/src/Distribution/PackageDescription/Parsec.hs => _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/PackageDescription/Parsec.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program/Hpc.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program/Hpc.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program/Script.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program/Script.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/PackageDescription/Check/Monad.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/PackageDescription/Check/Monad.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock/Backends/Xhtml.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock/Backends/Xhtml.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/PackageDescription/Check/Conditional.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/PackageDescription/Check/Conditional.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/PackageDescription/Check/Common.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/PackageDescription/Check/Common.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/PackageDescription/Check/Paths.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/PackageDescription/Check/Paths.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program/HcPkg.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program/HcPkg.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/GHC/ImplInfo.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/GHC/ImplInfo.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program/GHC.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program/GHC.o
+| Remove file _build/stage1/libraries/Cabal/Cabal-syntax/build/libHSCabal-syntax-3.16.1.0-inplace.a
+| Run Ar Pack Stage1: _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Backpack.o (and 138 more) => _build/stage1/libraries/Cabal/Cabal-syntax/build/libHSCabal-syntax-3.16.1.0-inplace.a
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/PackageDescription.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/PackageDescription.o
+| Run Ghc LinkHs Stage1: _build/stage1/libraries/Cabal/Cabal-syntax/build/Distribution/Backpack.dyn_o (and 138 more) => _build/stage1/libraries/Cabal/Cabal-syntax/build/libHSCabal-syntax-3.16.1.0-inplace-ghc9.15.20260306.so
+/------------------------------------------------------------------------------------------------\
+| Successfully built library 'Cabal-syntax' (Stage1, way v).                                     |
+| Library: _build/stage1/libraries/Cabal/Cabal-syntax/build/libHSCabal-syntax-3.16.1.0-inplace.a |
+| Library synopsis: A library for working with .cabal files.                                     |
+\------------------------------------------------------------------------------------------------/
+/------------------------------------------------------------------------------------------------------------------\
+| Successfully built library 'Cabal-syntax' (Stage1, way dyn).                                                     |
+| Library: _build/stage1/libraries/Cabal/Cabal-syntax/build/libHSCabal-syntax-3.16.1.0-inplace-ghc9.15.20260306.so |
+| Library synopsis: A library for working with .cabal files.                                                       |
+\------------------------------------------------------------------------------------------------------------------/
+| Copy package 'Cabal-syntax'
+# cabal-copy (for _build/stage1/lib/package.conf.d/Cabal-syntax-3.16.1.0-inplace.conf)
+Installing library in _build/stage1/lib/../lib/x86_64-linux-ghc-9.15.20260306-inplace/Cabal-syntax-3.16.1.0-inplace
+| Run GhcPkg Recache Stage1: none => none
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Haddock.hs => _build/stage1/utils/haddock/haddock-api/build/Haddock.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program/Builtin.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program/Builtin.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program/Db.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program/Db.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program/Strip.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program/Strip.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup/Common.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup/Common.o
+| Run Ghc CompileHs Stage1: utils/haddock/haddock-api/src/Documentation/Haddock.hs => _build/stage1/utils/haddock/haddock-api/build/Documentation/Haddock.o
+| Remove file _build/stage1/utils/haddock/haddock-api/build/libHShaddock-api-2.30.0-inplace.a
+| Run Ar Pack Stage1: _build/stage1/utils/haddock/haddock-api/build/Documentation/Haddock.o (and 40 more) => _build/stage1/utils/haddock/haddock-api/build/libHShaddock-api-2.30.0-inplace.a
+/------------------------------------------------------------------------------------------\
+| Successfully built library 'haddock-api' (Stage1, way v).                                |
+| Library: _build/stage1/utils/haddock/haddock-api/build/libHShaddock-api-2.30.0-inplace.a |
+| Library synopsis: A documentation-generation tool for Haskell libraries.                 |
+\------------------------------------------------------------------------------------------/
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup/Clean.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup/Clean.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup/Copy.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup/Copy.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup/Global.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup/Global.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup/Install.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup/Install.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup/Hscolour.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup/Hscolour.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup/Build.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup/Build.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup/Register.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup/Register.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup/Benchmark.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup/Benchmark.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup/Config.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup/Config.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup/Test.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup/Test.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup/SDist.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup/SDist.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup/Haddock.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup/Haddock.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup/Repl.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup/Repl.o
+| Run Ghc LinkHs Stage1: _build/stage1/utils/haddock/haddock-api/build/Documentation/Haddock.dyn_o (and 40 more) => _build/stage1/utils/haddock/haddock-api/build/libHShaddock-api-2.30.0-inplace-ghc9.15.20260306.so
+/------------------------------------------------------------------------------------------------------------\
+| Successfully built library 'haddock-api' (Stage1, way dyn).                                                |
+| Library: _build/stage1/utils/haddock/haddock-api/build/libHShaddock-api-2.30.0-inplace-ghc9.15.20260306.so |
+| Library synopsis: A documentation-generation tool for Haskell libraries.                                   |
+\------------------------------------------------------------------------------------------------------------/
+| Copy package 'haddock-api'
+# cabal-copy (for _build/stage1/lib/package.conf.d/haddock-api-2.30.0-inplace.conf)
+Installing library in _build/stage1/lib/../lib/x86_64-linux-ghc-9.15.20260306-inplace/haddock-api-2.30.0-inplace
+| Run GhcPkg Recache Stage1: none => none
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Types/LocalBuildConfig.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Types/LocalBuildConfig.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Setup.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Setup.o
+| Configure package 'haddock'
+# cabal-configure (for _build/stage1/utils/haddock/setup-config)
+Configuring haddock-2.30.0...
+# cabal-autogen (for _build/stage1/utils/haddock/build/haddock/autogen/cabal_macros.h)
+| Run Ghc FindHsDependencies Stage1: utils/haddock/driver/Main.hs => _build/stage1/utils/haddock/.dependencies.mk
+| Remove file _build/stage1/utils/haddock/.dependencies.mk.bak
+| Run Ghc CompileHs Stage1: utils/haddock/driver/Main.hs => _build/stage1/utils/haddock/build/Main.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Make.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Make.o
+| Run Ghc LinkHs Stage1: _build/stage1/utils/haddock/build/Main.dyn_o => _build/stage1/bin/haddock
+/--------------------------------------------------------------------------\
+| Successfully built program 'haddock' (Stage1).                           |
+| Executable: _build/stage1/bin/haddock                                    |
+| Program synopsis: A documentation-generation tool for Haskell libraries. |
+\--------------------------------------------------------------------------/
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Types/LocalBuildInfo.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Types/LocalBuildInfo.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Build/Inputs.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Build/Inputs.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/LocalBuildInfo.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/LocalBuildInfo.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/ComponentsGraph.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/ComponentsGraph.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Hpc.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Hpc.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/BuildTarget.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/BuildTarget.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Build/Macros.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Build/Macros.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/Id.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/Id.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Test/Log.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Test/Log.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Build/PackageInfoModule.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Build/PackageInfoModule.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program/Ld.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program/Ld.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Build/PathsModule.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Build/PathsModule.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/BuildPaths.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/BuildPaths.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Program/Ar.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Program/Ar.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/ConfiguredComponent.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/ConfiguredComponent.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/GHC/Internal.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/GHC/Internal.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/PackageDescription/Check/Target.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/PackageDescription/Check/Target.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/UHC.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/UHC.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/SetupHooks/Internal.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/SetupHooks/Internal.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Test/LibV09.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Test/LibV09.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Test/ExeV10.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Test/ExeV10.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/LinkedComponent.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/LinkedComponent.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/PreProcess.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/PreProcess.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/GHC/EnvironmentParser.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/GHC/EnvironmentParser.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/GHC/Build/Utils.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/GHC/Build/Utils.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/ReadyComponent.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/ReadyComponent.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/GHCJS.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/GHCJS.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/PackageDescription/Check.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/PackageDescription/Check.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/GHC/Build/Modules.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/GHC/Build/Modules.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/UserHooks.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/UserHooks.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Backpack/Configure.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/Configure.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/GHC/Build/ExtraSources.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/GHC/Build/ExtraSources.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/GHC/Build/Link.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/GHC/Build/Link.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/GHC/Build.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/GHC/Build.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/GHC.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/GHC.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Register.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Register.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Configure.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Configure.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/ShowBuildInfo.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/ShowBuildInfo.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Install.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Install.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/SrcDist.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/SrcDist.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Build.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Build.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/ConfigureScript.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/ConfigureScript.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Bench.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Bench.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Haddock.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Haddock.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple/Test.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple/Test.o
+| Run Ghc CompileHs Stage1: libraries/Cabal/Cabal/src/Distribution/Simple.hs => _build/stage1/libraries/Cabal/Cabal/build/Distribution/Simple.o
+| Remove file _build/stage1/libraries/Cabal/Cabal/build/libHSCabal-3.16.1.0-inplace.a
+| Run Ar Pack Stage1: _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/Configure.o (and 149 more) => _build/stage1/libraries/Cabal/Cabal/build/libHSCabal-3.16.1.0-inplace.a
+| Run Ghc LinkHs Stage1: _build/stage1/libraries/Cabal/Cabal/build/Distribution/Backpack/Configure.dyn_o (and 149 more) => _build/stage1/libraries/Cabal/Cabal/build/libHSCabal-3.16.1.0-inplace-ghc9.15.20260306.so
+/----------------------------------------------------------------------------------\
+| Successfully built library 'Cabal' (Stage1, way v).                              |
+| Library: _build/stage1/libraries/Cabal/Cabal/build/libHSCabal-3.16.1.0-inplace.a |
+| Library synopsis: A framework for packaging Haskell software.                    |
+\----------------------------------------------------------------------------------/
+/----------------------------------------------------------------------------------------------------\
+| Successfully built library 'Cabal' (Stage1, way dyn).                                              |
+| Library: _build/stage1/libraries/Cabal/Cabal/build/libHSCabal-3.16.1.0-inplace-ghc9.15.20260306.so |
+| Library synopsis: A framework for packaging Haskell software.                                      |
+\----------------------------------------------------------------------------------------------------/
+| Copy package 'Cabal'
+# cabal-copy (for _build/stage1/lib/package.conf.d/Cabal-3.16.1.0-inplace.conf)
+Installing library in _build/stage1/lib/../lib/x86_64-linux-ghc-9.15.20260306-inplace/Cabal-3.16.1.0-inplace
+| Run GhcPkg Recache Stage1: none => none
+| Configure package 'ghc-pkg'
+# cabal-configure (for _build/stage1/utils/ghc-pkg/setup-config)
+Configuring ghc-pkg-9.15.20260306...
+# cabal-autogen (for _build/stage1/utils/ghc-pkg/build/ghc-pkg/autogen/cabal_macros.h)
+| Run Ghc FindHsDependencies Stage1: utils/ghc-pkg/Main.hs => _build/stage1/utils/ghc-pkg/.dependencies.mk
+| Remove file _build/stage1/utils/ghc-pkg/.dependencies.mk.bak
+| Run Ghc CompileHs Stage1: utils/ghc-pkg/Main.hs => _build/stage1/utils/ghc-pkg/build/Main.o
+| Run Ghc LinkHs Stage1: _build/stage1/utils/ghc-pkg/build/Main.dyn_o => _build/stage1/bin/ghc-pkg
+/---------------------------------------------------------------------------------\
+| Successfully built program 'ghc-pkg' (Stage1).                                  |
+| Executable: _build/stage1/bin/ghc-pkg                                           |
+| Program synopsis: A utility for querying and managing the GHC package database. |
+\---------------------------------------------------------------------------------/
+| Run Testsuite RunTest: none => none
+/usr/bin/python3 -Wdefault testsuite/driver/runtests.py --rootdir=testsuite/tests/ado/ --top /workspaces/tt-repo/vendor/ghc/testsuite -e windows=False -e darwin=False -e config.local=False -e config.cleanup=True -e config.accept=False -e config.accept_platform=False -e config.accept_os=False -e 'config.exeext='\'''\''' -e config.compiler_debugged=False -e config.debug_rts=False -e ghc_with_native_codegen=True -e config.have_ncg=True -e config.have_llvm=False -e config.compiler_profiled=False -e config.have_RTS_linker=True -e 'config.package_conf_cache_file="/workspaces/tt-repo/vendor/ghc/_build/stage1/lib/package.conf.d/package.cache"' -e 'config.libdir="/workspaces/tt-repo/vendor/ghc/_build/stage1/lib"' -e config.have_interp=True -e config.cross=False -e config.interp_force_dyn=False -e config.unregisterised=False -e config.tables_next_to_code=True -e 'ghc_compiler_always_flags='\'' -dcore-lint -dstg-lint -dcmm-lint -no-user-package-db -fno-dump-with-ways -fprint-error-index-links=never -rtsopts    -fno-warn-missed-specialisations -fshow-warning-groups -fdiagnostics-color=never -fno-diagnostics-show-caret -Werror=compat -dno-debug-output -fno-hide-source-paths'\''' -e ghc_with_dynamic_rts=True -e config.ghc_with_threaded_rts=True -e config.have_fast_bignum=True -e config.target_has_smp=True -e config.ghc_dynamic=True -e config.leading_underscore=False -e 'config.wordsize="64"' -e 'config.os="linux"' -e 'config.arch="x86_64"' -e 'config.platform="x86_64-unknown-linux"' -e config.stage=2 --config gs=gs --config 'timeout_prog="/workspaces/tt-repo/vendor/ghc/_build/testsuite/timeout/install-inplace/bin/timeout"' --config stats_files_dir=_build/stage1/haddock-timing-files --threads=16 --config-file=testsuite/config/ghc -e config.speed=1 --summary-file=testsuite_summary.txt --verbose=2 --config 'compiler="/workspaces/tt-repo/vendor/ghc/_build/stage1/bin/ghc"' --config 'ghc_pkg="/workspaces/tt-repo/vendor/ghc/_build/stage1/bin/ghc-pkg"' --config 'haddock="/workspaces/tt-repo/vendor/ghc/_build/stage1/bin/haddock"' --config 'hp2ps="/workspaces/tt-repo/vendor/ghc/_build/stage1/bin/hp2ps"' --config 'hpc="/workspaces/tt-repo/vendor/ghc/_build/stage1/bin/hpc"' -e config.in_tree_compiler=True
+Timeout is 300
+Known ways: hpc, prof, profdyn, profdyn_no_auto, normal_h, prof_hc_hb, prof_hb, prof_hd, prof_hy, prof_hr, sanity, threaded1_ls, threaded2_hT, threaded2_sanity, debug_numa, llvm, debugllvm, profllvm, profoptllvm, profthreadedllvm, debug, ghci-ext, ghci-ext-prof, ext-interp, nonmoving, nonmoving_thr, nonmoving_thr_sanity, nonmoving_thr_ghc, compacting_gc
+Run ways: normal, optasm, ghci, ghci-opt, threaded1, threaded2, dyn, hpc
+Compile ways: normal, optasm, hpc
+Allowing performance changes in: 
+Found 1 .T files...
+Beginning test run at Tue Apr 21 22:56:42 2026 
+Detected CPU features:  ['3dnowprefetch', 'abm', 'acpi', 'adx', 'aes', 'aperfmperf', 'apic', 'arat', 'arch_capabilities', 'arch_lbr', 'arch_perfmon', 'art', 'avx', 'avx2', 'avx_vnni', 'bmi1', 'bmi2', 'bts', 'clflush', 'clflushopt', 'clwb', 'cmov', 'constant_tsc', 'cpuid', 'cpuid_fault', 'cx16', 'cx8', 'de', 'ds_cpl', 'dtes64', 'dtherm', 'dts', 'epb', 'ept', 'ept_ad', 'erms', 'est', 'f16c', 'flexpriority', 'flush_l1d', 'fma', 'fpu', 'fsgsbase', 'fsrm', 'fxsr', 'gfni', 'hfi', 'ht', 'hwp', 'hwp_act_window', 'hwp_epp', 'hwp_notify', 'hwp_pkg_req', 'ibpb', 'ibrs', 'ibrs_enhanced', 'ibt', 'ida', 'intel_pt', 'invpcid', 'lahf_lm', 'lm', 'mca', 'mce', 'md_clear', 'mmx', 'monitor', 'movbe', 'movdir64b', 'movdiri', 'msr', 'mtrr', 'nonstop_tsc', 'nopl', 'nx', 'ospke', 'osxsave', 'pae', 'pat', 'pbe', 'pcid', 'pclmulqdq', 'pdcm', 'pdpe1gb', 'pebs', 'pge', 'pku', 'pln', 'pni', 'popcnt', 'pse', 'pse36', 'pts', 'rdpid', 'rdrand', 'rdrnd', 'rdseed', 'rdtscp', 'rep_good', 'sdbg', 'sep', 'serialize', 'sha', 'sha_ni', 'smap', 'smep', 'smx', 'split_lock_detect', 'ss', 'ssbd', 'sse', 'sse2', 'sse4_1', 'sse4_2', 'ssse3', 'stibp', 'syscall', 'tm', 'tm2', 'tpr_shadow', 'tsc', 'tsc_adjust', 'tsc_deadline_timer', 'tsc_known_freq', 'tscdeadline', 'umip', 'user_shstk', 'vaes', 'vme', 'vmx', 'vnmi', 'vpclmulqdq', 'vpid', 'waitpkg', 'x2apic', 'xgetbv1', 'xsave', 'xsavec', 'xsaveopt', 'xsaves', 'xtopology', 'xtpr']
+=====> 1 of 25 [0, 0, 0]
+=====> 2 of 25 [0, 0, 0]
+=====> 3 of 25 [0, 0, 0]
+=====> 4 of 25 [0, 0, 0]
+=====> 5 of 25 [0, 0, 0]
+=====> 6 of 25 [0, 0, 0]
+=====> 7 of 25 [0, 0, 0]
+=====> 8 of 25 [0, 0, 0]
+=====> 9 of 25 [0, 0, 0]
+=====> 10 of 25 [0, 0, 0]
+=====> 11 of 25 [0, 0, 0]
+=====> 12 of 25 [0, 0, 0]
+=====> 13 of 25 [0, 0, 0]
+=====> 14 of 25 [0, 0, 0]
+=====> 15 of 25 [0, 0, 0]
+=====> 16 of 25 [0, 0, 0]
+=====> 17 of 25 [0, 0, 0]
+=====> 18 of 25 [0, 0, 0]
+=====> 19 of 25 [0, 0, 0]
+=====> 20 of 25 [0, 0, 0]
+=====> 21 of 25 [0, 0, 0]
+=====> 22 of 25 [0, 0, 0]
+=====> 23 of 25 [0, 0, 0]
+=====> 24 of 25 [0, 0, 0]
+=====> 25 of 25 [0, 0, 0]
+
+Performance Metrics (test environment: local):
+
+
+None collected.
+
+
+SUMMARY for test run started at Tue Apr 21 22:56:42 2026 
+0:00:07.991975 spent to go through
+      25 total tests, which gave rise to
+     103 test cases, of which
+      78 were skipped
+       0 had missing libraries
+
+      25 expected passes
+       0 expected failures
+
+       0 caused framework failures
+       0 caused framework warnings
+       0 unexpected passes
+       0 unexpected failures
+       0 unexpected stat failures
+       0 fragile tests
+
+Build completed in 3m53s
+

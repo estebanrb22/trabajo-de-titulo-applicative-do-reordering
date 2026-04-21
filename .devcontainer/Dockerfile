@@ -18,6 +18,7 @@ ARG GHC_VERSION=9.14.1
 ARG CABAL_VERSION=3.14.2.0
 ARG ALEX_VERSION=3.5.4.0
 ARG HAPPY_VERSION=2.2
+ARG GHCUP_METADATA_REF=master
 
 # Dependencias del sistema para compilar GHC y herramientas auxiliares.
 RUN apt-get update \
@@ -72,6 +73,7 @@ ENV HOME=/home/${USERNAME}
 
 # PATH para binaries instalados por cabal y ghcup.
 ENV PATH=${HOME}/.local/bin:${HOME}/.ghcup/bin:${PATH}
+ENV GHCUP_SKIP_UPDATE_CHECK=1
 
 # Directorio para binarios de usuario instalados con cabal.
 RUN mkdir -p "${HOME}/.local/bin"
@@ -87,6 +89,14 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org -o /tmp/g
        /bin/bash /tmp/ghcup.sh \
     && rm /tmp/ghcup.sh
 
+# Configuracion de metadata local para evitar consultas remotas en cada uso de ghcup.
+RUN mkdir -p "${HOME}/git" "${HOME}/.ghcup" \
+    && git clone --depth 1 --branch "${GHCUP_METADATA_REF}" https://github.com/haskell/ghcup-metadata.git "${HOME}/git/ghcup-metadata" \
+    && printf '%s\n' \
+         'url-source:' \
+         '  - file:///home/vscode/git/ghcup-metadata/ghcup-0.0.9.yaml' \
+       > "${HOME}/.ghcup/config.yaml"
+
 # Instalación con versiones fijas:
 # - GHC: compilador de Haskell
 # - cabal: gestor de paquetes/build de Haskell
@@ -101,7 +111,7 @@ RUN ghcup install ghc "${GHC_VERSION}" \
          --installdir="${HOME}/.local/bin" \
          --install-method=copy \
          --overwrite-policy=always \
-    && rm -rf "${HOME}/.ghcup/cache" "${HOME}/.ghcup/tmp" "${HOME}/.cabal/packages" "${HOME}/.cabal/logs"
+    && rm -rf "${HOME}/.ghcup/tmp" "${HOME}/.cabal/packages" "${HOME}/.cabal/logs"
 
 # Verificación de las instalaciones con versiones fijas.
 RUN ghc --numeric-version \

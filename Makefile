@@ -36,3 +36,6 @@ test: ## Ejecuta pruebas y validaciones
 	bash scripts/test.sh
 
 reproduce: verify-toolchain setup-ghc-submodule patches build test ## Ejecuta el flujo reproducible completo
+
+shell: ## Abre la shell del dev continer
+	docker exec -it ghc-dev-container bash
