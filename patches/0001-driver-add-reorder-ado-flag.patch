@@ -1,0 +1,38 @@
+From 17fa1d7fb8122d7f22707b965978cdbf7bcba272 Mon Sep 17 00:00:00 2001
+From: estebanrb22 <esteban.romero.b@ug.uchile.cl>
+Date: Wed, 22 Apr 2026 12:54:10 -0400
+Subject: [PATCH] feat(driver): add -freorder-commutative-monads-ado dynamic
+ flag
+
+---
+ compiler/GHC/Driver/Flags.hs   | 1 +
+ compiler/GHC/Driver/Session.hs | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/compiler/GHC/Driver/Flags.hs b/compiler/GHC/Driver/Flags.hs
+index a089dee83f..56e3cb2ee3 100644
+--- a/compiler/GHC/Driver/Flags.hs
++++ b/compiler/GHC/Driver/Flags.hs
+@@ -784,6 +784,7 @@ data GeneralFlag
+    | Opt_FamAppCache
+    | Opt_ExternalInterpreter
+    | Opt_OptimalApplicativeDo
++   | Opt_ReorderCommutativeMonadsAdo
+    | Opt_VersionMacros
+    | Opt_WholeArchiveHsLibs
+    -- copy all libs into a single folder prior to linking binaries
+diff --git a/compiler/GHC/Driver/Session.hs b/compiler/GHC/Driver/Session.hs
+index 8468f3fb58..7e5c80594d 100644
+--- a/compiler/GHC/Driver/Session.hs
++++ b/compiler/GHC/Driver/Session.hs
+@@ -2578,6 +2578,7 @@ fFlagsDeps = [
+   flagSpec "omit-interface-pragmas"           Opt_OmitInterfacePragmas,
+   flagSpec "omit-yields"                      Opt_OmitYields,
+   flagSpec "optimal-applicative-do"           Opt_OptimalApplicativeDo,
++  flagSpec "reorder-commutative-monads-ado"   Opt_ReorderCommutativeMonadsAdo,
+   flagSpec "pedantic-bottoms"                 Opt_PedanticBottoms,
+   flagSpec "pre-inlining"                     Opt_SimplPreInlining,
+   flagGhciSpec "print-bind-contents"          Opt_PrintBindContents,
+-- 
+2.53.0
+
