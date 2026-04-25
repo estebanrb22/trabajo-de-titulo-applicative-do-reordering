@@ -1,0 +1,116 @@
+From 15f6dce11c735d3c860cb1f77b763dcd70d9d6b5 Mon Sep 17 00:00:00 2001
+From: estebanrb22 <esteban.romero.b@ug.uchile.cl>
+Date: Sat, 25 Apr 2026 17:10:23 -0400
+Subject: [PATCH] feat(Rename/Expr): Added dynamic flag that manages the number
+ of clones of an AST, and added the cloning experiment in
+ RearrangeForApplicativeDo algorithm
+
+---
+ compiler/GHC/Driver/DynFlags.hs |  6 ++++++
+ compiler/GHC/Driver/Session.hs  |  6 ++++++
+ compiler/GHC/Rename/Expr.hs     | 30 ++++++++++++++++++++++++++----
+ 3 files changed, 38 insertions(+), 4 deletions(-)
+
+diff --git a/compiler/GHC/Driver/DynFlags.hs b/compiler/GHC/Driver/DynFlags.hs
+index 71189b15d2..b38622d036 100644
+--- a/compiler/GHC/Driver/DynFlags.hs
++++ b/compiler/GHC/Driver/DynFlags.hs
+@@ -193,6 +193,9 @@ data DynFlags = DynFlags {
+   rawTarget         :: Target,
+   tmpDir            :: TempDir,
+ 
++  -- Experimental flags associated with reorder commutatives monads
++  adoReorderNClones :: Int,
++  -- ----------------------------------------------------------- --
+   llvmOptLevel          :: Int,         -- ^ LLVM optimisation level
+   verbosity             :: Int,         -- ^ Verbosity level: see Note [Verbosity levels]
+   debugLevel            :: Int,         -- ^ How much debug information to produce
+@@ -572,6 +575,9 @@ defaultDynFlags mySettings =
+         ghcMode                 = CompManager,
+         ghcLink                 = LinkExecutable Dynamic,
+         backend                 = platformDefaultBackend (sTargetPlatform mySettings),
++        -- Experimental flags associated with reorder commutatives monads
++        adoReorderNClones       = 0,
++        -- ----------------------------------------------------------- --
+         verbosity               = 0,
+         debugLevel              = 0,
+         simplPhases             = 2,
+diff --git a/compiler/GHC/Driver/Session.hs b/compiler/GHC/Driver/Session.hs
+index 7e5c80594d..140c4c6f6d 100644
+--- a/compiler/GHC/Driver/Session.hs
++++ b/compiler/GHC/Driver/Session.hs
+@@ -1801,6 +1801,12 @@ dynamic_flags_deps = [
+           ; return d })))
+   , make_ord_flag defFlag "fsimpl-tick-factor"
+       (intSuffix (\n d -> d { simplTickFactor = n }))
++
++  -- Experimental flags associated with reorder commutatives monads
++  , make_ord_flag defFlag "fado-reorder-clones"
++      (intSuffix (\n d -> d { adoReorderNClones = n }))
++  -- ----------------------------------------------------------- --
++
+   , make_ord_flag defFlag "fdmd-unbox-width"
+       (intSuffix (\n d -> d { dmdUnboxWidth = n }))
+   , make_ord_flag defFlag "fspec-constr-threshold"
+diff --git a/compiler/GHC/Rename/Expr.hs b/compiler/GHC/Rename/Expr.hs
+index 224b6008d2..d7f3fb98e9 100644
+--- a/compiler/GHC/Rename/Expr.hs
++++ b/compiler/GHC/Rename/Expr.hs
+@@ -2045,21 +2045,34 @@ rearrangeForApplicativeDo ctxt [(one,_)] = do
+   return $ case needJoin monad_names [one] (Just pure_name) of
+     (False, one') -> (one', emptyNameSet)
+     (True, _) -> ([one], emptyNameSet)
++
+ rearrangeForApplicativeDo ctxt stmts0 = do
+   optimal_ado <- goptM Opt_OptimalApplicativeDo
+-  let stmt_tree | optimal_ado = mkStmtTreeOptimal stmts
+-                | otherwise = mkStmtTreeHeuristic stmts
+-  traceRn "rearrangeForADo" (ppr stmt_tree)
++  reorder_ado <- goptM Opt_ReorderCommutativeMonadsAdo
++  dflags <- getDynFlags
++  let n_clones_reorder = adoReorderNClones dflags
++
++  let mkStmtTree | optimal_ado = mkStmtTreeOptimal
++                 | otherwise = mkStmtTreeHeuristic
++  
++  let dummy_clones = replicate n_clones_reorder stmts
++  let stmt_trees = mkStmtTree stmts :| map mkStmtTree dummy_clones
++  mapM_ traceRnTree stmt_trees
++  let best_tree = minimumBy (comparing stmtTreeCost) stmt_trees
++
++  traceRn "rearrangeForADo" (ppr best_tree)
+   (return_name, _) <- lookupQualifiedDoName (HsDoStmt ctxt) returnMName
+   (pure_name, _)   <- lookupQualifiedDoName (HsDoStmt ctxt) pureAName
+   let monad_names = MonadNames { return_name = return_name
+                                , pure_name   = pure_name }
+-  stmtTreeToStmts monad_names ctxt stmt_tree [last] last_fvs
++  stmtTreeToStmts monad_names ctxt best_tree [last] last_fvs
+   where
+     (stmts,(last,last_fvs)) = findLast stmts0
+     findLast [] = error "findLast"
+     findLast [last] = ([],last)
+     findLast (x:xs) = (x:rest,last) where (rest,last) = findLast xs
++    traceRnTree :: ExprStmtTree -> TcRn ()
++    traceRnTree tree = traceRn "rearrangeForADoClone tree" (ppr tree)
+ 
+ -- | A tree of statements using a mixture of applicative and bind constructs.
+ data StmtTree a
+@@ -2084,6 +2097,15 @@ flattenStmtTree t = go t []
+ type ExprStmtTree = StmtTree (ExprLStmt GhcRn, FreeVars)
+ type Cost = Int
+ 
++-- | Calculate the cost of an ExprStmtTree, with a simple heuristic
++stmtTreeCost :: ExprStmtTree -> Cost
++stmtTreeCost (StmtTreeOne _) = 1
++stmtTreeCost (StmtTreeBind l r) = stmtTreeCost l + stmtTreeCost r
++stmtTreeCost (StmtTreeApplicative ts) = 
++  case ts of
++    [] -> 0
++    _  -> Partial.maximum (map stmtTreeCost ts)
++
+ -- | Turn a sequence of statements into an ExprStmtTree using a
+ -- heuristic algorithm.  /O(n^2)/
+ mkStmtTreeHeuristic :: [(ExprLStmt GhcRn, FreeVars)] -> ExprStmtTree
+-- 
+2.53.0
+
