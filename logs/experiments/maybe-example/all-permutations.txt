@@ -1,0 +1,119 @@
+
+== Todas las permutaciones validas del programa ==
+
+= do
+  x1 <- Just 10
+  x2 <- Just 5
+  x3 <- safeDiv x1 2
+  x4 <- Just (x2 + 15)
+  return (x3 + x4)
+
+rearrangeForADo final tree:
+  (StmtTreeBind
+     (StmtTreeApplicative
+        (StmtTreeOne (x1_a1S5 <- Just 10, {Just}))
+        (StmtTreeOne (x2_a1S6 <- Just 5, {Just})))
+     (StmtTreeApplicative
+        (StmtTreeOne (x3_a1S7 <- safeDiv x1_a1S5 2, {x1_a1S5, safeDiv}))
+        (StmtTreeOne (x4_a1S8 <- Just (x2_a1S6 + 15),
+                      {Just, x2_a1S6, +}))))
+  cost =  2
+
+----------------------------------------------------------------------------------------
+
+= do
+  x1 <- Just 10
+  x2 <- Just 5
+  x4 <- Just (x2 + 15)
+  x3 <- safeDiv x1 2
+  return (x3 + x4)
+
+rearrangeForADo final tree:
+  (StmtTreeBind
+     (StmtTreeApplicative
+        (StmtTreeOne (x1_a1S5 <- Just 10, {Just}))
+        (StmtTreeOne (x2_a1S6 <- Just 5, {Just})))
+     (StmtTreeApplicative
+        (StmtTreeOne (x4_a1S7 <- Just (x2_a1S6 + 15), {Just, x2_a1S6, +}))
+        (StmtTreeOne (x3_a1S8 <- safeDiv x1_a1S5 2, {x1_a1S5, safeDiv}))))
+  cost =  2
+
+----------------------------------------------------------------------------------------
+
+= do
+  x1 <- Just 10
+  x3 <- safeDiv x1 2
+  x2 <- Just 5
+  x4 <- Just (x2 + 15)
+  return (x3 + x4)
+
+rearrangeForADo final tree:
+  (StmtTreeApplicative
+     (StmtTreeBind
+        (StmtTreeOne (x1_a1S5 <- Just 10, {Just}))
+        (StmtTreeOne (x3_a1S6 <- safeDiv x1_a1S5 2, {x1_a1S5, safeDiv})))
+     (StmtTreeBind
+        (StmtTreeOne (x2_a1S7 <- Just 5, {Just}))
+        (StmtTreeOne (x4_a1S8 <- Just (x2_a1S7 + 15),
+                      {Just, x2_a1S7, +}))))
+  cost =  2
+
+----------------------------------------------------------------------------------------
+
+= do
+  x2 <- Just 5
+  x1 <- Just 10
+  x3 <- safeDiv x1 2
+  x4 <- Just (x2 + 15)
+  return (x3 + x4)
+
+rearrangeForADo final tree:
+  (StmtTreeBind
+     (StmtTreeApplicative
+        (StmtTreeOne (x2_a1S5 <- Just 5, {Just}))
+        (StmtTreeOne (x1_a1S6 <- Just 10, {Just})))
+     (StmtTreeApplicative
+        (StmtTreeOne (x3_a1S7 <- safeDiv x1_a1S6 2, {x1_a1S6, safeDiv}))
+        (StmtTreeOne (x4_a1S8 <- Just (x2_a1S5 + 15),
+                      {Just, x2_a1S5, +}))))
+  cost =  2
+
+----------------------------------------------------------------------------------------
+
+= do
+  x2 <- Just 5
+  x1 <- Just 10
+  x4 <- Just (x2 + 15)
+  x3 <- safeDiv x1 2
+  return (x3 + x4)
+
+rearrangeForADo final tree:
+  (StmtTreeBind
+     (StmtTreeApplicative
+        (StmtTreeOne (x2_a1S5 <- Just 5, {Just}))
+        (StmtTreeOne (x1_a1S6 <- Just 10, {Just})))
+     (StmtTreeApplicative
+        (StmtTreeOne (x4_a1S7 <- Just (x2_a1S5 + 15), {Just, x2_a1S5, +}))
+        (StmtTreeOne (x3_a1S8 <- safeDiv x1_a1S6 2, {x1_a1S6, safeDiv}))))
+  cost =  2
+
+----------------------------------------------------------------------------------------
+
+= do
+  x2 <- Just 5
+  x4 <- Just (x2 + 15)
+  x1 <- Just 10
+  x3 <- safeDiv x1 2
+  return (x3 + x4)
+
+rearrangeForADo final tree:
+  (StmtTreeApplicative
+     (StmtTreeBind
+        (StmtTreeOne (x2_a1S5 <- Just 5, {Just}))
+        (StmtTreeOne (x4_a1S6 <- Just (x2_a1S5 + 15), {Just, x2_a1S5, +})))
+     (StmtTreeBind
+        (StmtTreeOne (x1_a1S7 <- Just 10, {Just}))
+        (StmtTreeOne (x3_a1S8 <- safeDiv x1_a1S7 2, {x1_a1S7, safeDiv}))))
+  cost =  2
+
+----------------------------------------------------------------------------------------

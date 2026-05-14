@@ -1,5 +1,3 @@
-{-# LANGUAGE ApplicativeDo #-}
-
 module Main (main) where
 
 safeDiv :: Int -> Int -> Maybe Int
@@ -8,10 +6,11 @@ safeDiv n d = Just (n `div` d)
 
 mixedDependencyExample :: Maybe Int
 mixedDependencyExample = do
-  x <- Just 84
-  y <- safeDiv x 2
-  z <- Just 5
-  pure (x + y + z)
+  x2 <- Just 5
+  x1 <- Just 10
+  x4 <- Just (x2 + 15)
+  x3 <- safeDiv x1 2
+  return (x3 + x4)
 
 main :: IO ()
 main = print mixedDependencyExample

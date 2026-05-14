@@ -1,0 +1,14 @@
+packages: .
+
+with-compiler: /workspaces/tt-repo/vendor/ghc/_build/stage1/bin/ghc
+with-hc-pkg: /workspaces/tt-repo/vendor/ghc/_build/stage1/bin/ghc-pkg
+
+package *
+  ghc-options: -ddump-rn-trace -XApplicativeDo
+
+store-dir: .cabal-store-mod-ghc
+
+jobs: 1
+optimization: 0
+tests: False
+benchmarks: False
