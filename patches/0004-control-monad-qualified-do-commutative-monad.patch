@@ -1,0 +1,196 @@
+From d6625453ecd1edef105348696b88e99bd02c2049 Mon Sep 17 00:00:00 2001
+From: estebanrb22 <esteban.romero.b@ug.uchile.cl>
+Date: Fri, 5 Jun 2026 15:41:29 -0400
+Subject: [PATCH] feat(Libraries/Control/Monad/CommutativeDo.hs): Added an
+ quialified-do new module, this is called CommutativeDo.hs and adds a new type
+ of monad called CommutativeMonad, it is used to discriminate the reordering
+ of statements into differents monads
+
+---
+ compiler/GHC/Rename/Expr.hs                   | 24 +++++--
+ libraries/base/base.cabal.in                  |  1 +
+ .../base/src/Control/Monad/CommutativeDo.hs   | 23 +++++++
+ libraries/ghc-internal/ghc-internal.cabal.in  |  1 +
+ .../Internal/Control/Monad/CommutativeDo.hs   | 64 +++++++++++++++++++
+ 5 files changed, 109 insertions(+), 4 deletions(-)
+ create mode 100644 libraries/base/src/Control/Monad/CommutativeDo.hs
+ create mode 100644 libraries/ghc-internal/src/GHC/Internal/Control/Monad/CommutativeDo.hs
+
+diff --git a/compiler/GHC/Rename/Expr.hs b/compiler/GHC/Rename/Expr.hs
+index e127b6911a..d08a151eec 100644
+--- a/compiler/GHC/Rename/Expr.hs
++++ b/compiler/GHC/Rename/Expr.hs
+@@ -75,7 +75,7 @@ import qualified GHC.LanguageExtensions as LangExt
+ 
+ import Control.Monad
+ import qualified Data.Foldable as Partial (maximum)
+-import Data.List (unzip4, find)
++import Data.List (unzip4)
+ import Data.List.NonEmpty ( NonEmpty(..), head, init, last, nonEmpty, scanl, tail )
+ import Control.Arrow (first)
+ import Data.Ord
+@@ -1428,6 +1428,16 @@ lookupQualifiedDoStmtName ctxt n
+       Just modName ->
+         first mkRnSyntaxExpr <$> lookupNameWithQualifier n modName
+ 
++commutativeDoMarkerOcc = mkVarOccFS (fsLit "__commutative_do__")
++
++isCommutativeQualifiedDo :: HsDoFlavour -> RnM Bool
++isCommutativeQualifiedDo (DoExpr (Just modName)) =
++  isJust <$> lookupOccRn_maybe (mkRdrQual modName commutativeDoMarkerOcc)
++isCommutativeQualifiedDo (MDoExpr (Just modName)) =
++  isJust <$> lookupOccRn_maybe (mkRdrQual modName commutativeDoMarkerOcc)
++isCommutativeQualifiedDo _ =
++  return False
++
+ lookupStmtName :: HsStmtContextRn -> Name -> RnM (SyntaxExpr GhcRn, FreeVars)
+ -- Like lookupSyntax, but respects contexts
+ lookupStmtName ctxt n
+@@ -2051,12 +2061,18 @@ rearrangeForApplicativeDo ctxt [(one,_)] = do
+ rearrangeForApplicativeDo ctxt stmts0 = do
+   optimal_ado <- goptM Opt_OptimalApplicativeDo
+   reorder_ado <- goptM Opt_ReorderCommutativeMonadsAdo
++  commutative_do <- isCommutativeQualifiedDo ctxt
+ 
+-  dflags <- getDynFlags
+-  let n_clones_reorder = adoReorderNClones dflags
++  let should_reorder = reorder_ado && commutative_do
++
++  traceRn "rearrangeForADo-commutative-do" $
++    vcat [ text "reorder-flag      =" <+> ppr reorder_ado
++         , text "commutative-do    =" <+> ppr commutative_do
++         , text "should-reorder    =" <+> ppr should_reorder
++         ]
+ 
+   stmts_reorders <-
+-    if reorder_ado
++    if should_reorder
+       then do
+         let stmtsDepsGraph = buildStmtsDependencyGraph stmts
+         traceStmtDependencyGraph stmtsDepsGraph
+diff --git a/libraries/base/base.cabal.in b/libraries/base/base.cabal.in
+index abef9c0fe2..bfea3ca078 100644
+--- a/libraries/base/base.cabal.in
++++ b/libraries/base/base.cabal.in
+@@ -80,6 +80,7 @@ Library
+         , Control.Exception.Base
+         , Control.Exception.Context
+         , Control.Monad
++        , Control.Monad.CommutativeDo
+         , Control.Monad.Fail
+         , Control.Monad.Fix
+         , Control.Monad.Instances
+diff --git a/libraries/base/src/Control/Monad/CommutativeDo.hs b/libraries/base/src/Control/Monad/CommutativeDo.hs
+new file mode 100644
+index 0000000000..5433750ed6
+--- /dev/null
++++ b/libraries/base/src/Control/Monad/CommutativeDo.hs
+@@ -0,0 +1,23 @@
++{-# LANGUAGE Safe #-}
++
++-- |
++-- Module      :  Control.Monad.CommutativeDo
++--
++-- Opt-in operations for commutative do-notation under @QualifiedDo@.
++-- Import this module qualified and write @CD.do@ to mark a do-block as
++-- eligible for the experimental commutative ApplicativeDo reordering.
++
++module Control.Monad.CommutativeDo
++  ( CommutativeMonad
++  , __commutative_do__
++  , (>>=)
++  , (>>)
++  , return
++  , pure
++  , fmap
++  , (<*>)
++  , join
++  , fail
++  ) where
++
++import GHC.Internal.Control.Monad.CommutativeDo
+diff --git a/libraries/ghc-internal/ghc-internal.cabal.in b/libraries/ghc-internal/ghc-internal.cabal.in
+index 51614380ca..edc0460ef6 100644
+--- a/libraries/ghc-internal/ghc-internal.cabal.in
++++ b/libraries/ghc-internal/ghc-internal.cabal.in
+@@ -131,6 +131,7 @@ Library
+         GHC.Internal.Control.Exception
+         GHC.Internal.Control.Exception.Base
+         GHC.Internal.Control.Monad
++        GHC.Internal.Control.Monad.CommutativeDo
+         GHC.Internal.Control.Monad.Fail
+         GHC.Internal.Control.Monad.Fix
+         GHC.Internal.Control.Monad.IO.Class
+diff --git a/libraries/ghc-internal/src/GHC/Internal/Control/Monad/CommutativeDo.hs b/libraries/ghc-internal/src/GHC/Internal/Control/Monad/CommutativeDo.hs
+new file mode 100644
+index 0000000000..f2acfb9c99
+--- /dev/null
++++ b/libraries/ghc-internal/src/GHC/Internal/Control/Monad/CommutativeDo.hs
+@@ -0,0 +1,64 @@
++{-# LANGUAGE Trustworthy #-}
++{-# LANGUAGE NoImplicitPrelude #-}
++
++-----------------------------------------------------------------------------
++-- |
++-- Module      :  GHC.Internal.Control.Monad.CommutativeDo
++--
++-- Internal support for opt-in commutative do-notation.  User-facing code
++-- should import "Control.Monad.CommutativeDo" from @base@ instead.
++
++module GHC.Internal.Control.Monad.CommutativeDo
++  ( CommutativeMonad
++  , __commutative_do__
++  , (>>=)
++  , (>>)
++  , return
++  , pure
++  , fmap
++  , (<*>)
++  , join
++  , fail
++  ) where
++
++import qualified GHC.Internal.Base as B
++import qualified GHC.Internal.Control.Monad.Fail as Fail
++
++-- | Marker class for monads whose independent effects may be reordered by
++-- the experimental commutative-do ApplicativeDo extension.
++--
++-- This class is a programmer assertion: GHC does not prove commutativity.
++class B.Monad m => CommutativeMonad m
++
++-- | Marker looked up by the renamer for @QualifiedDo@ blocks.  A block written
++-- as @M.do@ is eligible for commutative reordering only when @M@ exports this
++-- binding and the corresponding compiler flag is enabled.
++__commutative_do__ :: ()
++__commutative_do__ = ()
++
++infixl 1 >>=, >>
++infixl 4 <*>
++
++(>>=) :: CommutativeMonad m => m a -> (a -> m b) -> m b
++(>>=) = (B.>>=)
++
++(>>) :: CommutativeMonad m => m a -> m b -> m b
++(>>) = (B.>>)
++
++return :: CommutativeMonad m => a -> m a
++return = B.pure
++
++pure :: CommutativeMonad m => a -> m a
++pure = B.pure
++
++fmap :: CommutativeMonad m => (a -> b) -> m a -> m b
++fmap = B.fmap
++
++(<*>) :: CommutativeMonad m => m (a -> b) -> m a -> m b
++(<*>) = (B.<*>)
++
++join :: CommutativeMonad m => m (m a) -> m a
++join mma = mma >>= B.id
++
++fail :: (CommutativeMonad m, Fail.MonadFail m) => B.String -> m a
++fail = Fail.fail
+-- 
+2.53.0
+

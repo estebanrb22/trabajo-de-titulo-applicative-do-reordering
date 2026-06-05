@@ -134,7 +134,7 @@ raw-logs: ## Crea logs con la salida completa de GHC: make raw-logs <input-file>
 		exit 1; \
 	fi; \
 	mkdir -p "$$(dirname "$$log_file")" && \
-	./vendor/ghc/_build/stage1/bin/ghc -ddump-rn-trace -XApplicativeDo -fno-code "$$input_file" | tee "$$log_file"
+	./vendor/ghc/_build/stage1/bin/ghc -ddump-rn-trace -XApplicativeDo -freorder-commutative-monads-ado -fno-code "$$input_file" | tee "$$log_file"
 
 renamer-logs: ## Crea logs con el arbol de Statements: make renamer-logs <input-file> <output-log-file>
 	@input_file="$(word 2,$(MAKECMDGOALS))"; \
