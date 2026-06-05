@@ -6,7 +6,8 @@ ARG_TARGETS := \
 	cabal-renamer-logs \
 	raw-logs \
 	renamer-logs \
-	all-orders-logs
+	all-orders-logs \
+	run-permutations
 
 ifneq ($(filter $(ARG_TARGETS),$(firstword $(MAKECMDGOALS))),)
 EXTRA_GOALS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
@@ -196,6 +197,40 @@ all-orders-logs: ## Crea logs con todas las permutaciones de Statements: make re
 		f="$${files[$$i]}"; \
 		$(MAKE) --no-print-directory -- renamer-logs "$$f" "$$log_file_abs" -concat; \
 		printf -- '\n----------------------------------------------------------------------------------------\n' | tee -a "$$log_file_abs"; \
+	done
+
+run-permutations: ## Compila y ejecuta todas las permutaciones: make run-permutations-bin <input-dir> <output-dir>
+	@input_dir="$(word 2,$(MAKECMDGOALS))"; \
+	output_dir="$(word 3,$(MAKECMDGOALS))"; \
+	if [ -z "$$input_dir" ] || [ -z "$$output_dir" ]; then \
+		echo "Uso: make run-permutations-bin <input-dir> <output-dir>"; \
+		exit 1; \
+	fi; \
+	if [[ "$$input_dir" = /* ]]; then \
+		input_dir_abs="$$input_dir"; \
+	else \
+		input_dir_abs="$$(pwd)/$$input_dir"; \
+	fi; \
+	if [[ "$$output_dir" = /* ]]; then \
+		output_dir_abs="$$output_dir"; \
+	else \
+		output_dir_abs="$$(pwd)/$$output_dir"; \
+	fi; \
+	mkdir -p "$$output_dir_abs"; \
+	permutations=("$$input_dir_abs"/*.hs); \
+	for f in "$${permutations[@]}"; do \
+		base="$$(basename "$$f" .hs)"; \
+		out_bin="$$output_dir_abs/$$base"; \
+		echo "[COMPILAR] $$f -> $$out_bin"; \
+		./vendor/ghc/_build/stage1/bin/ghc -O0 -fforce-recomp "$$f" -o "$$out_bin"; \
+	done; \
+	echo "== Ejecutando binarios =="; \
+	permutations_bins=("$$output_dir_abs"/*); \
+	for b in "$${permutations_bins[@]}"; do \
+		if [ -x "$$b" ] && [ -f "$$b" ]; then \
+			echo "[EJECUTAR] $$b"; \
+			"$$b"; \
+		fi; \
 	done
 
 ghc-quick: ## Compilar y buildear GHC modificado

@@ -72,4 +72,3 @@ make reproduce
 - `make cabal-renamer-logs <project-dir> <output-log-file>`: extrae el bloque `do ... return`, ejecuta `cabal build` y guarda trazas del renamer.
 - `make renamer-logs <input-file> <output-log-file> [-concat]`: compila con `./vendor/ghc/_build/stage1/bin/ghc -ddump-rn-trace -XApplicativeDo -fno-code` y guarda el arbol final de `rearrangeForADo`.
 - `make all-orders-logs <program-dir> <output-log-file>`: genera permutaciones validas con `experiments/build_precedence_graph_files.py` y concatena logs para cada permutacion.
-```

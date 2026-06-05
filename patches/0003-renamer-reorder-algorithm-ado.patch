@@ -1,0 +1,271 @@
+From eb44c676eb0731d0094e794634f0e7d246983e77 Mon Sep 17 00:00:00 2001
+From: estebanrb22 <esteban.romero.b@ug.uchile.cl>
+Date: Fri, 5 Jun 2026 14:42:36 -0400
+Subject: [PATCH] feat(Rename/Expr): Added a statements precedence graph
+ implementation and reorder ado algorithm
+
+---
+ compiler/GHC/Rename/Expr.hs | 215 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 210 insertions(+), 5 deletions(-)
+
+diff --git a/compiler/GHC/Rename/Expr.hs b/compiler/GHC/Rename/Expr.hs
+index 405ee523af..e127b6911a 100644
+--- a/compiler/GHC/Rename/Expr.hs
++++ b/compiler/GHC/Rename/Expr.hs
+@@ -68,12 +68,14 @@ import GHC.Utils.Outputable as Outputable
+ import GHC.Data.FastString
+ import GHC.Data.List.SetOps ( removeDupsOn )
+ import GHC.Data.Maybe
++import qualified GHC.Data.Graph.Directed as DG
++import qualified Data.IntMap.Strict as IM
+ 
+ import qualified GHC.LanguageExtensions as LangExt
+ 
+ import Control.Monad
+ import qualified Data.Foldable as Partial (maximum)
+-import Data.List (unzip4)
++import Data.List (unzip4, find)
+ import Data.List.NonEmpty ( NonEmpty(..), head, init, last, nonEmpty, scanl, tail )
+ import Control.Arrow (first)
+ import Data.Ord
+@@ -2049,16 +2051,34 @@ rearrangeForApplicativeDo ctxt [(one,_)] = do
+ rearrangeForApplicativeDo ctxt stmts0 = do
+   optimal_ado <- goptM Opt_OptimalApplicativeDo
+   reorder_ado <- goptM Opt_ReorderCommutativeMonadsAdo
++
+   dflags <- getDynFlags
+   let n_clones_reorder = adoReorderNClones dflags
+ 
++  stmts_reorders <-
++    if reorder_ado
++      then do
++        let stmtsDepsGraph = buildStmtsDependencyGraph stmts
++        traceStmtDependencyGraph stmtsDepsGraph
++        let validStmtsPerms = enumerateSemanticTopSortsBounded stmtsDepsGraph
++        traceTopSortCandidates validStmtsPerms
++        return (map depStmtInfosToStmtSeq validStmtsPerms)
++      else
++        return []
++
++  let stmts_candidates = if null stmts_reorders
++                       then [stmts]
++                       else stmts_reorders
++
+   let mkStmtTree | optimal_ado = mkStmtTreeOptimal
+                  | otherwise = mkStmtTreeHeuristic
+   
+-  let dummy_clones = replicate n_clones_reorder stmts
+-  let stmt_trees = mkStmtTree stmts :| map mkStmtTree dummy_clones
+-  mapM_ (traceRnTree "rearrangeForADo-Clone resulting tree:") stmt_trees
+-  let best_tree = minimumBy (comparing stmtTreeCost) stmt_trees
++  let stmt_trees = map mkStmtTree stmts_candidates
++  mapM_ (traceRnTree "rearrangeForADo-resulting tree:") stmt_trees
++
++  let best_tree = case nonEmpty stmt_trees of
++                Just ts -> minimumBy (comparing stmtTreeCost) ts
++                Nothing -> panic "rearrangeForApplicativeDo: empty stmt_trees"
+ 
+   -- traceRn "rearrangeForADo" (ppr best_tree)
+   traceRnTree "rearrangeForADo final tree:" best_tree
+@@ -2072,6 +2092,7 @@ rearrangeForApplicativeDo ctxt stmts0 = do
+     findLast [] = error "findLast"
+     findLast [last] = ([],last)
+     findLast (x:xs) = (x:rest,last) where (rest,last) = findLast xs
++
+     traceRnTree :: String -> ExprStmtTree -> TcRn ()
+     traceRnTree label tree =
+       traceRn label
+@@ -2111,6 +2132,190 @@ stmtTreeCost (StmtTreeApplicative ts) =
+     [] -> 0
+     _  -> Partial.maximum (map stmtTreeCost ts)
+ 
++-- | Data types to modelate a graph of dependencies between statements, where 
++-- nodes are statements and the edges are precedence constraints derived from RAW/WAR/WAW.
++data StmtDepInfo = StmtDepInfo
++  { sdiIndex       :: !Int
++  , sdiStmt        :: !(ExprLStmt GhcRn)
++  , sdiFvsOriginal :: !FreeVars
++  , sdiReadsLocal  :: !FreeVars
++  , sdiWritesLocal :: !FreeVars
++  }
++
++instance Outputable StmtDepInfo where
++  ppr StmtDepInfo {..} =
++    vcat [ text "stmt-index   =" <+> ppr sdiIndex
++         , text "stmt         =" <+> ppr sdiStmt
++         , text "fvs-original =" <+> ppr sdiFvsOriginal
++         , text "reads-local  =" <+> ppr sdiReadsLocal
++         , text "writes-local =" <+> ppr sdiWritesLocal
++         ]
++
++data StmtPairDeps = StmtPairDeps
++  { spdRAW :: !FreeVars
++  , spdWAR :: !FreeVars
++  , spdWAW :: !FreeVars
++  }
++
++type StmtDepNode = DG.Node Int StmtDepInfo
++type StmtDepGraph = DG.Graph StmtDepNode
++
++-- | Functions to get all dependencies variants between two statements
++depRAW :: StmtDepInfo -> StmtDepInfo -> FreeVars
++depRAW si sj = sdiWritesLocal si `intersectNameSet` sdiReadsLocal sj
++
++depWAR :: StmtDepInfo -> StmtDepInfo -> FreeVars
++depWAR si sj = sdiReadsLocal si `intersectNameSet` sdiWritesLocal sj
++
++depWAW :: StmtDepInfo -> StmtDepInfo -> FreeVars
++depWAW si sj = sdiWritesLocal si `intersectNameSet` sdiWritesLocal sj
++
++depKinds :: StmtDepInfo -> StmtDepInfo -> StmtPairDeps
++depKinds si sj =
++  StmtPairDeps
++    { spdRAW = depRAW si sj
++    , spdWAR = depWAR si sj
++    , spdWAW = depWAW si sj
++    }
++
++hasDependency :: StmtPairDeps -> Bool
++hasDependency StmtPairDeps {..} =
++  not (isEmptyNameSet spdRAW
++    && isEmptyNameSet spdWAR
++    && isEmptyNameSet spdWAW)
++
++-- Precedence graph construction
++computeStmtsInfo :: [(ExprLStmt GhcRn, FreeVars)] -> [StmtDepInfo]
++computeStmtsInfo stmts = zipWith mkStmtInfo [1 ..] stmts
++  where
++    all_writes =
++      mkNameSet (concatMap (collectStmtBinders CollNoDictBinders . unLoc . fst) stmts)
++
++    mkStmtInfo i (stmt, fvs) = StmtDepInfo
++      { sdiIndex       = i
++      , sdiStmt        = stmt
++      , sdiFvsOriginal = fvs
++      , sdiReadsLocal  = fvs `intersectNameSet` all_writes
++      , sdiWritesLocal = mkNameSet (collectStmtBinders CollNoDictBinders (unLoc stmt))
++      }
++
++buildStmtDepNodes :: [StmtDepInfo] -> [StmtDepNode]
++buildStmtDepNodes infos = map mkNode infos
++  where
++    mkNode si = DG.DigraphNode
++      { DG.node_payload = si
++      , DG.node_key = sdiIndex si
++      , DG.node_dependencies =
++          [ sdiIndex sj
++          | sj <- infos
++          , sdiIndex si < sdiIndex sj
++          , hasDependency (depKinds si sj)
++          ]
++      }
++
++buildStmtsDependencyGraph :: [(ExprLStmt GhcRn, FreeVars)] -> StmtDepGraph
++buildStmtsDependencyGraph stmts = DG.graphFromEdgedVerticesOrd $ buildStmtDepNodes $ computeStmtsInfo stmts
++
++traceStmtDependencyGraph :: StmtDepGraph -> TcRn ()
++traceStmtDependencyGraph graph = do
++  traceRn "rearrangeForADo-StmtsDependencyGraph" empty
++  mapM_ traceEdge real_edges
++    where
++      real_edges :: [(StmtDepNode, StmtDepNode)]
++      real_edges =
++        [ (src, dst)
++        | src <- DG.verticesG graph
++        , dst <- DG.outgoingG graph src
++        ]
++      traceEdge :: (StmtDepNode, StmtDepNode) -> TcRn ()
++      traceEdge (src, dst) =
++        let si = DG.node_payload src
++            sj = DG.node_payload dst
++            deps = depKinds si sj
++        in traceRn "rearrangeForADo-dep" $
++             vcat [ text "pair           =" <+> ppr (sdiIndex si) <+> text " -> " <+> ppr (sdiIndex sj)
++                  , text "RAW            =" <+> ppr (spdRAW deps)
++                  , text "WAR            =" <+> ppr (spdWAR deps)
++                  , text "WAW            =" <+> ppr (spdWAW deps)
++                  ]
++
++type IndegreeMap = IM.IntMap Int
++
++enumerateSemanticTopSortsBounded :: StmtDepGraph -> [[StmtDepInfo]]
++enumerateSemanticTopSortsBounded depGraph
++  | IM.null stmtsNodesIntMap = []
++  | otherwise  = go indegree0 [] []
++  where
++    stmtsNodes :: [StmtDepNode]
++    stmtsNodes = DG.verticesG depGraph
++
++    depGraphT :: StmtDepGraph
++    depGraphT = DG.transposeG depGraph
++
++    stmtsNodesIntMap :: IM.IntMap StmtDepNode
++    stmtsNodesIntMap = IM.fromList [ (DG.node_key n, n) | n <- stmtsNodes ]
++
++    stmtsNodesIndex :: [Int]
++    stmtsNodesIndex = IM.keys stmtsNodesIntMap
++
++    getStmtNode :: Int -> StmtDepNode
++    getStmtNode k =
++      case IM.lookup k stmtsNodesIntMap of
++        Just n  -> n
++        Nothing -> panic "enumerateSemanticTopSortsBounded: missing node key"
++
++    succStmtsNodes :: Int -> [Int]
++    succStmtsNodes k =
++      map DG.node_key (DG.outgoingG depGraph (getStmtNode k))
++
++    predStmtsNodes :: Int -> [Int]
++    predStmtsNodes k =
++      map DG.node_key (DG.outgoingG depGraphT (getStmtNode k))
++
++    indegree0 :: IndegreeMap
++    indegree0 =
++      IM.fromList [ (k, length (predStmtsNodes k)) | k <- stmtsNodesIndex ]
++
++    indegOf :: Int -> IndegreeMap -> Int
++    indegOf k indeg = IM.findWithDefault 0 k indeg
++
++    decIndeg :: Int -> IndegreeMap -> IndegreeMap
++    decIndeg target indeg =
++      IM.adjust (\n -> n - 1) target indeg
++
++    go :: IndegreeMap -> [Int] -> [StmtDepNode] -> [[StmtDepInfo]]
++    go indeg emitted permAcc
++      | length emitted == length stmtsNodesIndex
++      = [map DG.node_payload (reverse permAcc)]
++      | otherwise
++      = concatMap step indexToEmit
++      where
++        indexToEmit =
++          [ k
++          | k <- stmtsNodesIndex
++          , k `notElem` emitted
++          , indegOf k indeg == 0
++          ]
++        step k =
++          let emitted' = k : emitted
++              indeg'   = foldl' (flip decIndeg) indeg (succStmtsNodes k)
++              permAcc'     = getStmtNode k : permAcc
++          in go indeg' emitted' permAcc'
++
++depStmtInfosToStmtSeq :: [StmtDepInfo] -> [(ExprLStmt GhcRn, FreeVars)]
++depStmtInfosToStmtSeq = map (\info -> (sdiStmt info, sdiFvsOriginal info))
++
++traceTopSortCandidates :: [[StmtDepInfo]] -> TcRn ()
++traceTopSortCandidates candidates =
++  mapM_ traceOne (zip [1 :: Int ..] candidates)
++  where
++    traceOne (k, xs) =
++      traceRn "rearrangeForADo-permutation" $
++        vcat [ text "candidate   = " <+> ppr k
++             , text "index order = " <+> ppr (map sdiIndex xs)
++             , text "statements  = " <+> ppr (map sdiStmt xs)
++             ]
++
+ -- | Turn a sequence of statements into an ExprStmtTree using a
+ -- heuristic algorithm.  /O(n^2)/
+ mkStmtTreeHeuristic :: [(ExprLStmt GhcRn, FreeVars)] -> ExprStmtTree
+-- 
+2.53.0
+

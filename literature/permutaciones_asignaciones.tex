@@ -1,0 +1,544 @@
+\documentclass[letterpaper,oneside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-noindentfirst]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[letterpaper,margin=2.5cm]{geometry}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs,array,longtable}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{listings}
+\usepackage{courier}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black,citecolor=blue!50!black,pdftitle={Permutaciones semanticamente validas de una secuencia de asignaciones puras},pdfauthor={OpenAI}}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\onehalfspacing
+
+\definecolor{accent}{HTML}{204060}
+\definecolor{lightaccent}{HTML}{EEF3F8}
+\titleformat{\section}{\Large\bfseries\color{accent}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{accent}}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{accent}}{\thesubsubsection}{0.6em}{}
+
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textit{Permutaciones semánticamente válidas}}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtheorem{definition}{Definición}[section]
+\newtheorem{theorem}[definition]{Teorema}
+\newtheorem{lemma}[definition]{Lema}
+\newtheorem{proposition}[definition]{Proposición}
+\newtheorem{corollary}[definition]{Corolario}
+\theoremstyle{remark}
+\newtheorem{example}[definition]{Ejemplo}
+\newtheorem{remark}[definition]{Observación}
+
+\newcommand{\Vars}{\mathit{Vars}}
+\newcommand{\Val}{\mathit{Val}}
+\newcommand{\Var}{\mathit{Var}}
+\newcommand{\reads}[1]{R_{#1}}
+\newcommand{\writes}[1]{W_{#1}}
+\newcommand{\sem}[1]{\left[\!\left[ #1 \right]\!\right]}
+
+\lstset{
+  basicstyle=\small\ttfamily,
+  frame=single,
+  backgroundcolor=\color{lightaccent},
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  xleftmargin=0.5em,
+  xrightmargin=0.5em
+}
+
+\begin{document}
+
+\begin{titlepage}
+  \centering
+  \vspace*{3.0cm}
+  {\huge\bfseries Permutaciones semánticamente válidas\\[0.25em] de una secuencia de asignaciones puras\par}
+  \vspace{1.0cm}
+  {\large Un enfoque mediante dependencias, DAGs y ordenamientos topológicos\par}
+  \vspace{1.8cm}
+  \begin{minipage}{0.86\textwidth}
+  \colorbox{lightaccent}{\parbox{0.94\textwidth}{\vspace{0.5em}
+  Este artículo presenta, de principio a fin, una solución exacta ---bajo hipótesis estándar de pureza y ausencia de aliasing--- al problema de enumerar todas las permutaciones de una secuencia de asignaciones que preservan la semántica del programa. Se definen formalmente las nociones de lectura y escritura, se introducen las dependencias RAW, WAR y WAW, se construye el grafo de precedencia, se demuestra que es acíclico y se prueba que las permutaciones válidas son exactamente sus ordenamientos topológicos.\vspace{0.5em}}}
+  \end{minipage}
+  \vfill
+  {\large Abril de 2026\par}
+\end{titlepage}
+
+\begin{abstract}
+Dada una secuencia lineal de asignaciones de la forma $x := e$, donde los lados derechos son puros, deterministas y sin efectos laterales, estudiamos el problema de caracterizar todas las permutaciones que preservan la semántica del programa. Mostramos que el problema se reduce a extraer un conjunto de restricciones de precedencia a partir de los conjuntos de variables leídas y escritas por cada instrucción. Dichas restricciones inducen un grafo dirigido acíclico; las secuencias semánticamente válidas son exactamente los ordenamientos topológicos de ese grafo. El desarrollo es autocontenido: fija el modelo semántico, presenta los algoritmos, incluye pruebas de corrección y recorre ejemplos completos.
+\end{abstract}
+
+\section{Introducción}
+
+Considérese una secuencia de asignaciones
+\[
+  s_1; s_2; \dots; s_n,
+\]
+donde cada instrucción tiene la forma
+\[
+  s_i \equiv x_i := e_i.
+\]
+La pregunta que motiva este trabajo es la siguiente:
+
+\begin{quote}
+\emph{¿Cómo generar todas las permutaciones de $(s_1,\dots,s_n)$ que preservan la semántica del programa?}
+\end{quote}
+
+La intuición es simple. Dos instrucciones no pueden intercambiarse libremente si una produce, consume o sobrescribe información relevante para la otra. Esa intuición se formaliza mediante tres clases de dependencias: \emph{read-after-write} (RAW), \emph{write-after-read} (WAR) y \emph{write-after-write} (WAW). A partir de ellas se obtiene un orden parcial sobre las instrucciones, representado como un DAG. Las permutaciones válidas resultan ser exactamente las extensiones lineales de ese orden parcial.
+
+El interés del problema va más allá de este caso puntual. El mismo patrón conceptual aparece en scheduling, compilación, optimización, análisis de dependencias y transformaciones semánticamente seguras.
+
+\section{Hipótesis del modelo}
+
+Trabajaremos bajo las siguientes hipótesis:
+\begin{enumerate}[label=(H\arabic*),leftmargin=3.2em]
+  \item Cada instrucción es una asignación simple $x := e$.
+  \item El lado derecho $e$ es puro, determinista y sin efectos laterales.
+  \item No hay aliasing, punteros, arrays mutables, referencias compartidas, E/S, excepciones observables ni concurrencia.
+  \item La semántica observable del programa es el estado final de las variables.
+\end{enumerate}
+
+Bajo estas suposiciones, la interacción entre instrucciones queda completamente descrita por las variables que cada una \emph{lee} y \emph{escribe}. Si alguna de estas hipótesis se abandona, el análisis puede requerir nociones adicionales de dependencia, por ejemplo sobre memoria compartida o efectos observables.
+
+\section{Lenguaje y semántica}
+
+\subsection{Variables, estados y expresiones}
+
+Sea $\Var$ un conjunto de variables y $\Val$ un dominio de valores. Un \emph{estado} es una función
+\[
+  \sigma : \Var \to \Val
+\]
+que asigna un valor a cada variable.
+
+Dada una expresión $e$, denotaremos por
+\[
+  \sem{e}_\sigma
+\]
+su evaluación en el estado $\sigma$. Como las expresiones son puras, evaluarlas no modifica el estado y su resultado depende únicamente de los valores de las variables libres que aparecen en $e$.
+
+\subsection{Semántica de una asignación}
+
+La ejecución de una asignación
+\[
+  x := e
+\]
+sobre un estado $\sigma$ produce el estado $\sigma'$ definido por
+\[
+  \sigma'(x) = \sem{e}_\sigma,
+  \qquad
+  \sigma'(y) = \sigma(y) \text{ para todo } y \neq x.
+\]
+
+\subsection{Semántica de una secuencia}
+
+Una secuencia
+\[
+  s_1;\dots; s_n
+\]
+se interpreta por composición de transformaciones de estado. Dos secuencias serán \emph{semánticamente equivalentes} si, para todo estado inicial $\sigma$, producen exactamente el mismo estado final.
+
+\section{Formulación del problema}
+
+Sea
+\[
+  S = (s_1,\dots,s_n)
+\]
+una secuencia fija de instrucciones. Una \emph{permutación} de $S$ es una reordenación
+\[
+  S' = (s_{\pi(1)},\dots,s_{\pi(n)})
+\]
+donde $\pi$ es una permutación de $\{1,\dots,n\}$.
+
+\begin{definition}[Permutación semánticamente válida]
+Diremos que $S'$ preserva la semántica de $S$ si, para todo estado inicial $\sigma$, la ejecución de $S$ y la ejecución de $S'$ producen el mismo estado final.
+\end{definition}
+
+Nuestro objetivo es caracterizar y enumerar \emph{todas} las permutaciones semánticamente válidas.
+
+\section{Conjuntos de lectura y escritura}
+
+A cada instrucción
+\[
+  s_i \equiv x_i := e_i
+\]
+asociaremos dos conjuntos fundamentales:
+\[
+  \writes{i} = \{x_i\},
+  \qquad
+  \reads{i} = \Vars(e_i),
+\]
+donde $\Vars(e_i)$ denota el conjunto de variables que aparecen en el lado derecho $e_i$.
+
+Intuitivamente, $\writes{i}$ registra la información que la instrucción produce, mientras que $\reads{i}$ registra la información que consume. Bajo las hipótesis del modelo, estos conjuntos bastan para detectar interferencias semánticamente relevantes entre pares de instrucciones.
+
+\section{Dependencias de datos y de salida}
+
+Sean $s_i$ y $s_j$ dos instrucciones tales que $i<j$. Diremos que el orden relativo entre ellas es obligatorio si al intercambiarlas podría cambiar el estado final del programa. Hay tres casos canónicos.
+
+\subsection{Dependencia RAW}
+
+La dependencia \emph{read-after-write} aparece cuando la segunda instrucción lee una variable escrita por la primera.
+\[
+  \writes{i} \cap \reads{j} \neq \emptyset.
+\]
+Como $\writes{i}=\{x_i\}$, esto equivale a exigir $x_i \in \reads{j}$.
+
+\begin{example}[Dependencia RAW]
+Considérese
+\[
+  s_1 : a := b + c,
+  \qquad
+  s_2 : d := a + 1.
+\]
+La instrucción $s_1$ escribe $a$ y $s_2$ lee $a$. Si se invirtiera el orden, $s_2$ observaría el valor viejo de $a$ en lugar del recién producido por $s_1$. Luego el orden $s_1$ antes que $s_2$ es obligatorio.
+\end{example}
+
+\subsection{Dependencia WAR}
+
+La dependencia \emph{write-after-read} aparece cuando la primera instrucción lee una variable que la segunda sobrescribe.
+\[
+  \reads{i} \cap \writes{j} \neq \emptyset.
+\]
+Como $\writes{j}=\{x_j\}$, esto equivale a $x_j \in \reads{i}$.
+
+\begin{example}[Dependencia WAR]
+Considérese
+\[
+  s_1 : a := b + 1,
+  \qquad
+  s_2 : b := 0.
+\]
+La instrucción $s_1$ necesita leer el valor original de $b$, mientras que $s_2$ lo sobrescribe. Si se intercambiaran, $s_1$ leería el nuevo valor $0$. Por tanto, el orden relativo también es obligatorio.
+\end{example}
+
+\subsection{Dependencia WAW}
+
+La dependencia \emph{write-after-write} aparece cuando ambas instrucciones escriben la misma variable.
+\[
+  \writes{i} \cap \writes{j} \neq \emptyset.
+\]
+En nuestro caso, esto equivale simplemente a $x_i = x_j$.
+
+\begin{example}[Dependencia WAW]
+Considérese
+\[
+  s_1 : a := 1,
+  \qquad
+  s_2 : a := 2.
+\]
+En el orden original, el valor final de $a$ es $2$; si se invierte el orden, el valor final pasa a ser $1$. El orden relativo debe preservarse.
+\end{example}
+
+\section{Restricciones de precedencia}
+
+\begin{definition}[Restricción de precedencia]
+Para $i<j$, escribiremos
+\[
+  s_i \to s_j
+\]
+si entre $s_i$ y $s_j$ existe una dependencia RAW, WAR o WAW. Equivalentemente, imponemos la precedencia $i \to j$ si
+\[
+  \writes{i} \cap \reads{j} \neq \emptyset
+  \quad\text{o}\quad
+  \reads{i} \cap \writes{j} \neq \emptyset
+  \quad\text{o}\quad
+  \writes{i} \cap \writes{j} \neq \emptyset.
+\]
+\end{definition}
+
+Estas restricciones capturan los pares de instrucciones cuyo orden relativo no puede modificarse sin riesgo semántico.
+
+\section{El grafo de precedencia}
+
+\begin{definition}[Grafo de precedencia]
+El \emph{grafo de precedencia} asociado a la secuencia $S=(s_1,\dots,s_n)$ es el grafo dirigido
+\[
+  G_S = (V,E)
+\]
+donde
+\[
+  V = \{1,\dots,n\}
+\]
+y $ (i,j) \in E $ si y solo si $i<j$ y existe la restricción de precedencia $s_i \to s_j$.
+\end{definition}
+
+Cada vértice representa una instrucción. Cada arista indica que el orden entre esos dos vértices debe preservarse en cualquier reordenamiento correcto.
+
+\begin{lemma}
+El grafo de precedencia $G_S$ es acíclico.
+\end{lemma}
+
+\begin{proof}
+Por construcción, toda arista $(i,j) \in E$ satisface $i<j$. En consecuencia, a lo largo de cualquier camino dirigido los índices crecen estrictamente. Si existiera un ciclo
+\[
+  i_1 \to i_2 \to \cdots \to i_k \to i_1,
+\]
+obtendríamos
+\[
+  i_1 < i_2 < \cdots < i_k < i_1,
+\]
+lo cual es imposible. Luego $G_S$ es un DAG.
+\end{proof}
+
+\begin{remark}
+El grafo no impone un orden total, sino parcial. Entre dos nodos no conectados puede existir libertad de reordenamiento. La idea central del método es que toda la información semánticamente necesaria queda resumida en este orden parcial.
+\end{remark}
+
+\section{Conmutación local de instrucciones independientes}
+
+Antes de enunciar el resultado principal, conviene estudiar el caso de dos instrucciones adyacentes.
+
+\begin{proposition}[Criterio local de conmutación]
+Sean
+\[
+  s \equiv x := e
+  \qquad\text{y}\qquad
+  t \equiv y := f.
+\]
+Las secuencias $s;t$ y $t;s$ son semánticamente equivalentes si se cumplen las tres condiciones siguientes:
+\begin{enumerate}[label=(\roman*),leftmargin=2.8em]
+  \item $x \neq y$,
+  \item $x \notin \Vars(f)$,
+  \item $y \notin \Vars(e)$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+La condición (ii) asegura que la evaluación de $f$ no depende del valor escrito por $s$, mientras que la condición (iii) asegura que la evaluación de $e$ no depende del valor escrito por $t$. La condición (i) evita que una escritura sobrescriba a la otra. En consecuencia, ejecutar $s$ y luego $t$, o bien $t$ y luego $s$, asigna exactamente los mismos valores finales a $x$ y a $y$, y deja intactas las demás variables. Luego ambas secuencias son semánticamente equivalentes.
+\end{proof}
+
+\section{Ordenamientos topológicos}
+
+\begin{definition}[Ordenamiento topológico]
+Sea $G=(V,E)$ un DAG. Un \emph{ordenamiento topológico} de $G$ es una lista lineal
+\[
+  v_1,\dots,v_n
+\]
+que contiene todos los vértices de $V$ y satisface que, para toda arista $(u,v) \in E$, el vértice $u$ aparece antes que $v$ en la lista.
+\end{definition}
+
+En nuestro contexto, un ordenamiento topológico es precisamente un reordenamiento de las instrucciones que respeta todas las restricciones de precedencia.
+
+\section{Teorema principal}
+
+\begin{theorem}[Caracterización exacta]
+Sea $S=(s_1,\dots,s_n)$ una secuencia de asignaciones puras y sea $G_S$ su grafo de precedencia. Una permutación de $S$ preserva la semántica si y solo si el orden inducido sobre los índices $\{1,\dots,n\}$ es un ordenamiento topológico de $G_S$.
+\end{theorem}
+
+\begin{proof}
+La prueba se divide en dos direcciones.
+
+\smallskip
+\textbf{(Solo si).} Supóngase que una permutación preserva la semántica pero viola alguna arista $i \to j$ del grafo. Entonces en la permutación resultante la instrucción $s_j$ aparece antes que $s_i$, a pesar de que entre ellas existe una dependencia RAW, WAR o WAW.
+
+\begin{itemize}[leftmargin=2.2em]
+  \item Si la dependencia es RAW, $s_j$ lee una variable que debía ser producida por $s_i$, luego la lectura observa el valor equivocado.
+  \item Si la dependencia es WAR, $s_j$ sobrescribe una variable que $s_i$ debía leer antes, luego la lectura observa el valor equivocado.
+  \item Si la dependencia es WAW, el valor final de la variable escrita cambia porque se altera cuál escritura ocurre de último.
+\end{itemize}
+
+En cualquiera de los tres casos, existe un estado inicial para el cual el estado final cambia. Contradicción.
+
+\smallskip
+\textbf{(Si).} Supóngase ahora que una permutación corresponde a un ordenamiento topológico de $G_S$. Mostraremos que puede obtenerse a partir del orden original mediante una secuencia finita de intercambios de pares adyacentes que no tienen dependencia entre sí.
+
+Cada vez que dos instrucciones adyacentes aparecen en el orden inverso respecto del orden objetivo, pero sin violar ninguna arista del DAG, necesariamente no están conectadas por una restricción de precedencia. Por el criterio local de conmutación, ese intercambio preserva la semántica. Iterando el procedimiento, se transforma el orden original en el orden topológico deseado sin alterar la semántica en ningún paso. Por composición, la permutación final también preserva la semántica.
+\end{proof}
+
+\begin{corollary}
+Las permutaciones semánticamente válidas son exactamente las extensiones lineales del orden parcial inducido por el grafo de precedencia.
+\end{corollary}
+
+\section{Algoritmos}
+
+\subsection{Construcción del grafo}
+
+La construcción del grafo de precedencia es cuadrática en el número de instrucciones: basta comparar cada par $(i,j)$ con $i<j$.
+
+\begin{lstlisting}
+Entrada: s1,...,sn con si = xi := ei
+Salida: G = (V,E)
+
+V := {1,...,n}
+E := conjunto_vacio
+
+Para cada i:
+    Wi := {xi}
+    Ri := Vars(ei)
+
+Para cada par i,j con 1 <= i < j <= n:
+    si (Wi inter Rj no es vacio) o (Ri inter Wj no es vacio)
+       o (Wi inter Wj no es vacio):
+        E := E union {(i,j)}
+
+retornar (V,E)
+\end{lstlisting}
+
+\subsection{Enumeración de todas las permutaciones válidas}
+
+Como $G_S$ es un DAG, podemos enumerar todos sus ordenamientos topológicos mediante backtracking, eligiendo en cada paso cualquier vértice de indegree cero todavía no emitido.
+
+\begin{lstlisting}
+EnumerarTopSorts(G, orden_actual):
+    si todos los vertices ya fueron emitidos:
+        emitir orden_actual
+        retornar
+
+    Z := conjunto de vertices no emitidos con indegree 0
+
+    para cada v en Z:
+        marcar v como emitido
+        eliminar temporalmente sus aristas salientes
+        EnumerarTopSorts(G_reducido, orden_actual ++ [v])
+        restaurar aristas y desmarcar v
+\end{lstlisting}
+
+\begin{remark}
+El número de ordenamientos topológicos puede crecer exponencialmente. Esto no es un defecto del algoritmo, sino una propiedad intrínseca del problema: cuando hay mucha independencia real, existen muchas permutaciones semánticamente válidas.
+\end{remark}
+
+\section{Ejemplos completos}
+
+\subsection{Ejemplo I: una dependencia RAW y una WAR}
+
+Considérese la secuencia
+\[
+\begin{aligned}
+  s_1 &: a := b + c, \\
+  s_2 &: d := a + 1, \\
+  s_3 &: b := 0.
+\end{aligned}
+\]
+Se tiene
+\[
+  \writes{1}=\{a\},\ \reads{1}=\{b,c\},
+  \qquad
+  \writes{2}=\{d\},\ \reads{2}=\{a\},
+  \qquad
+  \writes{3}=\{b\},\ \reads{3}=\emptyset.
+\]
+
+Las dependencias son:
+\begin{itemize}[leftmargin=2.2em]
+  \item $1 \to 2$ por RAW, ya que $a \in \reads{2}$.
+  \item $1 \to 3$ por WAR, ya que $b \in \reads{1}$ y $s_3$ escribe $b$.
+  \item No hay arista entre $2$ y $3$.
+\end{itemize}
+
+Luego el grafo tiene las aristas
+\[
+  1 \to 2,
+  \qquad
+  1 \to 3.
+\]
+Sus ordenamientos topológicos son exactamente
+\[
+  (1,2,3)
+  \qquad\text{y}\qquad
+  (1,3,2).
+\]
+Estas son, por tanto, las únicas permutaciones semánticamente válidas.
+
+\subsection{Ejemplo II: dos instrucciones independientes}
+
+Considérese la secuencia
+\[
+\begin{aligned}
+  s_1 &: x := a + b, \\
+  s_2 &: y := c + d, \\
+  s_3 &: z := x + y.
+\end{aligned}
+\]
+Las aristas del grafo son
+\[
+  1 \to 3,
+  \qquad
+  2 \to 3,
+\]
+y no existe arista entre $1$ y $2$. En consecuencia, los ordenamientos topológicos son
+\[
+  (1,2,3)
+  \qquad\text{y}\qquad
+  (2,1,3).
+\]
+Este ejemplo ilustra que la independencia semántica se traduce en libertad de intercalación.
+
+\subsection{Ejemplo III: una cadena forzada por WAR}
+
+Considérese
+\[
+\begin{aligned}
+  s_1 &: x := y + 1, \\
+  s_2 &: y := z + 1, \\
+  s_3 &: z := 0.
+\end{aligned}
+\]
+Aquí se obtiene
+\[
+  1 \to 2
+  \qquad\text{y}\qquad
+  2 \to 3,
+\]
+ambas por WAR. El único ordenamiento topológico es entonces $(1,2,3)$, de modo que no existe libertad de reordenamiento.
+
+\section{Discusión y alcance}
+
+El enfoque presentado es exacto bajo las hipótesis del modelo porque, en ese marco, la interacción entre instrucciones queda completamente determinada por los conjuntos de lectura y escritura. Sin embargo, fuera de este contexto conviene introducir refinamientos.
+
+\begin{itemize}[leftmargin=2.2em]
+  \item \textbf{Efectos laterales.} Si las expresiones realizan E/S, modifican memoria o pueden fallar de manera observable, las dependencias puramente sintácticas ya no bastan.
+  \item \textbf{Aliasing.} Si dos nombres pueden denotar la misma celda mutable, una escritura puede afectar lecturas aparentemente no relacionadas.
+  \item \textbf{Semánticas observacionales más finas.} Si además del estado final importa el número de pasos, el momento de una excepción o el orden exacto de ciertos eventos, la noción de equivalencia debe ajustarse.
+\end{itemize}
+
+También es útil distinguir entre equivalencia semántica y análisis puramente sintáctico. Por ejemplo, una instrucción como $x := x$ no altera el estado, pero un análisis basado solo en conjuntos de lectura y escritura la tratará como una escritura genuina. Incorporar este tipo de simplificaciones requiere un razonamiento semántico más refinado sobre las expresiones.
+
+\section{Conclusión}
+
+El problema de generar todas las permutaciones semánticamente válidas de una secuencia de asignaciones puras admite una solución limpia, completa y algorítmicamente útil. La receta es la siguiente:
+\begin{enumerate}[leftmargin=2.2em]
+  \item para cada instrucción, calcular qué variables lee y qué variable escribe;
+  \item para cada par de instrucciones, introducir una arista de precedencia cuando exista dependencia RAW, WAR o WAW;
+  \item observar que el grafo resultante es un DAG;
+  \item enumerar todos sus ordenamientos topológicos.
+\end{enumerate}
+
+El resultado final es una caracterización exacta: las permutaciones válidas son exactamente las extensiones lineales del orden parcial inducido por las dependencias. Esta correspondencia enlaza de manera natural la semántica operacional de secuencias de asignaciones con técnicas combinatorias clásicas sobre DAGs.
+
+\appendix
+\section{Resumen ejecutivo del método}
+
+Dada una secuencia de asignaciones
+\[
+  s_i \equiv x_i := e_i,
+\]
+defínase
+\[
+  \writes{i}=\{x_i\},
+  \qquad
+  \reads{i}=\Vars(e_i).
+\]
+Para cada par $i<j$, agréguese la arista $i \to j$ si ocurre alguna de las siguientes condiciones:
+\[
+  x_i \in \reads{j},
+  \qquad
+  x_j \in \reads{i},
+  \qquad
+  x_i = x_j.
+\]
+El grafo obtenido es acíclico y las secuencias válidas son exactamente sus ordenamientos topológicos.
+
+\end{document}
