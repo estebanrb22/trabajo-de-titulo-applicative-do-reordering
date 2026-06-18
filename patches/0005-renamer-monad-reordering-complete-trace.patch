@@ -1,0 +1,189 @@
+From 8926442f0af0da190516591dadae5570f62f4636 Mon Sep 17 00:00:00 2001
+From: estebanrb22 <esteban.romero.b@ug.uchile.cl>
+Date: Thu, 18 Jun 2026 11:07:35 -0400
+Subject: [PATCH] Added more complete traces in renamer phase, and deleted the
+ reorder-commutative-mondad-ado flag after the qualified do implementation
+
+---
+ compiler/GHC/Driver/Flags.hs   |   1 -
+ compiler/GHC/Driver/Session.hs |   1 -
+ compiler/GHC/Rename/Expr.hs    | 110 +++++++++++++++++++++------------
+ 3 files changed, 70 insertions(+), 42 deletions(-)
+
+diff --git a/compiler/GHC/Driver/Flags.hs b/compiler/GHC/Driver/Flags.hs
+index 56e3cb2ee3..a089dee83f 100644
+--- a/compiler/GHC/Driver/Flags.hs
++++ b/compiler/GHC/Driver/Flags.hs
+@@ -784,7 +784,6 @@ data GeneralFlag
+    | Opt_FamAppCache
+    | Opt_ExternalInterpreter
+    | Opt_OptimalApplicativeDo
+-   | Opt_ReorderCommutativeMonadsAdo
+    | Opt_VersionMacros
+    | Opt_WholeArchiveHsLibs
+    -- copy all libs into a single folder prior to linking binaries
+diff --git a/compiler/GHC/Driver/Session.hs b/compiler/GHC/Driver/Session.hs
+index 140c4c6f6d..8010899f49 100644
+--- a/compiler/GHC/Driver/Session.hs
++++ b/compiler/GHC/Driver/Session.hs
+@@ -2584,7 +2584,6 @@ fFlagsDeps = [
+   flagSpec "omit-interface-pragmas"           Opt_OmitInterfacePragmas,
+   flagSpec "omit-yields"                      Opt_OmitYields,
+   flagSpec "optimal-applicative-do"           Opt_OptimalApplicativeDo,
+-  flagSpec "reorder-commutative-monads-ado"   Opt_ReorderCommutativeMonadsAdo,
+   flagSpec "pedantic-bottoms"                 Opt_PedanticBottoms,
+   flagSpec "pre-inlining"                     Opt_SimplPreInlining,
+   flagGhciSpec "print-bind-contents"          Opt_PrintBindContents,
+diff --git a/compiler/GHC/Rename/Expr.hs b/compiler/GHC/Rename/Expr.hs
+index d08a151eec..741ecbc245 100644
+--- a/compiler/GHC/Rename/Expr.hs
++++ b/compiler/GHC/Rename/Expr.hs
+@@ -2060,44 +2060,41 @@ rearrangeForApplicativeDo ctxt [(one,_)] = do
+ 
+ rearrangeForApplicativeDo ctxt stmts0 = do
+   optimal_ado <- goptM Opt_OptimalApplicativeDo
+-  reorder_ado <- goptM Opt_ReorderCommutativeMonadsAdo
+   commutative_do <- isCommutativeQualifiedDo ctxt
+ 
+-  let should_reorder = reorder_ado && commutative_do
+-
+   traceRn "rearrangeForADo-commutative-do" $
+-    vcat [ text "reorder-flag      =" <+> ppr reorder_ado
+-         , text "commutative-do    =" <+> ppr commutative_do
+-         , text "should-reorder    =" <+> ppr should_reorder
+-         ]
++    vcat [ text "commutative-do    =" <+> ppr commutative_do ]
+ 
+-  stmts_reorders <-
+-    if should_reorder
++  (all_permutations, validStmtsPerms) <-
++    if commutative_do
+       then do
+         let stmtsDepsGraph = buildStmtsDependencyGraph stmts
+         traceStmtDependencyGraph stmtsDepsGraph
+-        let validStmtsPerms = enumerateSemanticTopSortsBounded stmtsDepsGraph
+-        traceTopSortCandidates validStmtsPerms
+-        return (map depStmtInfosToStmtSeq validStmtsPerms)
++        let validStmtsPermsNodes = enumerateSemanticTopSortsBounded stmtsDepsGraph
++        let candidates = map depStmtInfosToStmtSeq validStmtsPermsNodes
++        return (candidates, validStmtsPermsNodes)
+       else
+-        return []
+-
+-  let stmts_candidates = if null stmts_reorders
+-                       then [stmts]
+-                       else stmts_reorders
++        return ([stmts], [computeStmtsInfo stmts])
+ 
+   let mkStmtTree | optimal_ado = mkStmtTreeOptimal
+                  | otherwise = mkStmtTreeHeuristic
+   
+-  let stmt_trees = map mkStmtTree stmts_candidates
+-  mapM_ (traceRnTree "rearrangeForADo-resulting tree:") stmt_trees
++  let stmt_trees = map mkStmtTree all_permutations
++
++  let all_permutations_info = zipWith3 mkStmtsPermutationInfo [1 :: Int ..] validStmtsPerms stmt_trees
++
++  when commutative_do $
++    traceTopSortCandidates all_permutations_info
++
++  let best_candidate = case nonEmpty all_permutations_info of
++          Just cs -> minimumBy (comparing candCost) cs
++          Nothing -> panic "rearrangeForApplicativeDo: empty stmt_trees"
+ 
+-  let best_tree = case nonEmpty stmt_trees of
+-                Just ts -> minimumBy (comparing stmtTreeCost) ts
+-                Nothing -> panic "rearrangeForApplicativeDo: empty stmt_trees"
++  let best_tree = candTree best_candidate
+ 
+   -- traceRn "rearrangeForADo" (ppr best_tree)
+-  traceRnTree "rearrangeForADo final tree:" best_tree
++  traceRnFinalTree best_candidate all_permutations_info
++
+   (return_name, _) <- lookupQualifiedDoName (HsDoStmt ctxt) returnMName
+   (pure_name, _)   <- lookupQualifiedDoName (HsDoStmt ctxt) pureAName
+   let monad_names = MonadNames { return_name = return_name
+@@ -2109,12 +2106,56 @@ rearrangeForApplicativeDo ctxt stmts0 = do
+     findLast [last] = ([],last)
+     findLast (x:xs) = (x:rest,last) where (rest,last) = findLast xs
+ 
+-    traceRnTree :: String -> ExprStmtTree -> TcRn ()
+-    traceRnTree label tree =
+-      traceRn label
+-        (vcat [ ppr tree
+-              , text "cost = " <+> ppr (stmtTreeCost tree)
+-              ])
++    traceRnFinalTree :: StmtsPermutationInfo -> [StmtsPermutationInfo] -> TcRn ()
++    traceRnFinalTree best_tree stmt_trees =
++      let original_cost = case stmt_trees of
++                            original_cand : _ -> candCost original_cand
++                            [] -> panic "traceRnFinalTree: empty stmt_trees"
++          minimum_cost = candCost best_tree
++          minimum_cost_permutations =
++            length (filter ((== minimum_cost) . candCost) stmt_trees)
++      in traceRn "rearrangeForADo final tree:"
++           (vcat [ text "candidate   = " <+> ppr (candIndex best_tree)
++                 , text "index order = " <+> ppr (map sdiIndex (candPerm best_tree))
++                 , text "statements  = " <+> ppr (map sdiStmt (candPerm best_tree))
++                 , text "rearrangeForADo-resulting tree ="
++                 , nest 2 (ppr (candTree best_tree))
++                 , text "original-cost             =" <+> ppr original_cost
++                 , text "minimum-cost              =" <+> ppr minimum_cost
++                 , text "generated permutations    =" <+> ppr (length stmt_trees)
++                 , text "minimum-cost permutations =" <+> ppr minimum_cost_permutations
++                 ])
++
++    traceTopSortCandidates :: [StmtsPermutationInfo] -> TcRn ()
++    traceTopSortCandidates candidates =
++      mapM_ traceOne candidates
++      where
++        traceOne cadidate_info =
++          traceRn "rearrangeForADo-permutation" $
++            vcat [ text "candidate   = " <+> ppr (candIndex cadidate_info)
++                 , text "index order = " <+> ppr (map sdiIndex (candPerm cadidate_info))
++                 , text "statements  = " <+> ppr (map sdiStmt (candPerm cadidate_info))
++                 , text "rearrangeForADo-resulting tree ="
++                 , nest 2 (ppr (candTree cadidate_info))
++                 , text "actual cost =" <+> ppr (candCost cadidate_info)
++                 ]
++
++-- | A data type to store information about each candidate permutation
++data StmtsPermutationInfo = StmtsPermutationInfo
++  { candIndex     :: !Int
++  , candPerm      :: [StmtDepInfo]
++  , candTree      :: ExprStmtTree
++  , candCost      :: !Cost
++  } 
++
++mkStmtsPermutationInfo :: Int -> [StmtDepInfo] -> ExprStmtTree -> StmtsPermutationInfo
++mkStmtsPermutationInfo index perm tree =
++  StmtsPermutationInfo
++    { candIndex     = index
++    , candPerm      = perm
++    , candTree      = tree
++    , candCost      = stmtTreeCost tree
++    }
+ 
+ -- | A tree of statements using a mixture of applicative and bind constructs.
+ data StmtTree a
+@@ -2321,17 +2362,6 @@ enumerateSemanticTopSortsBounded depGraph
+ depStmtInfosToStmtSeq :: [StmtDepInfo] -> [(ExprLStmt GhcRn, FreeVars)]
+ depStmtInfosToStmtSeq = map (\info -> (sdiStmt info, sdiFvsOriginal info))
+ 
+-traceTopSortCandidates :: [[StmtDepInfo]] -> TcRn ()
+-traceTopSortCandidates candidates =
+-  mapM_ traceOne (zip [1 :: Int ..] candidates)
+-  where
+-    traceOne (k, xs) =
+-      traceRn "rearrangeForADo-permutation" $
+-        vcat [ text "candidate   = " <+> ppr k
+-             , text "index order = " <+> ppr (map sdiIndex xs)
+-             , text "statements  = " <+> ppr (map sdiStmt xs)
+-             ]
+-
+ -- | Turn a sequence of statements into an ExprStmtTree using a
+ -- heuristic algorithm.  /O(n^2)/
+ mkStmtTreeHeuristic :: [(ExprLStmt GhcRn, FreeVars)] -> ExprStmtTree
+-- 
+2.54.0
+

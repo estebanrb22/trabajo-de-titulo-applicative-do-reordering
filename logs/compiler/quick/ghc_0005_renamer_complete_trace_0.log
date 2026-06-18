@@ -1,0 +1,2 @@
+cd /workspaces/tt-repo/vendor/ghc && \
+./hadrian/build -j --flavour=quick stage2:exe:ghc-bin 

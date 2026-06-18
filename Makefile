@@ -117,13 +117,13 @@ cabal-renamer-logs: ## Crea logs con el arbol de Statements: make cabal-renamer-
 	fi; \
 	cd "$$cabal_dir" && \
 	mkdir -p "$$(dirname "$$log_file")" && \
-	grep -Pzo '(?s)=\s*do\b.*?\n\s*return\b[^\n]*' main.hs \
+	grep -Pzo '(?s)=\s*(?:CD\.)?do\b.*?\n\s*(?:CD\.)?return\b[^\n]*' main.hs \
 	  | tr '\0' '\n' \
 	  | tee "$$log_file" && \
 	printf '\n' >> "$$log_file" && \
 	cabal clean && \
 	cabal build 2>&1 \
-	  | awk '/^rearrangeForADo final tree:/ {capture=1} capture {print} capture && /^[[:space:]]*cost[[:space:]]*=[[:space:]]*[0-9]+[[:space:]]*$$/ {capture=0}' \
+		  | awk '/^rearrangeForADo-commutative-do/ {capture=1} capture {print} capture && /^[[:space:]]*minimum-cost permutations[[:space:]]*=[[:space:]]*[0-9]+[[:space:]]*$$/ {capture=0}' \
 	  | tee -a "$$log_file"
 
 raw-logs: ## Crea logs con la salida completa de GHC: make raw-logs <input-file> <output-log-file>
@@ -134,7 +134,7 @@ raw-logs: ## Crea logs con la salida completa de GHC: make raw-logs <input-file>
 		exit 1; \
 	fi; \
 	mkdir -p "$$(dirname "$$log_file")" && \
-	./vendor/ghc/_build/stage1/bin/ghc -ddump-rn-trace -XApplicativeDo -freorder-commutative-monads-ado -fno-code "$$input_file" | tee "$$log_file"
+	./vendor/ghc/_build/stage1/bin/ghc -ddump-rn-trace -XApplicativeDo -fno-code "$$input_file" | tee "$$log_file"
 
 renamer-logs: ## Crea logs con el arbol de Statements: make renamer-logs <input-file> <output-log-file>
 	@input_file="$(word 2,$(MAKECMDGOALS))"; \
@@ -156,12 +156,12 @@ renamer-logs: ## Crea logs con el arbol de Statements: make renamer-logs <input-
 		first_tee_opt=""; \
 	fi; \
 	mkdir -p "$$(dirname "$$log_file")" && \
-	grep -Pzo '(?s)=\s*do\b.*?\n\s*return\b[^\n]*' "$$input_file" \
+	grep -Pzo '(?s)=\s*(?:CD\.)?do\b.*?\n\s*(?:CD\.)?return\b[^\n]*' "$$input_file" \
 	  | tr '\0' '\n' \
 	  | tee $$first_tee_opt "$$log_file" && \
 	printf '\n' | tee -a "$$log_file" && \
 	./vendor/ghc/_build/stage1/bin/ghc -ddump-rn-trace -XApplicativeDo -fno-code "$$input_file" \
-	  | awk '/^rearrangeForADo final tree:/ {capture=1} capture {print} capture && /^[[:space:]]*cost[[:space:]]*=[[:space:]]*[0-9]+[[:space:]]*$$/ {capture=0}' \
+		  | awk '/^rearrangeForADo-commutative-do/ {capture=1} capture {print} capture && /^[[:space:]]*minimum-cost permutations[[:space:]]*=[[:space:]]*[0-9]+[[:space:]]*$$/ {capture=0}' \
 	  | tee -a "$$log_file"
 
 all-orders-logs: ## Crea logs con todas las permutaciones de Statements: make renamer-logs <program-dir> <output-log-file>

@@ -1,23 +1,32 @@
-# Flujo de ejecución de Renamer en `GHC.Rename.Expr` con `HsDo` expression
+# Flujo del Renamer para `HsDo` y reordenamiento conmutativo
 
-Funciones que se invocan a lo largo del flujo de renombrado de una expression de Haskell de tipo `HsDo`:
+Este documento describe el flujo actual de `GHC.Rename.Expr` para expresiones
+`HsDo`, incluyendo la extensión experimental de la memoria: generación de
+permutaciones semánticamente válidas para bloques `do` marcados como
+conmutativos mediante `QualifiedDo`.
 
-``` haskell
--> rnExpr 
--> rnStmtsWithFreeVars 
--> postProcessStmtsForApplicativeDo 
--> rearrangeForApplicativeDo
-  -> mkStmtTreeOptimal
-  -> mkStmtTreeHeuristic
+## Flujo General
+
+```haskell
+rnExpr
+  -> rnStmtsWithFreeVars
+  -> postProcessStmtsForApplicativeDo
+  -> rearrangeForApplicativeDo
+       -> isCommutativeQualifiedDo
+       -> buildStmtsDependencyGraph
+       -> enumerateSemanticTopSortsBounded
+       -> mkStmtTreeHeuristic / mkStmtTreeOptimal
+       -> stmtTreeToStmts
 ```
 
-# Definiciones de cada función:
+El camino sigue siendo parte del Renamer. La transformación final produce
+`ApplicativeStmt` cuando el plan elegido permite usar operaciones applicative.
 
-## RnExpr
+## `rnExpr (HsDo ...)`
 
-``` haskell
-rnExpr :: HsExpr GhcPs -> RnM (HsExpr GhcRn, FreeVars)
+La entrada relevante para `do`-notation está en `rnExpr`:
 
+```haskell
 rnExpr (HsDo _ do_or_lc (L l stmts))
  = do { ((stmts1, _), fvs1) <-
           rnStmtsWithFreeVars (HsDoStmt do_or_lc) rnExpr stmts
@@ -26,70 +35,18 @@ rnExpr (HsDo _ do_or_lc (L l stmts))
       ; return ( HsDo noExtField do_or_lc (L l pp_stmts), fvs1 `plusFV` fvs2 ) }
 ```
 
-## rnStmtsWithFreeVars
+`rnStmtsWithFreeVars` renombra cada statement y conserva sus `FreeVars`. Esa
+información es la base para construir dependencias locales entre statements.
 
-``` haskell
-rnStmtsWithFreeVars :: AnnoBody body
-        => HsStmtContextRn
-        -> ((body GhcPs) -> RnM ((body GhcRn), FreeVars))
-        -> [LStmt GhcPs (LocatedA (body GhcPs))]
-        -> ([Name] -> RnM (thing, FreeVars))
-        -> RnM ( ([(LStmt GhcRn (LocatedA (body GhcRn)), FreeVars)], thing)
-               , FreeVars)
--- Each Stmt body is annotated with its FreeVars, so that
--- we can rearrange statements for ApplicativeDo.
---
--- Variables bound by the Stmts, and mentioned in thing_inside,
--- do not appear in the result FreeVars
+## `postProcessStmtsForApplicativeDo`
 
-rnStmtsWithFreeVars ctxt _ [] thing_inside
-  = do { checkEmptyStmts ctxt
-       ; (thing, fvs) <- thing_inside []
-       ; return (([], thing), fvs) }
+El gate principal de `ApplicativeDo` sigue siendo:
 
-rnStmtsWithFreeVars mDoExpr@(HsDoStmt MDoExpr{}) rnBody (nonEmpty -> Just stmts) thing_inside    
--- Deal with mdo
-  = -- Behave like do { rec { ...all but last... }; last }
-    do { ((stmts1, (stmts2, thing)), fvs)
-           <- rnStmt mDoExpr rnBody (noLocA $ mkRecStmt noAnn (noLocA (NE.init stmts))) $ \ _ ->
-              do { last_stmt' <- checkLastStmt mDoExpr (NE.last stmts)
-                 ; rnStmt mDoExpr rnBody last_stmt' thing_inside }
-        ; return (((stmts1 ++ stmts2), thing), fvs) }
-
-rnStmtsWithFreeVars ctxt rnBody (lstmt@(L loc _) : lstmts) thing_inside
-  | null lstmts
-  = setSrcSpanA loc $
-    do { lstmt' <- checkLastStmt ctxt lstmt
-       ; rnStmt ctxt rnBody lstmt' thing_inside }
-
-  | otherwise
-  = do { ((stmts1, (stmts2, thing)), fvs)
-            <- setSrcSpanA loc                  $
-               do { checkStmt ctxt lstmt
-                  ; rnStmt ctxt rnBody lstmt $ \ bndrs1 ->
-                    rnStmtsWithFreeVars ctxt rnBody lstmts  $ \ bndrs2 ->
-                    thing_inside (bndrs1 ++ bndrs2) }
-        ; return (((stmts1 ++ stmts2), thing), fvs) }
-```
-
-## postProcessStmtsForApplicativeDo
-
-``` haskell
--- | maybe rearrange statements according to the ApplicativeDo transformation
-postProcessStmtsForApplicativeDo
-  :: HsDoFlavour
-  -> [(ExprLStmt GhcRn, FreeVars)]
-  -> RnM ([ExprLStmt GhcRn], FreeVars)
+```haskell
 postProcessStmtsForApplicativeDo ctxt stmts
-  = do {
-       -- rearrange the statements using ApplicativeStmt if
-       -- -XApplicativeDo is on.  Also strip out the FreeVars attached
-       -- to each Stmt body.
-         ado_is_on <- xoptM LangExt.ApplicativeDo
+  = do { ado_is_on <- xoptM LangExt.ApplicativeDo
        ; let is_do_expr | DoExpr{} <- ctxt = True
                         | otherwise = False
-       -- don't apply the transformation inside TH brackets, because
-       -- GHC.HsToCore.Quote does not handle ApplicativeDo.
        ; in_th_bracket <- isBrackLevel <$> getThLevel
        ; if ado_is_on && is_do_expr && not in_th_bracket
             then do { traceRn "ppsfa" (ppr stmts)
@@ -97,153 +54,241 @@ postProcessStmtsForApplicativeDo ctxt stmts
             else noPostProcessStmts (HsDoStmt ctxt) stmts }
 ```
 
-## rearrangeForApplicativeDo
+Esto significa que el reordenamiento experimental solo puede ejecutarse dentro
+del flujo normal de `ApplicativeDo`. Si `-XApplicativeDo` no está activo, no se
+entra a `rearrangeForApplicativeDo`.
 
-``` haskell
--- | rearrange a list of statements using ApplicativeDoStmt.  See
--- Note [ApplicativeDo].
-rearrangeForApplicativeDo
-  :: HsDoFlavour
-  -> [(ExprLStmt GhcRn, FreeVars)]
-  -> RnM ([ExprLStmt GhcRn], FreeVars)
+## Opt-in Conmutativo Con `QualifiedDo`
 
-rearrangeForApplicativeDo _ [] = return ([], emptyNameSet)
--- If the do-block contains a single @return@ statement, change it to
--- @pure@ if ApplicativeDo is turned on. See Note [ApplicativeDo].
-rearrangeForApplicativeDo ctxt [(one,_)] = do
-  (return_name, _) <- lookupQualifiedDoName (HsDoStmt ctxt) returnMName
-  (pure_name, _)   <- lookupQualifiedDoName (HsDoStmt ctxt) pureAName
-  let monad_names = MonadNames { return_name = return_name
-                               , pure_name   = pure_name }
-  return $ case needJoin monad_names [one] (Just pure_name) of
-    (False, one') -> (one', emptyNameSet)
-    (True, _) -> ([one], emptyNameSet)
+La activación del reordenamiento conmutativo ya no depende de una flag general
+`-freorder-commutative-monads-ado`. Esa flag fue eliminada del conjunto de
+`GeneralFlag` y de `fFlagsDeps`.
 
+El opt-in ahora es sintáctico y se basa en `QualifiedDo`:
+
+```haskell
+commutativeDoMarkerOcc = mkVarOccFS (fsLit "__commutative_do__")
+
+isCommutativeQualifiedDo :: HsDoFlavour -> RnM Bool
+isCommutativeQualifiedDo (DoExpr (Just modName)) =
+  isJust <$> lookupOccRn_maybe (mkRdrQual modName commutativeDoMarkerOcc)
+isCommutativeQualifiedDo (MDoExpr (Just modName)) =
+  isJust <$> lookupOccRn_maybe (mkRdrQual modName commutativeDoMarkerOcc)
+isCommutativeQualifiedDo _ =
+  return False
+```
+
+Un bloque `M.do` es considerado conmutativo si el módulo calificador `M` exporta
+el marcador `__commutative_do__`. El módulo experimental esperado es
+`Control.Monad.CommutativeDo`, que reexporta ese marcador junto a las operaciones
+necesarias para `QualifiedDo`.
+
+## `rearrangeForApplicativeDo`
+
+El flujo actual de `rearrangeForApplicativeDo` es:
+
+```haskell
 rearrangeForApplicativeDo ctxt stmts0 = do
   optimal_ado <- goptM Opt_OptimalApplicativeDo
-  reorder_ado <- goptM Opt_ReorderCommutativeMonadsAdo
-  dflags <- getDynFlags
-  let n_clones_reorder = adoReorderNClones dflags
+  commutative_do <- isCommutativeQualifiedDo ctxt
+
+  traceRn "rearrangeForADo-commutative-do" $
+    vcat [ text "commutative-do    =" <+> ppr commutative_do ]
+
+  (all_permutations, validStmtsPerms) <-
+    if commutative_do
+      then do
+        let stmtsDepsGraph = buildStmtsDependencyGraph stmts
+        traceStmtDependencyGraph stmtsDepsGraph
+        let validStmtsPermsNodes = enumerateSemanticTopSortsBounded stmtsDepsGraph
+        let candidates = map depStmtInfosToStmtSeq validStmtsPermsNodes
+        return (candidates, validStmtsPermsNodes)
+      else
+        return ([stmts], [computeStmtsInfo stmts])
 
   let mkStmtTree | optimal_ado = mkStmtTreeOptimal
                  | otherwise = mkStmtTreeHeuristic
-  
-  let dummy_clones = replicate n_clones_reorder stmts
-  let stmt_trees = mkStmtTree stmts :| map mkStmtTree dummy_clones
-  mapM_ (traceRnTree "rearrangeForADo-Clone resulting tree:") stmt_trees
-  let best_tree = minimumBy (comparing stmtTreeCost) stmt_trees
 
-  -- traceRn "rearrangeForADo" (ppr best_tree)
-  traceRnTree "rearrangeForADo final tree:" best_tree
-  (return_name, _) <- lookupQualifiedDoName (HsDoStmt ctxt) returnMName
-  (pure_name, _)   <- lookupQualifiedDoName (HsDoStmt ctxt) pureAName
-  let monad_names = MonadNames { return_name = return_name
-                               , pure_name   = pure_name }
-  stmtTreeToStmts monad_names ctxt best_tree [last] last_fvs
+  let stmt_trees = map mkStmtTree all_permutations
+  let all_permutations_info =
+        zipWith3 mkStmtsPermutationInfo [1 :: Int ..] validStmtsPerms stmt_trees
+
+  when commutative_do $
+    traceTopSortCandidates all_permutations_info
+
+  let best_candidate = case nonEmpty all_permutations_info of
+          Just cs -> minimumBy (comparing candCost) cs
+          Nothing -> panic "rearrangeForApplicativeDo: empty stmt_trees"
+
+  let best_tree = candTree best_candidate
+
+  traceRnFinalTree best_candidate all_permutations_info
+```
+
+En el caso no conmutativo se preserva el comportamiento base: solo se considera
+la lista original de statements. Para mantener un formato uniforme, se crea una
+permutación artificial con `computeStmtsInfo stmts`.
+
+## Grafo de Precedencia
+
+Cada statement se modela como `StmtDepInfo`:
+
+```haskell
+data StmtDepInfo = StmtDepInfo
+  { sdiIndex       :: !Int
+  , sdiStmt        :: !(ExprLStmt GhcRn)
+  , sdiFvsOriginal :: !FreeVars
+  , sdiReadsLocal  :: !FreeVars
+  , sdiWritesLocal :: !FreeVars
+  }
+```
+
+La construcción base es:
+
+```haskell
+computeStmtsInfo :: [(ExprLStmt GhcRn, FreeVars)] -> [StmtDepInfo]
+computeStmtsInfo stmts = zipWith mkStmtInfo [1 ..] stmts
   where
-    (stmts,(last,last_fvs)) = findLast stmts0
-    findLast [] = error "findLast"
-    findLast [last] = ([],last)
-    findLast (x:xs) = (x:rest,last) where (rest,last) = findLast xs
-    traceRnTree :: String -> ExprStmtTree -> TcRn ()
-    traceRnTree label tree =
-      traceRn label
-        (vcat [ ppr tree
-              , text "cost = " <+> ppr (stmtTreeCost tree)
-              ])
+    all_writes =
+      mkNameSet (concatMap (collectStmtBinders CollNoDictBinders . unLoc . fst) stmts)
+
+    mkStmtInfo i (stmt, fvs) = StmtDepInfo
+      { sdiIndex       = i
+      , sdiStmt        = stmt
+      , sdiFvsOriginal = fvs
+      , sdiReadsLocal  = fvs `intersectNameSet` all_writes
+      , sdiWritesLocal = mkNameSet (collectStmtBinders CollNoDictBinders (unLoc stmt))
+      }
 ```
 
-## mkStmtTreeOptimal
+La relación con las reglas clásicas de dependencias es:
 
-``` haskell
--- | Turn a sequence of statements into an ExprStmtTree optimally,
--- using dynamic programming.  /O(n^3)/
-mkStmtTreeOptimal :: [(ExprLStmt GhcRn, FreeVars)] -> ExprStmtTree
-mkStmtTreeOptimal stmts =
-  assert (not (null stmts)) $ -- the empty case is handled by the caller;
-                              -- we don't support empty StmtTrees.
-  fst (arr ! (0,n))
-  where
-    n = length stmts - 1
-    stmt_arr = listArray (0,n) stmts
+- `WRITE(stmt) = collectStmtBinders CollNoDictBinders stmt`.
+- `READ_local(stmt) = fvs(stmt) ∩ all_writes`.
+- `RAW(i,j) = WRITE(i) ∩ READ_local(j)`.
+- `WAR(i,j) = READ_local(i) ∩ WRITE(j)`.
+- `WAW(i,j) = WRITE(i) ∩ WRITE(j)`.
 
-    -- lazy cache of optimal trees for subsequences of the input
-    arr :: Array (Int,Int) (ExprStmtTree, Cost)
-    arr = array ((0,0),(n,n))
-             [ ((lo,hi), tree lo hi)
-             | lo <- [0..n]
-             , hi <- [lo..n] ]
+`buildStmtDepNodes` crea aristas `i -> j` cuando `i < j` y existe alguna de las
+dependencias anteriores. El grafo se implementa con `GHC.Data.Graph.Directed`.
 
-    -- compute the optimal tree for the sequence [lo..hi]
-    tree lo hi
-      | hi == lo = (StmtTreeOne (stmt_arr ! lo), 1)
-      | otherwise =
-         case segments [ stmt_arr ! i | i <- [lo..hi] ] of
-           [] -> panic "mkStmtTree"
-           [_one] -> split lo hi
-           segs -> (StmtTreeApplicative trees, Partial.maximum costs)
-             where
-               bounds = scanl (\(_,hi) a -> (hi+1, hi + length a)) (0,lo-1) segs
-               -- We know `costs` must be non-empty, as `length segs >= 2` here.
-               (trees,costs) = unzip (map (uncurry split) (tail bounds))
+## Enumeración de Permutaciones
 
-    -- find the best place to split the segment [lo..hi]
-    split :: Int -> Int -> (ExprStmtTree, Cost)
-    split lo hi
-      | hi == lo = (StmtTreeOne (stmt_arr ! lo), 1)
-      | otherwise = (StmtTreeBind before after, c1+c2)
-        where
-         -- As per the paper, for a sequence s1...sn, we want to find
-         -- the split with the minimum cost, where the cost is the
-         -- sum of the cost of the left and right subsequences.
-         --
-         -- As an optimisation (also in the paper) if the cost of
-         -- s1..s(n-1) is different from the cost of s2..sn, we know
-         -- that the optimal solution is the lower of the two.  Only
-         -- in the case that these two have the same cost do we need
-         -- to do the exhaustive search.
-         --
-         ((before,c1),(after,c2)) = case nonEmpty [lo .. hi-1] of
-             Nothing ->
-               ( (StmtTreeOne (stmt_arr ! lo), 1),
-                 (StmtTreeOne (stmt_arr ! hi), 1) )
-             Just ks
-               | left_cost < right_cost
-               -> ((left,left_cost), (StmtTreeOne (stmt_arr ! hi), 1))
-               | left_cost > right_cost
-               -> ((StmtTreeOne (stmt_arr ! lo), 1), (right,right_cost))
-               | otherwise -> minimumBy (comparing cost)
-                 [ (arr ! (lo,k), arr ! (k+1,hi)) | k <- ks ]
-           where
-             (left, left_cost) = arr ! (lo,hi-1)
-             (right, right_cost) = arr ! (lo+1,hi)
-             cost ((_,c1),(_,c2)) = c1 + c2
+`enumerateSemanticTopSortsBounded` enumera ordenamientos topológicos del grafo:
+
+```haskell
+enumerateSemanticTopSortsBounded :: StmtDepGraph -> [[StmtDepInfo]]
 ```
 
-## mkStmtTreeHeuristic
+Cada resultado conserva `StmtDepInfo`, por lo que no se pierde:
 
-``` haskell
--- | Turn a sequence of statements into an ExprStmtTree using a
--- heuristic algorithm.  /O(n^2)/
-mkStmtTreeHeuristic :: [(ExprLStmt GhcRn, FreeVars)] -> ExprStmtTree
-mkStmtTreeHeuristic [one] = StmtTreeOne one
-mkStmtTreeHeuristic stmts =
-  case segments stmts of
-    [one] -> split one
-    segs -> StmtTreeApplicative (map split segs)
- where
-  split [one] = StmtTreeOne one
-  split stmts =
-    StmtTreeBind (mkStmtTreeHeuristic before) (mkStmtTreeHeuristic after)
-    where (before, after) = splitSegment stmts
+- índice original del statement,
+- statement renombrado,
+- `FreeVars` originales,
+- reads/writes locales.
+
+Luego `depStmtInfosToStmtSeq` transforma cada permutación de nodos en una lista
+de statements apta para `mkStmtTreeHeuristic` o `mkStmtTreeOptimal`.
+
+## Información de Candidatos y Costos
+
+Para no separar la información de la permutación de su árbol y costo, se usa:
+
+```haskell
+data StmtsPermutationInfo = StmtsPermutationInfo
+  { candIndex     :: !Int
+  , candPerm      :: [StmtDepInfo]
+  , candTree      :: ExprStmtTree
+  , candCost      :: !Cost
+  }
+
+mkStmtsPermutationInfo :: Int -> [StmtDepInfo] -> ExprStmtTree -> StmtsPermutationInfo
+mkStmtsPermutationInfo index perm tree =
+  StmtsPermutationInfo
+    { candIndex     = index
+    , candPerm      = perm
+    , candTree      = tree
+    , candCost      = stmtTreeCost tree
+    }
 ```
 
-# Estructuras de datos utilizadas y utilidades
+La selección final se hace por costo:
 
-## ExprStmtTree
+```haskell
+best_candidate = minimumBy (comparing candCost) all_permutations_info
+best_tree = candTree best_candidate
+```
 
-``` haskell
--- | A tree of statements using a mixture of applicative and bind constructs.
+Si hay empate, `minimumBy` mantiene el primer candidato mínimo encontrado en la
+lista de candidatos.
+
+## Trazas del Renamer
+
+Todas las trazas usan `traceRn`, por lo que aparecen con `-ddump-rn-trace`.
+
+### Estado del opt-in
+
+```text
+rearrangeForADo-commutative-do
+  commutative-do    = True
+```
+
+### Grafo de dependencias
+
+```text
+rearrangeForADo-StmtsDependencyGraph
+
+rearrangeForADo-dep
+  pair           =  1  ->  3
+  RAW            =  {x1}
+  WAR            =  {}
+  WAW            =  {}
+```
+
+### Candidatos de permutación
+
+`traceTopSortCandidates` imprime cada permutación junto a su árbol y costo:
+
+```text
+rearrangeForADo-permutation
+  candidate   =  5
+  index order =  [2, 1, 4, 3]
+  statements  =  [x2 <- Just 5, x1 <- Just 10,
+                  x4 <- Just (x2 + 15), x3 <- safeDiv x1 2]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind ...)
+  actual cost =  2
+```
+
+### Árbol final seleccionado
+
+`traceRnFinalTree` imprime la metadata del candidato seleccionado y métricas
+globales:
+
+```text
+rearrangeForADo final tree:
+  candidate   =  1
+  index order =  [1, 2, 3, 4]
+  statements  =  [x1 <- Just 10, x2 <- Just 5,
+                  x3 <- safeDiv x1 2, x4 <- Just (x2 + 15)]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind ...)
+  original-cost             =  2
+  minimum-cost              =  2
+  generated permutations    =  6
+  minimum-cost permutations =  6
+```
+
+`original-cost` corresponde al costo del primer candidato de
+`all_permutations_info`, que representa el orden original. `minimum-cost` es el
+costo de `best_candidate`. `minimum-cost permutations` cuenta cuántos candidatos
+tienen ese mismo costo mínimo.
+
+## Generadores de Árboles
+
+`ExprStmtTree` representa el plan de ejecución:
+
+```haskell
 data StmtTree a
   = StmtTreeOne a
   | StmtTreeBind (StmtTree a) (StmtTree a)
@@ -252,133 +297,39 @@ data StmtTree a
 type ExprStmtTree = StmtTree (ExprLStmt GhcRn, FreeVars)
 ```
 
-## stmtTreeCost
+Los generadores disponibles son:
 
-``` haskell
--- | Calculate the cost of an ExprStmtTree, with a simple heuristic
+- `mkStmtTreeHeuristic`: algoritmo heurístico `O(n^2)`.
+- `mkStmtTreeOptimal`: algoritmo óptimo `O(n^3)`, activado por
+  `-foptimal-applicative-do`.
+
+El costo se calcula con:
+
+```haskell
 stmtTreeCost :: ExprStmtTree -> Cost
 stmtTreeCost (StmtTreeOne _) = 1
 stmtTreeCost (StmtTreeBind l r) = stmtTreeCost l + stmtTreeCost r
-stmtTreeCost (StmtTreeApplicative ts) = 
+stmtTreeCost (StmtTreeApplicative ts) =
   case ts of
     [] -> 0
     _  -> Partial.maximum (map stmtTreeCost ts)
 ```
 
-## stmtTreeToStmts
+## Reconstrucción a Statements
 
-``` haskell
--- | Turn the ExprStmtTree back into a sequence of statements, using
--- ApplicativeStmt where necessary.
-stmtTreeToStmts
-  :: MonadNames
-  -> HsDoFlavour
-  -> ExprStmtTree
-  -> [ExprLStmt GhcRn]             -- ^ the "tail"
-  -> FreeVars                     -- ^ free variables of the tail
-  -> RnM ( [ExprLStmt GhcRn]       -- ( output statements,
-         , FreeVars )             -- , things we needed
+Después de elegir `best_tree`, `stmtTreeToStmts` reconstruye la lista final de
+statements insertando `ApplicativeStmt` cuando corresponde. Esa parte conserva
+la semántica existente de `ApplicativeDo`, incluyendo manejo de `pure`, `return`,
+`join`, patrones estrictos y patrones refutables.
 
--- If we have a single bind, and we can do it without a join, transform
--- to an ApplicativeStmt.  This corresponds to the rule
---   dsBlock [pat <- rhs] (return expr) = expr <$> rhs
--- In the spec, but we do it here rather than in the desugarer,
--- because we need the typechecker to typecheck the <$> form rather than
--- the bind form, which would give rise to a Monad constraint.
---
--- If we have a single let, and the last statement is @return E@ or @return $ E@,
--- change the @return@ to @pure@.
-stmtTreeToStmts monad_names ctxt (StmtTreeOne (L _ (BindStmt xbs pat rhs), _))
-                tail _tail_fvs
-  | definitelyLazyPattern pat, (False,tail') <- needJoin monad_names tail Nothing
-  -- See Note [ApplicativeDo and strict patterns]
-  = mkApplicativeStmt ctxt [ApplicativeArgOne
-                            { xarg_app_arg_one = xbsrn_failOp xbs
-                            , app_arg_pattern  = pat
-                            , arg_expr         = rhs
-                            , is_body_stmt     = False
-                            }]
-                      False tail'
-stmtTreeToStmts monad_names ctxt (StmtTreeOne (L _ (BodyStmt _ rhs _ _),_))
-                tail _tail_fvs
-  | (False,tail') <- needJoin monad_names tail Nothing
-  = mkApplicativeStmt ctxt
-      [ApplicativeArgOne
-       { xarg_app_arg_one = Nothing
-       , app_arg_pattern  = nlWildPatName
-       , arg_expr         = rhs
-       , is_body_stmt     = True
-       }] False tail'
-stmtTreeToStmts monad_names ctxt (StmtTreeOne (let_stmt@(L _ LetStmt{}),_))
-                tail _tail_fvs = do
-  (pure_name, _) <- lookupQualifiedDoName (HsDoStmt ctxt) pureAName
-  return $ case needJoin monad_names tail (Just pure_name) of
-    (False, tail') -> (let_stmt : tail', emptyNameSet)
-    (True, _) -> (let_stmt : tail, emptyNameSet)
+## Archivos Relacionados
 
-stmtTreeToStmts _monad_names _ctxt (StmtTreeOne (s,_)) tail _tail_fvs =
-  return (s : tail, emptyNameSet)
-
-stmtTreeToStmts monad_names ctxt (StmtTreeBind before after) tail tail_fvs = do
-  (stmts1, fvs1) <- stmtTreeToStmts monad_names ctxt after tail tail_fvs
-  let tail1_fvs = unionNameSets (tail_fvs : map snd (flattenStmtTree after))
-  (stmts2, fvs2) <- stmtTreeToStmts monad_names ctxt before stmts1 tail1_fvs
-  return (stmts2, fvs1 `plusFV` fvs2)
-
-stmtTreeToStmts monad_names ctxt (StmtTreeApplicative trees) tail tail_fvs = do
-   hscEnv <- getTopEnv
-   rdrEnv <- getGlobalRdrEnv
-   comps <- getCompleteMatchesTcM
-   pairs <- mapM (stmtTreeArg ctxt tail_fvs) trees
-   strict <- xoptM LangExt.Strict
-   let (stmts', fvss) = unzip pairs
-   let (need_join, tail') =
-     -- See Note [ApplicativeDo and refutable patterns]
-         if any (hasRefutablePattern strict hscEnv rdrEnv comps) stmts'
-         then (True, tail)
-         else needJoin monad_names tail Nothing
-
-   (stmts, fvs) <- mkApplicativeStmt ctxt stmts' need_join tail'
-   return (stmts, unionNameSets (fvs:fvss))
- where
-   stmtTreeArg _ctxt _tail_fvs (StmtTreeOne (L _ (BindStmt xbs pat exp), _))
-     = return (ApplicativeArgOne
-               { xarg_app_arg_one = xbsrn_failOp xbs
-               , app_arg_pattern  = pat
-               , arg_expr         = exp
-               , is_body_stmt     = False
-               }, emptyFVs)
-   stmtTreeArg _ctxt _tail_fvs (StmtTreeOne (L _ (BodyStmt _ exp _ _), _)) =
-     return (ApplicativeArgOne
-             { xarg_app_arg_one = Nothing
-             , app_arg_pattern  = nlWildPatName
-             , arg_expr         = exp
-             , is_body_stmt     = True
-             }, emptyFVs)
-   stmtTreeArg ctxt tail_fvs tree = do
-     let stmts = flattenStmtTree tree
-         pvarset = mkNameSet (concatMap (collectStmtBinders CollNoDictBinders . unLoc . fst) stmts)
-                     `intersectNameSet` tail_fvs
-         pvars = nameSetElemsStable pvarset
-           -- See Note [Deterministic ApplicativeDo and RecursiveDo desugaring]
-         pat = mkBigLHsVarPatTup pvars
-         tup = mkBigLHsVarTup pvars noExtField
-     (stmts',fvs2) <- stmtTreeToStmts monad_names ctxt tree [] pvarset
-     (mb_ret, fvs1) <-
-        if | Just (L _ (XStmtLR ApplicativeStmt{})) <- lastMaybe stmts' ->
-             return (unLoc tup, emptyNameSet)
-           | otherwise -> do
-             -- Need 'pureAName' and not 'returnMName' here, so that it requires
-             -- 'Applicative' and not 'Monad' whenever possible (until #20540 is fixed).
-             (pure_name, _) <- lookupQualifiedDoName (HsDoStmt ctxt) pureAName
-             let expr = HsApp noExtField (noLocA (genHsVar pure_name)) tup
-             return (expr, emptyFVs)
-     return ( ApplicativeArgMany
-              { xarg_app_arg_many = noExtField
-              , app_stmts         = stmts'
-              , final_expr        = mb_ret
-              , bv_pattern        = pat
-              , stmt_context      = ctxt
-              }
-            , fvs1 `plusFV` fvs2)
-```
+- `vendor/ghc/compiler/GHC/Rename/Expr.hs`: implementación principal.
+- `vendor/ghc/compiler/GHC/Driver/Flags.hs`: ya no define
+  `Opt_ReorderCommutativeMonadsAdo`.
+- `vendor/ghc/compiler/GHC/Driver/Session.hs`: ya no registra
+  `-freorder-commutative-monads-ado`.
+- `vendor/ghc/libraries/ghc-internal/src/GHC/Internal/Control/Monad/CommutativeDo.hs`:
+  marcador interno `__commutative_do__` y operaciones para `QualifiedDo`.
+- `vendor/ghc/libraries/base/src/Control/Monad/CommutativeDo.hs`: módulo público
+  para usar el opt-in desde experimentos.

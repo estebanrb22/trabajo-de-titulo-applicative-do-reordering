@@ -6,6 +6,8 @@ Este documento describe, de forma exhaustiva, donde vive y como fluye
 Baseline de este mapa:
 
 - submodulo `vendor/ghc` en commit `0b36e96cb93db71f201aaa055c4a90b75a8110ef`
+- cambios experimentales documentados hasta `vendor/ghc` commit
+  `707895ce264c82c2dbd5965f28c783083d7ab264`
 
 ---
 
@@ -14,6 +16,9 @@ Baseline de este mapa:
 - `ApplicativeDo` no cambia la sintaxis del parser: cambia el plan interno del
   `do` despues del renombrado.
 - El rearrangement ocurre en `GHC.Rename.Expr` y produce `ApplicativeStmt`.
+- El reordenamiento conmutativo experimental ya no se activa con una flag
+  general; se activa sintacticamente cuando el bloque usa `QualifiedDo` y el
+  modulo calificador exporta el marcador `__commutative_do__`.
 - El typechecker entiende `ApplicativeStmt` en `GHC.Tc.Gen.Match`.
 - El desugar final de `ApplicativeStmt` vive en `GHC.HsToCore.Expr`.
 - El `do` normal (sin `ApplicativeDo`) hoy se expande en
@@ -32,8 +37,11 @@ Baseline de este mapa:
 - `vendor/ghc/compiler/GHC/Driver/Flags.hs`
   - mapea `LangExt.ApplicativeDo -> "ApplicativeDo"`.
   - define `Opt_OptimalApplicativeDo`.
+  - ya no define `Opt_ReorderCommutativeMonadsAdo`.
 - `vendor/ghc/compiler/GHC/Driver/Session.hs`
   - registra `-foptimal-applicative-do`.
+  - ya no registra `-freorder-commutative-monads-ado`; el opt-in conmutativo
+    se delega a `QualifiedDo` y al marcador exportado por el modulo calificador.
 
 ### 1.2 Parser y construccion inicial de `do`
 
@@ -52,6 +60,13 @@ Baseline de este mapa:
   - `rnStmtsWithFreeVars` (anota `Stmt` con `FreeVars`).
   - `postProcessStmtsForApplicativeDo` (gate principal por extension/contexto).
   - `rearrangeForApplicativeDo` (algoritmo principal).
+  - `isCommutativeQualifiedDo` (detecta opt-in con `QualifiedDo` via
+    `__commutative_do__`).
+  - `computeStmtsInfo`, `buildStmtsDependencyGraph` y
+    `enumerateSemanticTopSortsBounded` (grafo RAW/WAR/WAW y permutaciones
+    semanticas validas).
+  - `StmtsPermutationInfo` y trazas `rearrangeForADo-permutation` /
+    `rearrangeForADo final tree:`.
   - `mkStmtTreeHeuristic` / `mkStmtTreeOptimal`.
   - `segments`, `splitSegment`, `slurpIndependentStmts`.
   - `stmtTreeToStmts`, `mkApplicativeStmt`, `needJoin`, `isReturnApp`.
@@ -133,6 +148,8 @@ Parser (GHC/Parser.y + PostProcess)
 Renamer (GHC.Rename.Expr.rnExpr)
   - rnStmtsWithFreeVars
   - postProcessStmtsForApplicativeDo (si -XApplicativeDo y DoExpr)
+  - isCommutativeQualifiedDo detecta M.do con __commutative_do__
+  - si es conmutativo, enumera permutaciones semanticas validas
   - rearrangeForApplicativeDo -> inserta XStmtLR(ApplicativeStmt)
   |
   v
@@ -177,7 +194,33 @@ transformacion solo si:
 
 Si no se cumple, usa `noPostProcessStmts` y remueve solo anotaciones de FVs.
 
-### 3.2 `tcDoStmts` y modos
+### 3.2 Opt-in conmutativo con `QualifiedDo`
+
+El reordenamiento conmutativo experimental se decide dentro de
+`rearrangeForApplicativeDo` con:
+
+```haskell
+commutativeDoMarkerOcc = mkVarOccFS (fsLit "__commutative_do__")
+
+isCommutativeQualifiedDo :: HsDoFlavour -> RnM Bool
+isCommutativeQualifiedDo (DoExpr (Just modName)) =
+  isJust <$> lookupOccRn_maybe (mkRdrQual modName commutativeDoMarkerOcc)
+isCommutativeQualifiedDo (MDoExpr (Just modName)) =
+  isJust <$> lookupOccRn_maybe (mkRdrQual modName commutativeDoMarkerOcc)
+isCommutativeQualifiedDo _ =
+  return False
+```
+
+La flag `-freorder-commutative-monads-ado` fue eliminada. Por tanto, el usuario
+no activa la conmutacion con una opcion de compilacion, sino escribiendo un
+bloque `M.do` donde `M` exporta `__commutative_do__`. El modulo experimental
+`Control.Monad.CommutativeDo` cumple ese contrato y ademas provee las
+operaciones requeridas por `QualifiedDo`.
+
+Si `commutative_do = False`, `rearrangeForApplicativeDo` conserva el orden
+original como unico candidato y sigue usando el flujo normal de `ApplicativeDo`.
+
+### 3.3 `tcDoStmts` y modos
 
 En `GHC.Tc.Gen.Match.tcDoStmts`:
 
@@ -282,7 +325,61 @@ Dos variantes:
 - llama `needJoin` para detectar si puede convertir `return` a `pure`.
 - si no requiere `join`, puede devolver variante simplificada.
 
-### 5.3 Arbol de plan (`StmtTree`)
+### 5.3 Permutaciones semanticas para monadas conmutativas
+
+Cuando `isCommutativeQualifiedDo ctxt` retorna `True`, el Renamer construye un
+grafo de precedencia antes de calcular el arbol de ApplicativeDo:
+
+```haskell
+buildStmtsDependencyGraph :: [(ExprLStmt GhcRn, FreeVars)] -> StmtDepGraph
+enumerateSemanticTopSortsBounded :: StmtDepGraph -> [[StmtDepInfo]]
+```
+
+Cada nodo `StmtDepInfo` conserva:
+
+- indice original del statement,
+- statement renombrado,
+- `FreeVars` originales,
+- lecturas locales (`sdiReadsLocal`),
+- escrituras locales (`sdiWritesLocal`).
+
+Las aristas representan dependencias que deben preservarse:
+
+- `RAW = WRITE_i ∩ READ_j`,
+- `WAR = READ_i ∩ WRITE_j`,
+- `WAW = WRITE_i ∩ WRITE_j`.
+
+El enumerador produce todos los ordenamientos topologicos validos del grafo. Si
+el bloque no es conmutativo, se usa una unica permutacion: el orden original.
+
+### 5.4 Informacion de candidato y trazas
+
+Cada permutacion se empareja con su arbol y costo en:
+
+```haskell
+data StmtsPermutationInfo = StmtsPermutationInfo
+  { candIndex     :: !Int
+  , candPerm      :: [StmtDepInfo]
+  , candTree      :: ExprStmtTree
+  , candCost      :: !Cost
+  }
+```
+
+Esto evita perder la asociacion entre la permutacion, el `StmtTree` generado y
+su costo. El mejor candidato se elige con `minimumBy (comparing candCost)`.
+
+Las trazas nuevas del Renamer son:
+
+- `rearrangeForADo-commutative-do`: indica si el bloque es conmutativo.
+- `rearrangeForADo-StmtsDependencyGraph` y `rearrangeForADo-dep`: muestran
+  aristas y dependencias RAW/WAR/WAW.
+- `rearrangeForADo-permutation`: muestra cada candidato, orden de indices,
+  statements, arbol resultante y costo.
+- `rearrangeForADo final tree:`: muestra el candidato elegido, su arbol,
+  `original-cost`, `minimum-cost`, cantidad de permutaciones generadas y cantidad
+  de permutaciones con costo minimo.
+
+### 5.5 Arbol de plan (`StmtTree`)
 
 Tipo interno:
 
@@ -300,7 +397,7 @@ Costos en algoritmo optimo:
 - nodo bind: suma `c1 + c2`.
 - nodo applicative: `maximum` de costos de ramas (modelo de paralelismo).
 
-### 5.4 Segmentacion por independencia
+### 5.6 Segmentacion por independencia
 
 `segments` divide secuencias usando FVs/BVs:
 
@@ -310,7 +407,7 @@ Costos en algoritmo optimo:
 - evita separar `LetStmt` en segmento aislado cuando puede fusionarlo con el
   siguiente (`merge`), para no forzar `Monad` innecesario.
 
-### 5.5 Split heuristico dentro de segmento indivisible
+### 5.7 Split heuristico dentro de segmento indivisible
 
 `splitSegment` usa `slurpIndependentStmts`:
 
@@ -318,7 +415,7 @@ Costos en algoritmo optimo:
 - distingue `LetStmt` y `BindStmt` para mejorar agrupacion.
 - protege contra loop infinito (`#14163`) asegurando que el split sea real.
 
-### 5.6 Patrones estrictos y lazyness
+### 5.8 Patrones estrictos y lazyness
 
 `definitelyLazyPattern` (analisis conservador):
 
@@ -330,7 +427,7 @@ Regla:
 - si el patron no es definitivamente perezoso, se fuerza dependencia con
   la sentencia siguiente para no cambiar strictness semantica.
 
-### 5.7 Patrones refutables y decision de `join`
+### 5.9 Patrones refutables y decision de `join`
 
 En `stmtTreeToStmts`:
 
@@ -339,7 +436,7 @@ En `stmtTreeToStmts`:
 - si hay patron refutable en algun argumento applicative, se fuerza `join`
   para que los tipos y `fail` monadico cierren correctamente.
 
-### 5.8 Construccion final de `ApplicativeStmt`
+### 5.10 Construccion final de `ApplicativeStmt`
 
 `mkApplicativeStmt`:
 
@@ -350,7 +447,7 @@ En `stmtTreeToStmts`:
 - crea nodo `XStmtLR (ApplicativeStmt ...)`.
 - deja cola (`body_stmts`) luego del nodo applicative.
 
-### 5.9 `needJoin` / `isReturnApp` (normalizacion de cola)
+### 5.11 `needJoin` / `isReturnApp` (normalizacion de cola)
 
 `needJoin` decide dos cosas:
 
@@ -485,7 +582,40 @@ Regla:
 - si el bloque es `M.do`, busca operadores calificados en `M`.
 - si no, aplica logica normal de rebindable syntax.
 
-### 10.2 Operadores usados por `ApplicativeDo`
+Para el experimento de monadas conmutativas, `QualifiedDo` tambien funciona
+como opt-in sintactico: `GHC.Rename.Expr.isCommutativeQualifiedDo` busca el
+identificador calificado `M.__commutative_do__`. Si existe, el bloque entra al
+camino de permutaciones semanticas validas.
+
+Esto reemplaza a la flag general `-freorder-commutative-monads-ado`, que fue
+eliminada de `GHC.Driver.Flags` y `GHC.Driver.Session`. La decision de
+conmutatividad queda localizada en el modulo que el usuario importa de forma
+calificada.
+
+### 10.2 Modulos de soporte para conmutatividad
+
+- `GHC.Internal.Control.Monad.CommutativeDo` define:
+  - clase marcador `CommutativeMonad`,
+  - marcador `__commutative_do__`,
+  - operadores para `QualifiedDo`: `(>>=)`, `(>>)`, `return`, `pure`, `fmap`,
+    `(<*>)`, `join`, `fail`.
+- `Control.Monad.CommutativeDo` reexporta el modulo interno desde `base`.
+
+Un uso esperado en experimentos es:
+
+```haskell
+{-# LANGUAGE ApplicativeDo #-}
+{-# LANGUAGE QualifiedDo #-}
+
+import qualified Control.Monad.CommutativeDo as CD
+
+example = CD.do
+  x <- Just 1
+  y <- Just 2
+  CD.return (x + y)
+```
+
+### 10.3 Operadores usados por `ApplicativeDo`
 
 `ApplicativeDo` puede requerir:
 
