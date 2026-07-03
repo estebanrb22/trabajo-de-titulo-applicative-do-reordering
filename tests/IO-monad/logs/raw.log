@@ -1,0 +1,50 @@
+ppsfa
+  [(x_a1T2 <- putStrLn "A" >> pure 1, {>>, pure, putStrLn}),
+   (y_a1T3 <- putStrLn "B" >> pure 2, {>>, pure, putStrLn}),
+   (CD.return (x_a1T2 + y_a1T3), {x_a1T2, y_a1T3, +, CD.return})]
+addUsedGRE CD.__commutative_do__
+rearrangeForADo-commutative-do commutative-do = True
+rearrangeForADo-StmtsDependencyGraph
+rearrangeForADo-permutation
+  candidate   =  0
+  index-order =  [1, 2]
+  statements  =  [x_a1T2 <- putStrLn "A" >> pure 1,
+                  y_a1T3 <- putStrLn "B" >> pure 2]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x_a1T2 <- putStrLn "A" >> pure 1,
+                     {>>, pure, putStrLn}))
+       (StmtTreeOne (y_a1T3 <- putStrLn "B" >> pure 2,
+                     {>>, pure, putStrLn})))
+  tree-cost = 1
+rearrangeForADo-permutation
+  candidate   =  1
+  index-order =  [2, 1]
+  statements  =  [y_a1T3 <- putStrLn "B" >> pure 2,
+                  x_a1T2 <- putStrLn "A" >> pure 1]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (y_a1T3 <- putStrLn "B" >> pure 2,
+                     {>>, pure, putStrLn}))
+       (StmtTreeOne (x_a1T2 <- putStrLn "A" >> pure 1,
+                     {>>, pure, putStrLn})))
+  tree-cost = 1
+rearrangeForADo final tree:
+  candidate   =  0
+  index-order =  [1, 2]
+  statements  =  [x_a1T2 <- putStrLn "A" >> pure 1,
+                  y_a1T3 <- putStrLn "B" >> pure 2]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x_a1T2 <- putStrLn "A" >> pure 1,
+                     {>>, pure, putStrLn}))
+       (StmtTreeOne (y_a1T3 <- putStrLn "B" >> pure 2,
+                     {>>, pure, putStrLn})))
+  tree-cost = 1
+rearrangeForADo-Summary:
+  minimum-cost-perm-index      = 0
+  original-cost                = 2
+  applicative-do-cost          = 1
+  reorder-and-ado-minimum-cost = 1
+  generated-permutations       = 2
+  minimum-cost-permutations    = 2

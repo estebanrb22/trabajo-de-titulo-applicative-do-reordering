@@ -1,0 +1,1383 @@
+[1 of 1] Compiling Main             ( experiments/maybe-example-qdo/main.hs, nothing )
+rn1 []
+rn1: checking family instance consistency {
+rn1: } checking family instance consistency
+rn1a
+rn12
+getLocalNonValBinders 1 []
+extendGlobalRdrEnvRn 2
+  GlobalRdrEnv (locals only) {
+    }
+addUsedGRE CD.CommutativeMonad
+getLocalNonValBinders 2 []
+extendGlobalRdrEnvRn 2
+  GlobalRdrEnv (locals only) {
+    }
+extendGlobalRdrEnvRn 2
+  GlobalRdrEnv (locals only) {
+    }
+newTopSrcBinder
+  Main
+  safeDiv
+  experiments/maybe-example-qdo/main.hs:10:1-7
+newTopSrcBinder
+  Main
+  mixedDependencyExample
+  experiments/maybe-example-qdo/main.hs:14:1-22
+newTopSrcBinder
+  Main
+  main
+  experiments/maybe-example-qdo/main.hs:22:1-4
+rnSrcDecls [Main.safeDiv, Main.mixedDependencyExample, Main.main]
+extendGlobalRdrEnvRn 2
+  GlobalRdrEnv (locals only) {
+    main:
+      Main.main Vanilla
+        defined at experiments/maybe-example-qdo/main.hs:22:1
+    safeDiv:
+      Main.safeDiv Vanilla
+        defined at experiments/maybe-example-qdo/main.hs:10:1
+    mixedDependencyExample:
+      Main.mixedDependencyExample Vanilla
+        defined at experiments/maybe-example-qdo/main.hs:14:1 }
+Start rnTyClDecls
+  [TyClGroup
+     []
+     []
+     []
+     [instance CD.CommutativeMonad Maybe]]
+rnTyClDecls
+  tyClGroupTyClDecls: []
+  tc_names: {}
+rnSrcIstDecl { instance CD.CommutativeMonad Maybe
+rnHsSigType CD.CommutativeMonad Maybe
+rnImplicitTvOccs
+  []
+  []
+addUsedGRE CD.CommutativeMonad
+addUsedGRE Maybe
+rnSrcInstDecl
+  CD.CommutativeMonad Maybe
+  []
+rnSrcIstDecl end }
+rnTyClDecls SCC analysis
+  rdr_env: [0_ESeJj :-> [main Vanilla
+                           defined at experiments/maybe-example-qdo/main.hs:22:1],
+            0_ESfma :-> [Maybe TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Maybe’)],
+            0_ESfmb :-> [safeDiv Vanilla
+                           defined at experiments/maybe-example-qdo/main.hs:10:1],
+            0_ESfmc :-> [. Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESfmr :-> [- parent:Num Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Num’)],
+            0_ESfms :-> [* parent:Num Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Num’)],
+            0_ESfmI :-> [Int TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’)],
+            0_ESfmK :-> [Nothing parent:Maybe ConLike ConInfo {con_ty: ConIsData ([Nothing,
+                                                                                   Just]), fields: ConIsNullary}
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Maybe’)],
+            0_ESfmN :-> [Just parent:Maybe ConLike ConInfo {con_ty: ConIsData ([Nothing,
+                                                                                Just]), fields: ConHasPositionalArgs}
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Maybe’)],
+            0_ESfmO :-> [div parent:Integral Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfmP :-> [mixedDependencyExample Vanilla
+                           defined at experiments/maybe-example-qdo/main.hs:14:1],
+            0_ESfmX :-> [+ parent:Num Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Num’)],
+            0_ESfmZ :-> [IO TyCon newtype
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’)],
+            0_ESfn0 :-> [print Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.System.IO’)],
+            0_ESfn2 :-> [Foldable TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfn3 :-> [$! Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESfn4 :-> [++ Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESfn5 :-> [=<< Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESfn6 :-> [asTypeOf Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESfn7 :-> [const Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESfn8 :-> [flip Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESfn9 :-> [id Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESfna :-> [until Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESfnb :-> [&& Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Classes’)],
+            0_ESfnc :-> [not Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Classes’)],
+            0_ESfnd :-> [|| Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Classes’)],
+            0_ESfne :-> [either Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Either’)],
+            0_ESfnf :-> [all Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfng :-> [and Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfnh :-> [any Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfni :-> [concat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfnj :-> [concatMap Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfnk :-> [mapM_ Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfnl :-> [notElem Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfnm :-> [or Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfnn :-> [sequence_ Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfno :-> [<$> Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Functor’)],
+            0_ESfnp :-> [maybe Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Maybe’)],
+            0_ESfnq :-> [lines Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.OldList’)],
+            0_ESfnr :-> [unlines Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.OldList’)],
+            0_ESfns :-> [unwords Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.OldList’)],
+            0_ESfnt :-> [words Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.OldList’)],
+            0_ESfnu :-> [curry Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Tuple’)],
+            0_ESfnv :-> [fst Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Tuple’)],
+            0_ESfnw :-> [snd Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Tuple’)],
+            0_ESfnx :-> [uncurry Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Tuple’)],
+            0_ESfny :-> [error Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Err’)],
+            0_ESfnz :-> [errorWithoutStackTrace Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Err’)],
+            0_ESfnA :-> [undefined Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Err’)],
+            0_ESfnB :-> [ioError Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.IO.Exception’)],
+            0_ESfnC :-> [userError Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.IO.Exception’)],
+            0_ESfnD :-> [!! Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnE :-> [break Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnF :-> [cycle Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnG :-> [drop Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnH :-> [dropWhile Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnI :-> [filter Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnJ :-> [head Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnK :-> [init Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnL :-> [iterate Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnM :-> [last Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnN :-> [lookup Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnO :-> [repeat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnP :-> [replicate Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnQ :-> [reverse Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnR :-> [scanl Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnS :-> [scanl1 Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnT :-> [scanr Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnU :-> [scanr1 Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnV :-> [span Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnW :-> [splitAt Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnX :-> [tail Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnY :-> [take Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfnZ :-> [takeWhile Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfo0 :-> [unzip Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfo1 :-> [unzip3 Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfo2 :-> [zip Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfo3 :-> [zip3 Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfo4 :-> [zipWith Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfo5 :-> [zipWith3 Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.List’)],
+            0_ESfo6 :-> [subtract Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Num’)],
+            0_ESfo7 :-> [lex Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Read’)],
+            0_ESfo8 :-> [readParen Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Read’)],
+            0_ESfo9 :-> [^ Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfoa :-> [^^ Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfob :-> [even Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfoc :-> [gcd Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfod :-> [lcm Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfoe :-> [odd Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfof :-> [showChar Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Show’)],
+            0_ESfog :-> [showParen Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Show’)],
+            0_ESfoh :-> [showString Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Show’)],
+            0_ESfoi :-> [shows Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Show’)],
+            0_ESfoj :-> [appendFile Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.System.IO’)],
+            0_ESfok :-> [getChar Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.System.IO’)],
+            0_ESfol :-> [getContents Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.System.IO’)],
+            0_ESfom :-> [getLine Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.System.IO’)],
+            0_ESfon :-> [interact Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.System.IO’)],
+            0_ESfoo :-> [putChar Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.System.IO’)],
+            0_ESfop :-> [putStr Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.System.IO’)],
+            0_ESfoq :-> [putStrLn Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.System.IO’)],
+            0_ESfor :-> [readFile Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.System.IO’)],
+            0_ESfos :-> [readIO Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.System.IO’)],
+            0_ESfot :-> [readLn Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.System.IO’)],
+            0_ESfou :-> [writeFile Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.System.IO’)],
+            0_ESfov :-> [read Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Text.Read’)],
+            0_ESfow :-> [reads Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Text.Read’)],
+            0_ESfox :-> [<* parent:Applicative Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESfoy :-> [liftA2 parent:Applicative Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESfoz :-> [<$ parent:Functor Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESfoA :-> [/= parent:Eq Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Classes’)],
+            0_ESfoB :-> [< parent:Ord Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Classes’)],
+            0_ESfoC :-> [<= parent:Ord Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Classes’)],
+            0_ESfoD :-> [> parent:Ord Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Classes’)],
+            0_ESfoE :-> [compare parent:Ord Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Classes’)],
+            0_ESfoF :-> [max parent:Ord Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Classes’)],
+            0_ESfoG :-> [min parent:Ord Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Classes’)],
+            0_ESfoH :-> [elem parent:Foldable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfoI :-> [foldMap parent:Foldable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfoJ :-> [foldl parent:Foldable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfoK :-> [foldl' parent:Foldable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfoL :-> [foldl1 parent:Foldable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfoM :-> [foldr parent:Foldable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfoN :-> [foldr1 parent:Foldable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfoO :-> [length parent:Foldable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfoP :-> [maximum parent:Foldable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfoQ :-> [minimum parent:Foldable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfoR :-> [null parent:Foldable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfoS :-> [product parent:Foldable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfoT :-> [sum parent:Foldable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Foldable’)],
+            0_ESfoU :-> [mapM parent:Traversable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Traversable’)],
+            0_ESfoV :-> [sequence parent:Traversable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Traversable’)],
+            0_ESfoW :-> [sequenceA parent:Traversable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Traversable’)],
+            0_ESfoX :-> [traverse parent:Traversable Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Traversable’)],
+            0_ESfoY :-> [maxBound parent:Bounded Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Enum’)],
+            0_ESfoZ :-> [minBound parent:Bounded Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Enum’)],
+            0_ESfp0 :-> [fromEnum parent:Enum Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Enum’)],
+            0_ESfp1 :-> [pred parent:Enum Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Enum’)],
+            0_ESfp2 :-> [succ parent:Enum Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Enum’)],
+            0_ESfp3 :-> [toEnum parent:Enum Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Enum’)],
+            0_ESfp4 :-> [** parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfp5 :-> [acos parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfp6 :-> [acosh parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfp7 :-> [asin parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfp8 :-> [asinh parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfp9 :-> [atan parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpa :-> [atanh parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpb :-> [cos parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpc :-> [cosh parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpd :-> [exp parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpe :-> [log parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpf :-> [logBase parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpg :-> [pi parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfph :-> [sin parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpi :-> [sinh parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpj :-> [sqrt parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpk :-> [tan parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpl :-> [tanh parent:Floating Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpm :-> [atan2 parent:RealFloat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpn :-> [decodeFloat parent:RealFloat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpo :-> [encodeFloat parent:RealFloat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpp :-> [exponent parent:RealFloat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpq :-> [floatDigits parent:RealFloat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpr :-> [floatRadix parent:RealFloat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfps :-> [floatRange parent:RealFloat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpt :-> [isDenormalized parent:RealFloat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpu :-> [isIEEE parent:RealFloat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpv :-> [isInfinite parent:RealFloat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpw :-> [isNaN parent:RealFloat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpx :-> [isNegativeZero parent:RealFloat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpy :-> [scaleFloat parent:RealFloat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpz :-> [significand parent:RealFloat Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfpA :-> [FilePath TyCon type synonym
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.IO’)],
+            0_ESfpB :-> [IOError TyCon type synonym
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.IO.Exception’)],
+            0_ESfpC :-> [abs parent:Num Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Num’)],
+            0_ESfpD :-> [signum parent:Num Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Num’)],
+            0_ESfpE :-> [readList parent:Read Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Read’)],
+            0_ESfpF :-> [readsPrec parent:Read Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Read’)],
+            0_ESfpG :-> [/ parent:Fractional Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfpH :-> [recip parent:Fractional Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfpI :-> [divMod parent:Integral Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfpJ :-> [mod parent:Integral Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfpK :-> [quot parent:Integral Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfpL :-> [quotRem parent:Integral Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfpM :-> [rem parent:Integral Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfpN :-> [ceiling parent:RealFrac Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfpO :-> [floor parent:RealFrac Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfpP :-> [properFraction parent:RealFrac Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfpQ :-> [round parent:RealFrac Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfpR :-> [truncate parent:RealFrac Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESfpS :-> [show parent:Show Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Show’)],
+            0_ESfpT :-> [showList parent:Show Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Show’)],
+            0_ESfpU :-> [showsPrec parent:Show Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Show’)],
+            0_ESfpV :-> [ShowS TyCon type synonym
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Show’)],
+            0_ESfpW :-> [ReadS TyCon type synonym
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Text.ParserCombinators.ReadP’)],
+            0_ESfrL :-> [Bool TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’)],
+            0_ESfrM :-> [False parent:Bool ConLike ConInfo {con_ty: ConIsData ([False,
+                                                                                True]), fields: ConIsNullary}
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’)],
+            0_ESfrN :-> [True parent:Bool ConLike ConInfo {con_ty: ConIsData ([False,
+                                                                               True]), fields: ConIsNullary}
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’)],
+            0_ESfrO :-> [Char TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’)],
+            0_ESfrQ :-> [Double TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’)],
+            0_ESfrS :-> [Float TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’)],
+            0_ESfrV :-> [Word TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’)],
+            0_ESfrY :-> [Ordering TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’)],
+            0_ESfrZ :-> [LT parent:Ordering ConLike ConInfo {con_ty: ConIsData ([LT,
+                                                                                 EQ,
+                                                                                 GT]), fields: ConIsNullary}
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’)],
+            0_ESfs0 :-> [EQ parent:Ordering ConLike ConInfo {con_ty: ConIsData ([LT,
+                                                                                 EQ,
+                                                                                 GT]), fields: ConIsNullary}
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’)],
+            0_ESfs1 :-> [GT parent:Ordering ConLike ConInfo {con_ty: ConIsData ([LT,
+                                                                                 EQ,
+                                                                                 GT]), fields: ConIsNullary}
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’)],
+            0_ESfs4 :-> [~ TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’)],
+            0_ESfsS :-> [Integer TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Bignum.Integer’)],
+            0_ESfsZ :-> [$ Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESft2 :-> [otherwise Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESft5 :-> [map Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESft7 :-> [CD.join Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’)],
+            0_ESft8 :-> [return parent:Monad Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’),
+                         CD.return Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’)],
+            0_ESft9 :-> [>> parent:Monad Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’),
+                         CD.>> Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’)],
+            0_ESfta :-> [>>= parent:Monad Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’),
+                         CD.>>= Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’)],
+            0_ESfte :-> [fmap parent:Functor Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’),
+                         CD.fmap Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’)],
+            0_ESftf :-> [*> parent:Applicative Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESftg :-> [<*> parent:Applicative Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’),
+                         CD.<*> Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’)],
+            0_ESfth :-> [pure parent:Applicative Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’),
+                         CD.pure Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’)],
+            0_ESfti :-> [mconcat parent:Monoid Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESftj :-> [mappend parent:Monoid Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESftk :-> [mempty parent:Monoid Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESftl :-> [Monoid TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESftm :-> [<> parent:Semigroup Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESftn :-> [Semigroup TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESfto :-> [Applicative TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESftp :-> [Functor TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESftq :-> [Monad TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESftr :-> [String TyCon type synonym
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Base’)],
+            0_ESftw :-> [== parent:Eq Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Classes’)],
+            0_ESftx :-> [>= parent:Ord Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Classes’)],
+            0_ESfty :-> [Ord TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Classes’)],
+            0_ESftz :-> [Eq TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Classes’)],
+            0_ESftA :-> [Right parent:Either ConLike ConInfo {con_ty: ConIsData ([Left,
+                                                                                  Right]), fields: ConHasPositionalArgs}
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Either’)],
+            0_ESftB :-> [Left parent:Either ConLike ConInfo {con_ty: ConIsData ([Left,
+                                                                                 Right]), fields: ConHasPositionalArgs}
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Either’)],
+            0_ESftC :-> [Either TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Either’)],
+            0_ESftE :-> [fromInteger parent:Num Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Num’)],
+            0_ESftF :-> [negate parent:Num Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Num’)],
+            0_ESftG :-> [Num TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Num’)],
+            0_ESftH :-> [Read TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Read’)],
+            0_ESftI :-> [realToFrac Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESftJ :-> [fromIntegral Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESftK :-> [toRational parent:Real Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESftL :-> [toInteger parent:Integral Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESftM :-> [fromRational parent:Fractional Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESftP :-> [Rational TyCon type synonym
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESftS :-> [RealFrac TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESftT :-> [Fractional TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESftU :-> [Integral TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESftV :-> [Real TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’)],
+            0_ESftW :-> [Show TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Show’)],
+            0_ESftX :-> [Traversable TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Data.Traversable’)],
+            0_ESftY :-> [enumFromTo parent:Enum Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Enum’)],
+            0_ESftZ :-> [enumFromThenTo parent:Enum Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Enum’)],
+            0_ESfu0 :-> [enumFromThen parent:Enum Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Enum’)],
+            0_ESfu1 :-> [enumFrom parent:Enum Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Enum’)],
+            0_ESfu2 :-> [Enum TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Enum’)],
+            0_ESfu3 :-> [Bounded TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Enum’)],
+            0_ESfu8 :-> [RealFloat TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfu9 :-> [Floating TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Float’)],
+            0_ESfxt :-> [CD.__commutative_do__ Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’)],
+            0_ESfxu :-> [fail parent:MonadFail Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Control.Monad.Fail’),
+                         CD.fail Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’)],
+            0_ESfxv :-> [CD.CommutativeMonad TyCon class
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’)],
+            0_ESfRU :-> [seq Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Prim’)],
+            0_ESfRV :-> [MonadFail TyCon class
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Control.Monad.Fail’)]]
+rnTycl dependency analysis made groups
+  [TyClGroup
+     []
+     []
+     []
+     [instance CD.CommutativeMonad Maybe]]
+Start rnmono
+rnImplicitTvOccs
+  []
+  []
+addUsedGRE IO
+rnImplicitTvOccs
+  []
+  []
+addUsedGRE Maybe
+addUsedGRE Int
+rnImplicitTvOccs
+  []
+  []
+addUsedGRE Int
+addUsedGRE Int
+addUsedGRE Maybe
+addUsedGRE Int
+addUsedGRE Nothing
+addUsedGRE Just
+checkThLocalName n_a1T2 {0} Comp
+checkThLocalName d_a1T3 {0} Comp
+addUsedGRE div
+checkThLocalName div {0} Comp
+lookupFixityRn_either:
+  looking up name in iface and found: div
+                                      infixl 7
+addUsedGRE Just
+addUsedGRE CD.>>=
+addUsedGRE Just
+addUsedGRE CD.>>=
+checkThLocalName safeDiv {0} Comp
+checkThLocalName x1_a1T4 {0} Comp
+addUsedGRE CD.>>=
+addUsedGRE Just
+checkThLocalName x2_a1T5 {0} Comp
+addUsedGRE +
+checkThLocalName + {0} Comp
+lookupFixityRn_either:
+  looking up name in iface and found: +
+                                      infixl 6
+addUsedGRE CD.>>=
+addUsedGRE CD.return
+checkThLocalName CD.return {0} Comp
+checkThLocalName x3_a1T6 {0} Comp
+checkThLocalName x4_a1T7 {0} Comp
+addUsedGRE +
+checkThLocalName + {0} Comp
+lookupFixityRn_either:
+  looking up name in iface and found: +
+                                      infixl 6
+ppsfa
+  [(x1_a1T4 <- Just 10, {Just}), (x2_a1T5 <- Just 5, {Just}),
+   (x3_a1T6 <- safeDiv x1_a1T4 2, {x1_a1T4, safeDiv}),
+   (x4_a1T7 <- Just (x2_a1T5 + 15), {Just, x2_a1T5, +}),
+   (CD.return (x3_a1T6 + x4_a1T7), {x3_a1T6, x4_a1T7, +, CD.return})]
+addUsedGRE CD.__commutative_do__
+rearrangeForADo-commutative-do commutative-do = True
+rearrangeForADo-StmtsDependencyGraph
+rearrangeForADo-dep
+  pair           = 1  ->  3
+  RAW            = {x1_a1T4}
+  WAR            = {}
+  WAW            = {}
+rearrangeForADo-dep
+  pair           = 2  ->  4
+  RAW            = {x2_a1T5}
+  WAR            = {}
+  WAW            = {}
+rearrangeForADo-permutation
+  candidate   =  0
+  index order =  [1, 2, 3, 4]
+  statements  =  [x1_a1T4 <- Just 10, x2_a1T5 <- Just 5,
+                  x3_a1T6 <- safeDiv x1_a1T4 2, x4_a1T7 <- Just (x2_a1T5 + 15)]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (x1_a1T4 <- Just 10, {Just}))
+          (StmtTreeOne (x2_a1T5 <- Just 5, {Just})))
+       (StmtTreeApplicative
+          (StmtTreeOne (x3_a1T6 <- safeDiv x1_a1T4 2, {x1_a1T4, safeDiv}))
+          (StmtTreeOne (x4_a1T7 <- Just (x2_a1T5 + 15),
+                        {Just, x2_a1T5, +}))))
+  actual cost = 2
+rearrangeForADo-permutation
+  candidate   =  1
+  index order =  [1, 2, 4, 3]
+  statements  =  [x1_a1T4 <- Just 10, x2_a1T5 <- Just 5,
+                  x4_a1T7 <- Just (x2_a1T5 + 15), x3_a1T6 <- safeDiv x1_a1T4 2]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (x1_a1T4 <- Just 10, {Just}))
+          (StmtTreeOne (x2_a1T5 <- Just 5, {Just})))
+       (StmtTreeApplicative
+          (StmtTreeOne (x4_a1T7 <- Just (x2_a1T5 + 15), {Just, x2_a1T5, +}))
+          (StmtTreeOne (x3_a1T6 <- safeDiv x1_a1T4 2, {x1_a1T4, safeDiv}))))
+  actual cost = 2
+rearrangeForADo-permutation
+  candidate   =  2
+  index order =  [1, 3, 2, 4]
+  statements  =  [x1_a1T4 <- Just 10, x3_a1T6 <- safeDiv x1_a1T4 2,
+                  x2_a1T5 <- Just 5, x4_a1T7 <- Just (x2_a1T5 + 15)]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeBind
+          (StmtTreeOne (x1_a1T4 <- Just 10, {Just}))
+          (StmtTreeOne (x3_a1T6 <- safeDiv x1_a1T4 2, {x1_a1T4, safeDiv})))
+       (StmtTreeBind
+          (StmtTreeOne (x2_a1T5 <- Just 5, {Just}))
+          (StmtTreeOne (x4_a1T7 <- Just (x2_a1T5 + 15),
+                        {Just, x2_a1T5, +}))))
+  actual cost = 2
+rearrangeForADo-permutation
+  candidate   =  3
+  index order =  [2, 1, 3, 4]
+  statements  =  [x2_a1T5 <- Just 5, x1_a1T4 <- Just 10,
+                  x3_a1T6 <- safeDiv x1_a1T4 2, x4_a1T7 <- Just (x2_a1T5 + 15)]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (x2_a1T5 <- Just 5, {Just}))
+          (StmtTreeOne (x1_a1T4 <- Just 10, {Just})))
+       (StmtTreeApplicative
+          (StmtTreeOne (x3_a1T6 <- safeDiv x1_a1T4 2, {x1_a1T4, safeDiv}))
+          (StmtTreeOne (x4_a1T7 <- Just (x2_a1T5 + 15),
+                        {Just, x2_a1T5, +}))))
+  actual cost = 2
+rearrangeForADo-permutation
+  candidate   =  4
+  index order =  [2, 1, 4, 3]
+  statements  =  [x2_a1T5 <- Just 5, x1_a1T4 <- Just 10,
+                  x4_a1T7 <- Just (x2_a1T5 + 15), x3_a1T6 <- safeDiv x1_a1T4 2]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (x2_a1T5 <- Just 5, {Just}))
+          (StmtTreeOne (x1_a1T4 <- Just 10, {Just})))
+       (StmtTreeApplicative
+          (StmtTreeOne (x4_a1T7 <- Just (x2_a1T5 + 15), {Just, x2_a1T5, +}))
+          (StmtTreeOne (x3_a1T6 <- safeDiv x1_a1T4 2, {x1_a1T4, safeDiv}))))
+  actual cost = 2
+rearrangeForADo-permutation
+  candidate   =  5
+  index order =  [2, 4, 1, 3]
+  statements  =  [x2_a1T5 <- Just 5, x4_a1T7 <- Just (x2_a1T5 + 15),
+                  x1_a1T4 <- Just 10, x3_a1T6 <- safeDiv x1_a1T4 2]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeBind
+          (StmtTreeOne (x2_a1T5 <- Just 5, {Just}))
+          (StmtTreeOne (x4_a1T7 <- Just (x2_a1T5 + 15), {Just, x2_a1T5, +})))
+       (StmtTreeBind
+          (StmtTreeOne (x1_a1T4 <- Just 10, {Just}))
+          (StmtTreeOne (x3_a1T6 <- safeDiv x1_a1T4 2, {x1_a1T4, safeDiv}))))
+  actual cost = 2
+rearrangeForADo final tree:
+  candidate   =  0
+  index order =  [1, 2, 3, 4]
+  statements  =  [x1_a1T4 <- Just 10, x2_a1T5 <- Just 5,
+                  x3_a1T6 <- safeDiv x1_a1T4 2, x4_a1T7 <- Just (x2_a1T5 + 15)]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (x1_a1T4 <- Just 10, {Just}))
+          (StmtTreeOne (x2_a1T5 <- Just 5, {Just})))
+       (StmtTreeApplicative
+          (StmtTreeOne (x3_a1T6 <- safeDiv x1_a1T4 2, {x1_a1T4, safeDiv}))
+          (StmtTreeOne (x4_a1T7 <- Just (x2_a1T5 + 15),
+                        {Just, x2_a1T5, +}))))
+  rearrangeForADo-Summary=
+  minimal-cost-index-perm   = 0
+  original-cost             = 2
+  minimum-cost              = 2
+  generated permutations    = 6
+  minimum-cost permutations = 6
+addUsedGRE CD.return
+addUsedGRE CD.pure
+addUsedGRE CD.fmap
+addUsedGRE CD.<*>
+addUsedGRE CD.fmap
+addUsedGRE CD.<*>
+addUsedGRE CD.join
+addUsedGRE print
+checkThLocalName print {0} Comp
+checkThLocalName mixedDependencyExample {0} Comp
+finish rnmono
+  safeDiv :: Int -> Int -> Maybe Int
+  safeDiv _ 0 = Nothing
+  safeDiv n_a1T2 d_a1T3 = Just (n_a1T2 `div` d_a1T3)
+  mixedDependencyExample :: Maybe Int
+  mixedDependencyExample
+    = CD.do (x1_a1T4 <- Just 10 | x2_a1T5 <- Just 5)
+            (x3_a1T6 <- safeDiv x1_a1T4 2 | x4_a1T7 <- Just (x2_a1T5 + 15))
+            return (x3_a1T6 + x4_a1T7)
+  main :: IO ()
+  main = print mixedDependencyExample
+rnSrcDecls fixity
+  all_bndrs: {safeDiv, mixedDependencyExample, main}
+finish rnSrc
+  safeDiv :: Int -> Int -> Maybe Int
+  safeDiv _ 0 = Nothing
+  safeDiv n_a1T2 d_a1T3 = Just (n_a1T2 `div` d_a1T3)
+  mixedDependencyExample :: Maybe Int
+  mixedDependencyExample
+    = CD.do (x1_a1T4 <- Just 10 | x2_a1T5 <- Just 5)
+            (x3_a1T6 <- safeDiv x1_a1T4 2 | x4_a1T7 <- Just (x2_a1T5 + 15))
+            return (x3_a1T6 + x4_a1T7)
+  main :: IO ()
+  main = print mixedDependencyExample
+  
+  instance CD.CommutativeMonad Maybe
+finish Dus
+  [(Just {}, {}), (Just {safeDiv}, {Nothing, Just, div}),
+   (Just {mixedDependencyExample},
+    {Just, +, CD.<*>, CD.>>=, CD.fmap, CD.join, CD.return, safeDiv}),
+   (Just {main}, {print, mixedDependencyExample}),
+   (Nothing, {Int, Maybe, IO}), (Nothing, {}),
+   (Nothing, {Maybe, CD.CommutativeMonad})]
+rn13
+rn13-plugin
+lookupQualifiedNameGHCi: off main
+checkThLocalName main {0} Comp
+rnExports: Exports: [main]
+RUN
+  [(Just {}, {}), (Just {safeDiv}, {Nothing, Just, div}),
+   (Just {mixedDependencyExample},
+    {Just, +, CD.<*>, CD.>>=, CD.fmap, CD.join, CD.return, safeDiv}),
+   (Just {main}, {print, mixedDependencyExample}),
+   (Nothing, {Int, Maybe, IO}), (Nothing, {}),
+   (Nothing, {Maybe, CD.CommutativeMonad}), (Nothing, {}),
+   (Nothing, {}), (Nothing, {}), (Nothing, {}), (Nothing, {}),
+   (Nothing, {main}), (Nothing, {main})]
+warnUnusedImportDecls
+  Uses: [print Vanilla
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.System.IO’),
+         CD.join Vanilla
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+         CD.<*> Vanilla
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+         CD.fmap Vanilla
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+         CD.<*> Vanilla
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+         CD.fmap Vanilla
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+         CD.pure Vanilla
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+         CD.return Vanilla
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+         CD.__commutative_do__ Vanilla
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+         + parent:Num Vanilla
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Num’),
+         CD.return Vanilla
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+         CD.>>= Vanilla
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+         + parent:Num Vanilla
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Num’),
+         Just parent:Maybe ConLike ConInfo {con_ty: ConIsData ([Nothing,
+                                                                Just]), fields: ConHasPositionalArgs}
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Maybe’),
+         CD.>>= Vanilla
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+         CD.>>= Vanilla
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+         Just parent:Maybe ConLike ConInfo {con_ty: ConIsData ([Nothing,
+                                                                Just]), fields: ConHasPositionalArgs}
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Maybe’),
+         CD.>>= Vanilla
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+         Just parent:Maybe ConLike ConInfo {con_ty: ConIsData ([Nothing,
+                                                                Just]), fields: ConHasPositionalArgs}
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Maybe’),
+         div parent:Integral Vanilla
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Real’),
+         Just parent:Maybe ConLike ConInfo {con_ty: ConIsData ([Nothing,
+                                                                Just]), fields: ConHasPositionalArgs}
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Maybe’),
+         Nothing parent:Maybe ConLike ConInfo {con_ty: ConIsData ([Nothing,
+                                                                   Just]), fields: ConIsNullary}
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Maybe’),
+         Int TyCon data type
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Types’),
+         Maybe TyCon data type
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Maybe’),
+         Int TyCon data type
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Types’),
+         Int TyCon data type
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Types’),
+         Int TyCon data type
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Types’),
+         Maybe TyCon data type
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Maybe’),
+         IO TyCon newtype
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Types’),
+         Maybe TyCon data type
+           imported from ‘Prelude’
+           (and originally defined in ‘GHC.Internal.Maybe’),
+         CD.CommutativeMonad TyCon class
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+         CD.CommutativeMonad TyCon class
+           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’)]
+  Usage all user imports:  [(import qualified Control.Monad.CommutativeDo as CD,
+                             [CD.join Vanilla
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                              CD.<*> Vanilla
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                              CD.fmap Vanilla
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                              CD.<*> Vanilla
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                              CD.fmap Vanilla
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                              CD.pure Vanilla
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                              CD.return Vanilla
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                              CD.__commutative_do__ Vanilla
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                              CD.return Vanilla
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                              CD.>>= Vanilla
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                              CD.>>= Vanilla
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                              CD.>>= Vanilla
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                              CD.>>= Vanilla
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                              CD.CommutativeMonad TyCon class
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                              CD.CommutativeMonad TyCon class
+                                imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                                (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’)],
+                             [],
+                             [])]
+  Usage all imports:  [(import (generated) Prelude,
+                        [print Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.System.IO’),
+                         + parent:Num Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Num’),
+                         + parent:Num Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Num’),
+                         Just parent:Maybe ConLike ConInfo {con_ty: ConIsData ([Nothing,
+                                                                                Just]), fields: ConHasPositionalArgs}
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Maybe’),
+                         Just parent:Maybe ConLike ConInfo {con_ty: ConIsData ([Nothing,
+                                                                                Just]), fields: ConHasPositionalArgs}
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Maybe’),
+                         Just parent:Maybe ConLike ConInfo {con_ty: ConIsData ([Nothing,
+                                                                                Just]), fields: ConHasPositionalArgs}
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Maybe’),
+                         div parent:Integral Vanilla
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Real’),
+                         Just parent:Maybe ConLike ConInfo {con_ty: ConIsData ([Nothing,
+                                                                                Just]), fields: ConHasPositionalArgs}
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Maybe’),
+                         Nothing parent:Maybe ConLike ConInfo {con_ty: ConIsData ([Nothing,
+                                                                                   Just]), fields: ConIsNullary}
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Maybe’),
+                         Int TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’),
+                         Maybe TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Maybe’),
+                         Int TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’),
+                         Int TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’),
+                         Int TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’),
+                         Maybe TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Maybe’),
+                         IO TyCon newtype
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Types’),
+                         Maybe TyCon data type
+                           imported from ‘Prelude’
+                           (and originally defined in ‘GHC.Internal.Maybe’)],
+                        [],
+                        []),
+                       (import qualified Control.Monad.CommutativeDo as CD,
+                        [CD.join Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                         CD.<*> Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                         CD.fmap Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                         CD.<*> Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                         CD.fmap Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                         CD.pure Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                         CD.return Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                         CD.__commutative_do__ Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                         CD.return Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                         CD.>>= Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                         CD.>>= Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                         CD.>>= Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                         CD.>>= Vanilla
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                         CD.CommutativeMonad TyCon class
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’),
+                         CD.CommutativeMonad TyCon class
+                           imported qualified from ‘Control.Monad.CommutativeDo’ at experiments/maybe-example-qdo/main.hs:5:1-50
+                           (and originally defined in ‘GHC.Internal.Control.Monad.CommutativeDo’)],
+                        [],
+                        [])]

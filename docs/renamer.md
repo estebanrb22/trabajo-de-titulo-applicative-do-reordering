@@ -161,16 +161,23 @@ computeStmtsInfo stmts = zipWith mkStmtInfo [1 ..] stmts
       }
 ```
 
-La relación con las reglas clásicas de dependencias es:
+La relación relevante para el Renamer es:
 
 - `WRITE(stmt) = collectStmtBinders CollNoDictBinders stmt`.
 - `READ_local(stmt) = fvs(stmt) ∩ all_writes`.
 - `RAW(i,j) = WRITE(i) ∩ READ_local(j)`.
-- `WAR(i,j) = READ_local(i) ∩ WRITE(j)`.
-- `WAW(i,j) = WRITE(i) ∩ WRITE(j)`.
 
-`buildStmtDepNodes` crea aristas `i -> j` cuando `i < j` y existe alguna de las
-dependencias anteriores. El grafo se implementa con `GHC.Data.Graph.Directed`.
+El grafo interno solo modela dependencias `RAW`: `buildStmtDepNodes` crea
+aristas `i -> j` cuando `i < j` y `WRITE(i) ∩ READ_local(j)` no es vacio. El
+grafo se implementa con `GHC.Data.Graph.Directed`.
+
+Las dependencias `WAR` y `WAW` pertenecen al modelo general de asignaciones
+imperativas, pero no aparecen como restricciones reales en este nivel de GHC.
+Despues del renombrado, cada binder local corresponde a un `Name` unico: un
+statement posterior no puede sobrescribir el mismo `Name` definido por uno
+anterior, y una lectura de un statement anterior no puede depender de una
+definicion que todavia no esta en scope. Por eso el criterio interno se reduce a
+preservar relaciones def-use, es decir, dependencias `RAW`.
 
 ## Enumeración de Permutaciones
 
@@ -241,8 +248,6 @@ rearrangeForADo-StmtsDependencyGraph
 rearrangeForADo-dep
   pair           =  1  ->  3
   RAW            =  {x1}
-  WAR            =  {}
-  WAW            =  {}
 ```
 
 ### Candidatos de permutación

@@ -3,11 +3,15 @@ SHELL := /usr/bin/env bash
 
 ARG_TARGETS := \
 	cabal-project \
+	cabal-prob-project \
 	cabal-renamer-logs \
 	raw-logs \
 	renamer-logs \
-	all-orders-logs \
-	run-permutations
+	test-ghc \
+	test-cabal \
+	semantic-validation-reorder \
+	semantic-validation-reorder-ghc \
+	semantic-validation-reorder-cabal
 
 ifneq ($(filter $(ARG_TARGETS),$(firstword $(MAKECMDGOALS))),)
 EXTRA_GOALS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
@@ -27,16 +31,21 @@ PHONY_TARGETS := \
 	patches \
 	build \
 	test \
+	test-ghc \
+	test-cabal \
 	reproduce \
 	start-docker \
 	shell \
 	shell-clear \
 	restart-ghc \
 	cabal-project \
+	cabal-prob-project \
 	cabal-renamer-logs \
 	raw-logs \
 	renamer-logs \
-	all-orders-logs \
+	semantic-validation-reorder \
+	semantic-validation-reorder-ghc \
+	semantic-validation-reorder-cabal \
 	ghc-quick
 
 .PHONY: $(PHONY_TARGETS)
@@ -46,6 +55,9 @@ help: ## Muestra esta ayuda y los comandos disponibles
 	@echo ""
 	@echo "Comandos disponibles:"
 	@awk 'BEGIN {FS = ":.*## "}; /^[a-zA-Z0-9_-]+:.*## / {printf "  %-22s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+
+start-docker: ## Inicia el contenedor de desarrollo
+	docker start ghc-dev-container
 
 verify-toolchain: ## Verifica que la toolchain del contenedor este disponible
 	bash .devcontainer/verify_dev_toolchain.sh
@@ -71,49 +83,86 @@ build: ## Ejecuta el proceso de build
 	./hadrian/build -j --flavour=quick stage2:exe:ghc-bin 
 
 test: ## Ejecuta pruebas y validaciones
-	bash scripts/test.sh
+	echo "Ejecutando pruebas y validaciones... (No implementado aún)"
+
+test-ghc: ## Wrapper GHC directo: make test-ghc <experiments/.../main.hs>
+	@input_file="$(word 2,$(MAKECMDGOALS))"; \
+	extra_arg="$(word 3,$(MAKECMDGOALS))"; \
+	if [ -z "$$input_file" ] || [ -n "$$extra_arg" ]; then \
+		echo "Uso: make test-ghc <experiments/.../main.hs>"; \
+		exit 1; \
+	fi; \
+	input_file="$${input_file%/}"; \
+	if [[ "$$input_file" != experiments/* ]]; then \
+		echo "test-ghc requiere una ruta repo-relativa bajo experiments/: $$input_file"; \
+		exit 1; \
+	fi; \
+	if [[ "$$input_file" != */main.hs ]]; then \
+		echo "test-ghc requiere un archivo main.hs: $$input_file"; \
+		exit 1; \
+	fi; \
+	project_dir="$${input_file%/main.hs}"; \
+	output_dir="tests/$${project_dir#experiments/}"; \
+	$(MAKE) --no-print-directory semantic-validation-reorder-ghc "$$input_file" "$$output_dir"
+
+test-cabal: ## Wrapper Cabal: make test-cabal <experiments/.../project-dir>
+	@project_dir="$(word 2,$(MAKECMDGOALS))"; \
+	extra_arg="$(word 3,$(MAKECMDGOALS))"; \
+	if [ -z "$$project_dir" ] || [ -n "$$extra_arg" ]; then \
+		echo "Uso: make test-cabal <experiments/.../project-dir>"; \
+		exit 1; \
+	fi; \
+	project_dir="$${project_dir%/}"; \
+	if [[ "$$project_dir" != experiments/* ]]; then \
+		echo "test-cabal requiere una ruta repo-relativa bajo experiments/: $$project_dir"; \
+		exit 1; \
+	fi; \
+	output_dir="tests/$${project_dir#experiments/}"; \
+	$(MAKE) --no-print-directory semantic-validation-reorder-cabal "$$project_dir" "$$output_dir"
 
 reproduce: verify-toolchain setup-ghc-build patches build test ## Ejecuta el flujo reproducible completo
-
-start-docker: ## Inicia el contenedor de desarrollo
-	docker start ghc-dev-container
-
-shell: ## Abre la shell del dev continer
-	@if [ "$$(docker inspect -f '{{.State.Running}}' ghc-dev-container 2>/dev/null)" != "true" ]; then \
-		$(MAKE) --no-print-directory start-docker; \
-	fi
-	docker exec -it ghc-dev-container bash;
-
-shell-clear: ## Abre la shell del dev container y la limpia
-	@if [ "$$(docker inspect -f '{{.State.Running}}' ghc-dev-container 2>/dev/null)" != "true" ]; then \
-		$(MAKE) --no-print-directory start-docker; \
-	fi
-	docker exec -it ghc-dev-container bash -lc "clear; exec bash"
 	
 restart-ghc: ## Reinicia el submodulo de GHC al commit objetivo
 	@git -C vendor/ghc reset --hard
 	@git -C vendor/ghc clean -ffd
 	@git -C vendor/ghc switch --detach 0b36e96cb93db71f201aaa055c4a90b75a8110ef
 
-cabal-project: ## Crea proyecto cabal: make cabal-project <package-name>
-	@pkg="$(word 2,$(MAKECMDGOALS))"; \
-	if [ -z "$$pkg" ]; then \
-		echo "Uso: make cabal-project <package-name>"; \
+ghc-quick: ## Compilar y buildear GHC modificado
+	cd /workspaces/tt-repo/vendor/ghc && \
+	./hadrian/build -j --flavour=quick stage2:exe:ghc-bin 
+
+cabal-project: ## Crea proyecto cabal Maybe: make cabal-project <project-dir>
+	@project_dir="$(word 2,$(MAKECMDGOALS))"; \
+	if [ -z "$$project_dir" ]; then \
+		echo "Uso: make cabal-project <project-dir>"; \
 		exit 1; \
 	fi; \
-	mkdir -p "experiments/$$pkg" && \
-	cd "experiments/$$pkg" && \
-	cabal init -n --exe --package-name "$$pkg" --language GHC2024 \
-	  --minimal --no-comments --license NONE --main-is main.hs --application-dir . && \
-	rm -f CHANGELOG.md && \
-	printf "import: /workspaces/tt-repo/config/cabal.project\npackages: .\n" > cabal.project
+	bash scripts/cabal/create-project.sh "$$project_dir"
 
-cabal-renamer-logs: ## Crea logs con el arbol de Statements: make cabal-renamer-logs <project-dir> <output-log-file>
+cabal-prob-project: ## Crea proyecto cabal probabilistico: make cabal-prob-project <project-dir>
+	@project_dir="$(word 2,$(MAKECMDGOALS))"; \
+	if [ -z "$$project_dir" ]; then \
+		echo "Uso: make cabal-prob-project <project-dir>"; \
+		exit 1; \
+	fi; \
+	bash scripts/cabal/create-prob-project.sh "$$project_dir"
+
+cabal-renamer-logs: ## Crea logs con el arbol de Statements: make cabal-renamer-logs <project-dir> <output-log-file> [candidate-n]
 	@cabal_dir="$(word 2,$(MAKECMDGOALS))"; \
 	log_file="$(word 3,$(MAKECMDGOALS))"; \
+	candidate_n="$(word 4,$(MAKECMDGOALS))"; \
 	if [ -z "$$cabal_dir" ] || [ -z "$$log_file" ]; then \
-		echo "Uso: make cabal-rename-logs <directorio-cabal> <archivo-log>"; \
+		echo "Uso: make cabal-renamer-logs <directorio-cabal> <archivo-log> [candidate-n]"; \
 		exit 1; \
+	fi; \
+	if [ -n "$$candidate_n" ] && [[ ! "$$candidate_n" =~ ^[0-9]+$$ ]]; then \
+		echo "candidate-n debe ser un entero no negativo: $$candidate_n"; \
+		echo "Uso: make cabal-renamer-logs <directorio-cabal> <archivo-log> [candidate-n]"; \
+		exit 1; \
+	fi; \
+	candidate_ghc_options=""; \
+	if [ -n "$$candidate_n" ]; then \
+		candidate_ghc_options="--ghc-options=-fado-reorder-candidate-n=$$candidate_n"; \
 	fi; \
 	cd "$$cabal_dir" && \
 	mkdir -p "$$(dirname "$$log_file")" && \
@@ -122,32 +171,67 @@ cabal-renamer-logs: ## Crea logs con el arbol de Statements: make cabal-renamer-
 	  | tee "$$log_file" && \
 	printf '\n' >> "$$log_file" && \
 	cabal clean && \
-	cabal build 2>&1 \
+	cabal build $$candidate_ghc_options 2>&1 \
 		  | awk '/^rearrangeForADo-commutative-do/ {capture=1} capture {print} capture && /^[[:space:]]*minimum-cost permutations[[:space:]]*=[[:space:]]*[0-9]+[[:space:]]*$$/ {capture=0}' \
 	  | tee -a "$$log_file"
 
-raw-logs: ## Crea logs con la salida completa de GHC: make raw-logs <input-file> <output-log-file>
+ghc-raw-logs: ## Crea logs con la salida completa de GHC: make ghc-raw-logs <input-file> <output-log-file> [candidate-n]
 	@input_file="$(word 2,$(MAKECMDGOALS))"; \
 	log_file="$(word 3,$(MAKECMDGOALS))"; \
+	candidate_n="$(word 4,$(MAKECMDGOALS))"; \
 	if [ -z "$$input_file" ] || [ -z "$$log_file" ]; then \
-		echo "Uso: make raw-logs <archivo-hs> <archivo-log>"; \
+		echo "Uso: make ghc-raw-logs <archivo-hs> <archivo-log> [candidate-n]"; \
 		exit 1; \
+	fi; \
+	if [ -n "$$candidate_n" ] && [[ ! "$$candidate_n" =~ ^[0-9]+$$ ]]; then \
+		echo "candidate-n debe ser un entero no negativo: $$candidate_n"; \
+		echo "Uso: make ghc-raw-logs <archivo-hs> <archivo-log> [candidate-n]"; \
+		exit 1; \
+	fi; \
+	candidate_flag=""; \
+	if [ -n "$$candidate_n" ]; then \
+		candidate_flag="-fado-reorder-candidate-n=$$candidate_n"; \
 	fi; \
 	mkdir -p "$$(dirname "$$log_file")" && \
-	./vendor/ghc/_build/stage1/bin/ghc -ddump-rn-trace -XApplicativeDo -fno-code "$$input_file" | tee "$$log_file"
+	./vendor/ghc/_build/stage1/bin/ghc $$candidate_flag -fforce-recomp -ddump-rn-trace -fno-code "$$input_file" | tee "$$log_file"
 
-renamer-logs: ## Crea logs con el arbol de Statements: make renamer-logs <input-file> <output-log-file>
+renamer-logs: ## Crea logs con el arbol de Statements: make renamer-logs <input-file> <output-log-file> [-concat] [candidate-n]
 	@input_file="$(word 2,$(MAKECMDGOALS))"; \
 	log_file="$(word 3,$(MAKECMDGOALS))"; \
-	mode_flag="$(word 4,$(MAKECMDGOALS))"; \
+	arg4="$(word 4,$(MAKECMDGOALS))"; \
+	arg5="$(word 5,$(MAKECMDGOALS))"; \
+	mode_flag=""; \
+	candidate_n=""; \
 	if [ -z "$$input_file" ] || [ -z "$$log_file" ]; then \
-		echo "Uso: make ghc-rename-logs <archivo-hs> <archivo-log> [-concat]"; \
+		echo "Uso: make renamer-logs <archivo-hs> <archivo-log> [-concat] [candidate-n]"; \
 		exit 1; \
 	fi; \
-	if [ -n "$$mode_flag" ] && [ "$$mode_flag" != "-concat" ]; then \
-		echo "Flag opcional no valida: $$mode_flag"; \
-		echo "Uso: make ghc-rename-logs <archivo-hs> <archivo-log> [-concat]"; \
-		exit 1; \
+	for arg in "$$arg4" "$$arg5"; do \
+		if [ -z "$$arg" ]; then \
+			continue; \
+		elif [ "$$arg" = "-concat" ]; then \
+			if [ -n "$$mode_flag" ]; then \
+				echo "Flag opcional duplicada: $$arg"; \
+				echo "Uso: make renamer-logs <archivo-hs> <archivo-log> [-concat] [candidate-n]"; \
+				exit 1; \
+			fi; \
+			mode_flag="-concat"; \
+		elif [[ "$$arg" =~ ^[0-9]+$$ ]]; then \
+			if [ -n "$$candidate_n" ]; then \
+				echo "candidate-n duplicado: $$arg"; \
+				echo "Uso: make renamer-logs <archivo-hs> <archivo-log> [-concat] [candidate-n]"; \
+				exit 1; \
+			fi; \
+			candidate_n="$$arg"; \
+		else \
+			echo "Argumento opcional no valido: $$arg"; \
+			echo "Uso: make renamer-logs <archivo-hs> <archivo-log> [-concat] [candidate-n]"; \
+			exit 1; \
+		fi; \
+	done; \
+	candidate_flag=""; \
+	if [ -n "$$candidate_n" ]; then \
+		candidate_flag="-fado-reorder-candidate-n=$$candidate_n"; \
 	fi; \
 	if [ "$$mode_flag" = "-concat" ]; then \
 		first_tee_opt="-a"; \
@@ -160,79 +244,45 @@ renamer-logs: ## Crea logs con el arbol de Statements: make renamer-logs <input-
 	  | tr '\0' '\n' \
 	  | tee $$first_tee_opt "$$log_file" && \
 	printf '\n' | tee -a "$$log_file" && \
-	./vendor/ghc/_build/stage1/bin/ghc -ddump-rn-trace -XApplicativeDo -fno-code "$$input_file" \
+	./vendor/ghc/_build/stage1/bin/ghc $$candidate_flag -ddump-rn-trace -XApplicativeDo -fno-code "$$input_file" \
 		  | awk '/^rearrangeForADo-commutative-do/ {capture=1} capture {print} capture && /^[[:space:]]*minimum-cost permutations[[:space:]]*=[[:space:]]*[0-9]+[[:space:]]*$$/ {capture=0}' \
 	  | tee -a "$$log_file"
 
-all-orders-logs: ## Crea logs con todas las permutaciones de Statements: make renamer-logs <program-dir> <output-log-file>
-	@target_dir="$(word 2,$(MAKECMDGOALS))"; \
-	log_file="$(word 3,$(MAKECMDGOALS))"; \
-	if [ -z "$$target_dir" ] || [ -z "$$log_file" ]; then \
-		echo "Uso: make all-monad-reorder <program-dir> <log_file>"; \
-		exit 1; \
-	fi; \
-	repo_root="$$(pwd)"; \
-	if [[ "$$target_dir" = /* ]]; then \
-		target_dir_abs="$$target_dir"; \
-	else \
-		target_dir_abs="$$repo_root/$$target_dir"; \
-	fi; \
-	if [[ "$$log_file" = /* ]]; then \
-		log_file_abs="$$log_file"; \
-	else \
-		log_file_abs="$$repo_root/$$log_file"; \
-	fi; \
-	mkdir -p "$$target_dir_abs/permutations"; \
-	cd "$$repo_root/experiments" && \
-	python3 build_precedence_graph_files.py "$$target_dir_abs/main.hs" "$$target_dir_abs/permutations/" && \
-	printf '\n== Todas las permutaciones validas del programa ==\n' | tee "$$log_file_abs" && \
-	cd "$$repo_root" && \
-	shopt -s nullglob; \
-	files=($$target_dir_abs/permutations/*.hs); \
-	if [ $${#files[@]} -eq 0 ]; then \
-		echo "No se generaron permutaciones en $$target_dir_abs/permutations"; \
-		exit 1; \
-	fi; \
-	for i in "$${!files[@]}"; do \
-		f="$${files[$$i]}"; \
-		$(MAKE) --no-print-directory -- renamer-logs "$$f" "$$log_file_abs" -concat; \
-		printf -- '\n----------------------------------------------------------------------------------------\n' | tee -a "$$log_file_abs"; \
-	done
-
-run-permutations: ## Compila y ejecuta todas las permutaciones: make run-permutations-bin <input-dir> <output-dir>
-	@input_dir="$(word 2,$(MAKECMDGOALS))"; \
+semantic-validation-reorder: ## Valida semanticamente todas las permutaciones ADo: make semantic-validation-reorder <input-file> <output-dir>
+	@input_file="$(word 2,$(MAKECMDGOALS))"; \
 	output_dir="$(word 3,$(MAKECMDGOALS))"; \
-	if [ -z "$$input_dir" ] || [ -z "$$output_dir" ]; then \
-		echo "Uso: make run-permutations-bin <input-dir> <output-dir>"; \
+	if [ -z "$$input_file" ] || [ -z "$$output_dir" ]; then \
+		echo "Uso: make semantic-validation-reorder <input-file> <output-dir>"; \
 		exit 1; \
 	fi; \
-	if [[ "$$input_dir" = /* ]]; then \
-		input_dir_abs="$$input_dir"; \
-	else \
-		input_dir_abs="$$(pwd)/$$input_dir"; \
-	fi; \
-	if [[ "$$output_dir" = /* ]]; then \
-		output_dir_abs="$$output_dir"; \
-	else \
-		output_dir_abs="$$(pwd)/$$output_dir"; \
-	fi; \
-	mkdir -p "$$output_dir_abs"; \
-	permutations=("$$input_dir_abs"/*.hs); \
-	for f in "$${permutations[@]}"; do \
-		base="$$(basename "$$f" .hs)"; \
-		out_bin="$$output_dir_abs/$$base"; \
-		echo "[COMPILAR] $$f -> $$out_bin"; \
-		./vendor/ghc/_build/stage1/bin/ghc -O0 -fforce-recomp "$$f" -o "$$out_bin"; \
-	done; \
-	echo "== Ejecutando binarios =="; \
-	permutations_bins=("$$output_dir_abs"/*); \
-	for b in "$${permutations_bins[@]}"; do \
-		if [ -x "$$b" ] && [ -f "$$b" ]; then \
-			echo "[EJECUTAR] $$b"; \
-			"$$b"; \
-		fi; \
-	done
+	bash scripts/semantic_validation_reorder.sh "$$input_file" "$$output_dir"
 
-ghc-quick: ## Compilar y buildear GHC modificado
-	cd /workspaces/tt-repo/vendor/ghc && \
-	./hadrian/build -j --flavour=quick stage2:exe:ghc-bin 
+semantic-validation-reorder-ghc: ## Valida semanticamente permutaciones ADo con GHC directo: make semantic-validation-reorder-ghc <input-file> <output-dir>
+	@input_file="$(word 2,$(MAKECMDGOALS))"; \
+	output_dir="$(word 3,$(MAKECMDGOALS))"; \
+	if [ -z "$$input_file" ] || [ -z "$$output_dir" ]; then \
+		echo "Uso: make semantic-validation-reorder-ghc <input-file> <output-dir>"; \
+		exit 1; \
+	fi; \
+	bash scripts/semantic-validation/reorder-ghc.sh "$$input_file" "$$output_dir"
+
+semantic-validation-reorder-cabal: ## Valida semanticamente permutaciones ADo con Cabal: make semantic-validation-reorder-cabal <project-dir> <output-dir>
+	@project_dir="$(word 2,$(MAKECMDGOALS))"; \
+	output_dir="$(word 3,$(MAKECMDGOALS))"; \
+	if [ -z "$$project_dir" ] || [ -z "$$output_dir" ]; then \
+		echo "Uso: make semantic-validation-reorder-cabal <project-dir> <output-dir>"; \
+		exit 1; \
+	fi; \
+	bash scripts/semantic-validation/reorder-cabal.sh "$$project_dir" "$$output_dir"
+
+shell: ## Abre la shell del dev continer
+	@if [ "$$(docker inspect -f '{{.State.Running}}' ghc-dev-container 2>/dev/null)" != "true" ]; then \
+		$(MAKE) --no-print-directory start-docker; \
+	fi
+	docker exec -it ghc-dev-container bash;
+
+shell-clear: ## Abre la shell del dev container y la limpia
+	@if [ "$$(docker inspect -f '{{.State.Running}}' ghc-dev-container 2>/dev/null)" != "true" ]; then \
+		$(MAKE) --no-print-directory start-docker; \
+	fi
+	docker exec -it ghc-dev-container bash -lc "clear; exec bash"

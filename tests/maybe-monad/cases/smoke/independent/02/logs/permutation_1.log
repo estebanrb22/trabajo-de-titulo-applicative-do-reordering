@@ -1,0 +1,19 @@
+-- Reordered do-notation
+CD.do
+  x2 <- Just 5
+  x1 <- Just 10
+  CD.return (x1 + x2)
+
+-- Renamer trace
+rearrangeForADo candidate selection tree (fado-reorder-candidate-n) =
+  candidate   =  1
+  index-order =  [2, 1]
+  statements  =  [x2_a1T2 <- Just 5, x1_a1T1 <- Just 10]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x2_a1T2 <- Just 5, {Just}))
+       (StmtTreeOne (x1_a1T1 <- Just 10, {Just})))
+  tree-cost = 1
+
+-- Execution plan
+x2 | x1

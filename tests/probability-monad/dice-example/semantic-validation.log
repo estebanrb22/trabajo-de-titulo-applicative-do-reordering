@@ -1,0 +1,39 @@
+== Semantic validation reorder (Cabal) ==
+project-dir = /workspaces/tt-repo/experiments/probability-monad/dice-example
+input-file = /workspaces/tt-repo/experiments/probability-monad/dice-example/main.hs
+cabal-file = /workspaces/tt-repo/experiments/probability-monad/dice-example/probability-monad-dice-example.cabal
+target = exe:probability-monad-dice-example
+output-dir = /workspaces/tt-repo/tests/probability-monad/dice-example
+cabal-build-root = /workspaces/tt-repo/tests/probability-monad/dice-example/cabal-build
+
+[COMPILE] original -> /workspaces/tt-repo/tests/probability-monad/dice-example/bin/original
+[COMPILE] original_ado -> /workspaces/tt-repo/tests/probability-monad/dice-example/bin/original_ado
+[COMPILE] optimal-reorder -> /workspaces/tt-repo/tests/probability-monad/dice-example/bin/optimal-reorder
+generated permutations = 2
+
+[COMPILE] permutation_0 -> /workspaces/tt-repo/tests/probability-monad/dice-example/bin/permutation_0
+[COMPILE] permutation_1 -> /workspaces/tt-repo/tests/probability-monad/dice-example/bin/permutation_1
+
+[RUN] original -> /workspaces/tt-repo/tests/probability-monad/dice-example/results/original.run.log
+[OUTPUT] fromFreqs [(7,1 % 6),(6,5 % 36),(8,5 % 36),(5,1 % 9),(9,1 % 9),(4,1 % 12),(10,1 % 12),(3,1 % 18),(11,1 % 18),(2,1 % 36),(12,1 % 36)]
+[EXIT CODE] original = 0
+[RUN] original_ado -> /workspaces/tt-repo/tests/probability-monad/dice-example/results/original_ado.run.log
+[OUTPUT] fromFreqs [(7,1 % 6),(6,5 % 36),(8,5 % 36),(5,1 % 9),(9,1 % 9),(4,1 % 12),(10,1 % 12),(3,1 % 18),(11,1 % 18),(2,1 % 36),(12,1 % 36)]
+[EXIT CODE] original_ado = 0
+[RUN] optimal-reorder -> /workspaces/tt-repo/tests/probability-monad/dice-example/results/optimal-reorder.run.log
+[OUTPUT] fromFreqs [(7,1 % 6),(6,5 % 36),(8,5 % 36),(5,1 % 9),(9,1 % 9),(4,1 % 12),(10,1 % 12),(3,1 % 18),(11,1 % 18),(2,1 % 36),(12,1 % 36)]
+[EXIT CODE] optimal-reorder = 0
+[RUN] permutation_0 -> /workspaces/tt-repo/tests/probability-monad/dice-example/results/permutation_0.run.log
+[OUTPUT] fromFreqs [(7,1 % 6),(6,5 % 36),(8,5 % 36),(5,1 % 9),(9,1 % 9),(4,1 % 12),(10,1 % 12),(3,1 % 18),(11,1 % 18),(2,1 % 36),(12,1 % 36)]
+[EXIT CODE] permutation_0 = 0
+[RUN] permutation_1 -> /workspaces/tt-repo/tests/probability-monad/dice-example/results/permutation_1.run.log
+[OUTPUT] fromFreqs [(7,1 % 6),(6,5 % 36),(8,5 % 36),(5,1 % 9),(9,1 % 9),(4,1 % 12),(10,1 % 12),(3,1 % 18),(11,1 % 18),(2,1 % 36),(12,1 % 36)]
+[EXIT CODE] permutation_1 = 0
+
+== Semantic comparison ==
+[OK] original_ado   : identical output
+[OK] optimal-reorder: identical output
+[OK] permutation_0  : identical output
+[OK] permutation_1  : identical output
+
+RESULT: OK

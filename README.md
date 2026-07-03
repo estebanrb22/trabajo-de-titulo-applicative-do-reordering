@@ -68,7 +68,8 @@ make reproduce
 ### Utilidades de experimentos y logs
 
 - `make restart-ghc`: reinicia el submodulo `vendor/ghc` al commit objetivo (usa `git reset --hard` y `git clean -ffd` dentro de `vendor/ghc`).
-- `make cabal-project <package-name>`: crea un proyecto Cabal ejecutable en `experiments/<package-name>` y configura `cabal.project` para usar el compilador modificado.
+- `make cabal-project <project-dir>`: crea un proyecto Cabal Maybe bajo `experiments/` con un ejemplo usando `CD.do`; si `<project-dir>` incluye `experiments/`, el nombre Cabal se deriva desde lo posterior a esa carpeta, convierte `n-defs` en `ndefs`, reemplaza separadores por `-` y antepone `n` a componentes numericos sueltos.
+- `make cabal-prob-project <project-dir>`: crea un proyecto Cabal probabilistico bajo `experiments/` con `probability ^>=0.2.9.1` y un ejemplo de dos dados usando `CD.do`, usando la misma derivacion de nombre Cabal que `cabal-project`.
 - `make cabal-renamer-logs <project-dir> <output-log-file>`: extrae el bloque `do ... return`, ejecuta `cabal build` y guarda trazas del renamer.
 - `make renamer-logs <input-file> <output-log-file> [-concat]`: compila con `./vendor/ghc/_build/stage1/bin/ghc -ddump-rn-trace -XApplicativeDo -fno-code` y guarda el arbol final de `rearrangeForADo`.
-- `make all-orders-logs <program-dir> <output-log-file>`: genera permutaciones validas con `experiments/build_precedence_graph_files.py` y concatena logs para cada permutacion.
+- `make semantic-validation-reorder <input-file> <output-dir>`: compila la permutacion optima y cada candidato generado por GHC, ejecuta los binarios y compara outputs/codigos de salida.

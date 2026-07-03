@@ -1,0 +1,55 @@
+ppsfa
+  [(x1_a1T2 <- Just 1, {Just}),
+   (x2_a1T3 <- Just (x1_a1T2 + 1), {Just, x1_a1T2, +}),
+   (x3_a1T4 <- Just (x2_a1T3 + 1), {Just, x2_a1T3, +}),
+   (x4_a1T5 <- Just (x3_a1T4 + 1), {Just, x3_a1T4, +}),
+   (CD.return x4_a1T5, {x4_a1T5, CD.return})]
+addUsedGRE CD.__commutative_do__
+rearrangeForADo-commutative-do commutative-do = True
+rearrangeForADo-StmtsDependencyGraph
+rearrangeForADo-dep
+  pair           = 1  ->  2
+  RAW            = {x1_a1T2}
+rearrangeForADo-dep
+  pair           = 2  ->  3
+  RAW            = {x2_a1T3}
+rearrangeForADo-dep
+  pair           = 3  ->  4
+  RAW            = {x3_a1T4}
+rearrangeForADo-permutation
+  candidate   =  0
+  index-order =  [1, 2, 3, 4]
+  statements  =  [x1_a1T2 <- Just 1, x2_a1T3 <- Just (x1_a1T2 + 1),
+                  x3_a1T4 <- Just (x2_a1T3 + 1), x4_a1T5 <- Just (x3_a1T4 + 1)]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeOne (x1_a1T2 <- Just 1, {Just}))
+       (StmtTreeBind
+          (StmtTreeOne (x2_a1T3 <- Just (x1_a1T2 + 1), {Just, x1_a1T2, +}))
+          (StmtTreeBind
+             (StmtTreeOne (x3_a1T4 <- Just (x2_a1T3 + 1), {Just, x2_a1T3, +}))
+             (StmtTreeOne (x4_a1T5 <- Just (x3_a1T4 + 1),
+                           {Just, x3_a1T4, +})))))
+  tree-cost = 4
+rearrangeForADo final tree:
+  candidate   =  0
+  index-order =  [1, 2, 3, 4]
+  statements  =  [x1_a1T2 <- Just 1, x2_a1T3 <- Just (x1_a1T2 + 1),
+                  x3_a1T4 <- Just (x2_a1T3 + 1), x4_a1T5 <- Just (x3_a1T4 + 1)]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeOne (x1_a1T2 <- Just 1, {Just}))
+       (StmtTreeBind
+          (StmtTreeOne (x2_a1T3 <- Just (x1_a1T2 + 1), {Just, x1_a1T2, +}))
+          (StmtTreeBind
+             (StmtTreeOne (x3_a1T4 <- Just (x2_a1T3 + 1), {Just, x2_a1T3, +}))
+             (StmtTreeOne (x4_a1T5 <- Just (x3_a1T4 + 1),
+                           {Just, x3_a1T4, +})))))
+  tree-cost = 4
+rearrangeForADo-Summary:
+  minimum-cost-perm-index      = 0
+  original-cost                = 4
+  applicative-do-cost          = 4
+  reorder-and-ado-minimum-cost = 4
+  generated-permutations       = 1
+  minimum-cost-permutations    = 1

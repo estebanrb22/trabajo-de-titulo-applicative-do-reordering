@@ -1,0 +1,19 @@
+-- Original program
+CD.do
+  x <- putStrLn "A" >> pure 1
+  y <- putStrLn "B" >> pure 2
+  CD.return (x + y)
+
+-- Internal representation with free variables by statement
+ppsfa
+  [(x_a1T2 <- putStrLn "A" >> pure 1, {>>, pure, putStrLn}),
+   (y_a1T3 <- putStrLn "B" >> pure 2, {>>, pure, putStrLn}),
+   (CD.return (x_a1T2 + y_a1T3), {x_a1T2, y_a1T3, +, CD.return})]
+
+-- Precedence graph adjacency list
+<no precedence edges: 0 RAW dependencies, all statements are independent>
+1 -> {}
+2 -> {}
+
+-- Precedence graph RAW dependencies grouped by binder
+<no RAW dependencies to group>

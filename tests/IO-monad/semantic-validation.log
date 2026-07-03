@@ -1,0 +1,45 @@
+== Semantic validation reorder (GHC) ==
+input-file = /workspaces/tt-repo/experiments/IO-monad/main.hs
+output-dir = /workspaces/tt-repo/tests/IO-monad
+
+[COMPILE] original -> /workspaces/tt-repo/tests/IO-monad/bin/original
+[COMPILE] original_ado -> /workspaces/tt-repo/tests/IO-monad/bin/original_ado
+[COMPILE] optimal-reorder -> /workspaces/tt-repo/tests/IO-monad/bin/optimal-reorder
+generated permutations = 2
+
+[COMPILE] permutation_0 -> /workspaces/tt-repo/tests/IO-monad/bin/permutation_0
+[COMPILE] permutation_1 -> /workspaces/tt-repo/tests/IO-monad/bin/permutation_1
+
+[RUN] original -> /workspaces/tt-repo/tests/IO-monad/results/original.run.log
+[OUTPUT] A
+[OUTPUT] B
+[OUTPUT] 3
+[EXIT CODE] original = 0
+[RUN] original_ado -> /workspaces/tt-repo/tests/IO-monad/results/original_ado.run.log
+[OUTPUT] A
+[OUTPUT] B
+[OUTPUT] 3
+[EXIT CODE] original_ado = 0
+[RUN] optimal-reorder -> /workspaces/tt-repo/tests/IO-monad/results/optimal-reorder.run.log
+[OUTPUT] A
+[OUTPUT] B
+[OUTPUT] 3
+[EXIT CODE] optimal-reorder = 0
+[RUN] permutation_0 -> /workspaces/tt-repo/tests/IO-monad/results/permutation_0.run.log
+[OUTPUT] A
+[OUTPUT] B
+[OUTPUT] 3
+[EXIT CODE] permutation_0 = 0
+[RUN] permutation_1 -> /workspaces/tt-repo/tests/IO-monad/results/permutation_1.run.log
+[OUTPUT] B
+[OUTPUT] A
+[OUTPUT] 3
+[EXIT CODE] permutation_1 = 0
+
+== Semantic comparison ==
+[OK] original_ado   : identical output
+[OK] optimal-reorder: identical output
+[OK] permutation_0  : identical output
+[FAIL] permutation_1  : different output. Diff: /workspaces/tt-repo/tests/IO-monad/results/permutation_1.diff
+
+RESULT: FAIL

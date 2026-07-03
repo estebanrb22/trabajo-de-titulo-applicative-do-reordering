@@ -1,0 +1,30 @@
+== Semantic validation reorder (GHC) ==
+input-file = /workspaces/tt-repo/experiments/maybe-monad/cases/dependency-shapes/chain-no-reorder/06-super-graph/main.hs
+output-dir = /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/chain-no-reorder/06-super-graph
+
+[COMPILE] original -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/chain-no-reorder/06-super-graph/bin/original
+[COMPILE] original_ado -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/chain-no-reorder/06-super-graph/bin/original_ado
+[COMPILE] optimal-reorder -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/chain-no-reorder/06-super-graph/bin/optimal-reorder
+generated permutations = 1
+
+[COMPILE] permutation_0 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/chain-no-reorder/06-super-graph/bin/permutation_0
+
+[RUN] original -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/chain-no-reorder/06-super-graph/results/original.run.log
+[OUTPUT] Just 32
+[EXIT CODE] original = 0
+[RUN] original_ado -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/chain-no-reorder/06-super-graph/results/original_ado.run.log
+[OUTPUT] Just 32
+[EXIT CODE] original_ado = 0
+[RUN] optimal-reorder -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/chain-no-reorder/06-super-graph/results/optimal-reorder.run.log
+[OUTPUT] Just 32
+[EXIT CODE] optimal-reorder = 0
+[RUN] permutation_0 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/chain-no-reorder/06-super-graph/results/permutation_0.run.log
+[OUTPUT] Just 32
+[EXIT CODE] permutation_0 = 0
+
+== Semantic comparison ==
+[OK] original_ado   : identical output
+[OK] optimal-reorder: identical output
+[OK] permutation_0  : identical output
+
+RESULT: OK

@@ -1,0 +1,7 @@
+rearrangeForADo-Summary:
+  minimum-cost-perm-index      = 0
+  original-cost                = 4
+  applicative-do-cost          = 1
+  reorder-and-ado-minimum-cost = 1
+  generated-permutations       = 24
+  minimum-cost-permutations    = 24

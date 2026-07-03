@@ -1,0 +1,16 @@
+-- do-notation
+do
+  x <- putStrLn "A" >> pure 1
+  y <- putStrLn "B" >> pure 2
+  return (x + y)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  (StmtTreeApplicative
+     (StmtTreeOne (x_a1S3 <- putStrLn "A" >> pure 1,
+                   {>>, pure, putStrLn}))
+     (StmtTreeOne (y_a1S4 <- putStrLn "B" >> pure 2,
+                   {>>, pure, putStrLn})))
+
+-- Execution plan
+x | y

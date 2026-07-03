@@ -1,0 +1,14 @@
+-- do-notation
+do
+  d1 <- die
+  d2 <- die
+  return (d1 + d2)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  (StmtTreeApplicative
+     (StmtTreeOne (d1_a1X6 <- die, {die}))
+     (StmtTreeOne (d2_a1X7 <- die, {die})))
+
+-- Execution plan
+d1 | d2

@@ -1,0 +1,247 @@
+From 0c523199285a5b37be8b482bfd55e4bfebbd4c98 Mon Sep 17 00:00:00 2001
+From: estebanrb22 <esteban.romero.b@ug.uchile.cl>
+Date: Thu, 2 Jul 2026 15:35:18 -0400
+Subject: [PATCH] feat(Rename/Expr): Added new dynamic flag
+ ado-reorder-candidate-n to select an specific permutation of statements by
+ its index, and the precedence graph now just consider RAW dependencies
+
+---
+ compiler/GHC/Driver/DynFlags.hs |   4 +-
+ compiler/GHC/Driver/Session.hs  |   4 +-
+ compiler/GHC/Rename/Expr.hs     | 103 +++++++++++++++-----------------
+ 3 files changed, 52 insertions(+), 59 deletions(-)
+
+diff --git a/compiler/GHC/Driver/DynFlags.hs b/compiler/GHC/Driver/DynFlags.hs
+index b38622d036..2903864e40 100644
+--- a/compiler/GHC/Driver/DynFlags.hs
++++ b/compiler/GHC/Driver/DynFlags.hs
+@@ -194,7 +194,7 @@ data DynFlags = DynFlags {
+   tmpDir            :: TempDir,
+ 
+   -- Experimental flags associated with reorder commutatives monads
+-  adoReorderNClones :: Int,
++  adoReorderCandidateN  :: Maybe Int,
+   -- ----------------------------------------------------------- --
+   llvmOptLevel          :: Int,         -- ^ LLVM optimisation level
+   verbosity             :: Int,         -- ^ Verbosity level: see Note [Verbosity levels]
+@@ -576,7 +576,7 @@ defaultDynFlags mySettings =
+         ghcLink                 = LinkExecutable Dynamic,
+         backend                 = platformDefaultBackend (sTargetPlatform mySettings),
+         -- Experimental flags associated with reorder commutatives monads
+-        adoReorderNClones       = 0,
++        adoReorderCandidateN    = Nothing,
+         -- ----------------------------------------------------------- --
+         verbosity               = 0,
+         debugLevel              = 0,
+diff --git a/compiler/GHC/Driver/Session.hs b/compiler/GHC/Driver/Session.hs
+index 8010899f49..32129d98fc 100644
+--- a/compiler/GHC/Driver/Session.hs
++++ b/compiler/GHC/Driver/Session.hs
+@@ -1803,8 +1803,8 @@ dynamic_flags_deps = [
+       (intSuffix (\n d -> d { simplTickFactor = n }))
+ 
+   -- Experimental flags associated with reorder commutatives monads
+-  , make_ord_flag defFlag "fado-reorder-clones"
+-      (intSuffix (\n d -> d { adoReorderNClones = n }))
++  , make_ord_flag defFlag "fado-reorder-candidate-n"
++      (intSuffix (\n d -> d { adoReorderCandidateN = Just n }))
+   -- ----------------------------------------------------------- --
+ 
+   , make_ord_flag defFlag "fdmd-unbox-width"
+diff --git a/compiler/GHC/Rename/Expr.hs b/compiler/GHC/Rename/Expr.hs
+index 741ecbc245..6bd9798f6f 100644
+--- a/compiler/GHC/Rename/Expr.hs
++++ b/compiler/GHC/Rename/Expr.hs
+@@ -2061,9 +2061,10 @@ rearrangeForApplicativeDo ctxt [(one,_)] = do
+ rearrangeForApplicativeDo ctxt stmts0 = do
+   optimal_ado <- goptM Opt_OptimalApplicativeDo
+   commutative_do <- isCommutativeQualifiedDo ctxt
++  reorder_cand_n <- adoReorderCandidateN <$> getDynFlags
+ 
+   traceRn "rearrangeForADo-commutative-do" $
+-    vcat [ text "commutative-do    =" <+> ppr commutative_do ]
++    vcat [ text "commutative-do =" <+> ppr commutative_do ]
+ 
+   (all_permutations, validStmtsPerms) <-
+     if commutative_do
+@@ -2081,7 +2082,7 @@ rearrangeForApplicativeDo ctxt stmts0 = do
+   
+   let stmt_trees = map mkStmtTree all_permutations
+ 
+-  let all_permutations_info = zipWith3 mkStmtsPermutationInfo [1 :: Int ..] validStmtsPerms stmt_trees
++  let all_permutations_info = zipWith3 mkStmtsPermutationInfo [0 :: Int ..] validStmtsPerms stmt_trees
+ 
+   when commutative_do $
+     traceTopSortCandidates all_permutations_info
+@@ -2090,40 +2091,56 @@ rearrangeForApplicativeDo ctxt stmts0 = do
+           Just cs -> minimumBy (comparing candCost) cs
+           Nothing -> panic "rearrangeForApplicativeDo: empty stmt_trees"
+ 
+-  let best_tree = candTree best_candidate
++  let selected_candidate = do
++        i <- reorder_cand_n
++        guard (i >= 0)
++        listToMaybe (drop i all_permutations_info)
+ 
+-  -- traceRn "rearrangeForADo" (ppr best_tree)
+-  traceRnFinalTree best_candidate all_permutations_info
++  let final_candidate = fromMaybe best_candidate selected_candidate
++
++  let final_trace_label = case selected_candidate of
++        Just _ -> "rearrangeForADo candidate selection tree (fado-reorder-candidate-n) ="
++        Nothing -> "rearrangeForADo final tree:"
++
++  -- traceRn "rearrangeForADo" (ppr (candTree final_candidate))
++  traceRnFinalTree final_trace_label final_candidate best_candidate all_permutations_info
+ 
+   (return_name, _) <- lookupQualifiedDoName (HsDoStmt ctxt) returnMName
+   (pure_name, _)   <- lookupQualifiedDoName (HsDoStmt ctxt) pureAName
+   let monad_names = MonadNames { return_name = return_name
+                                , pure_name   = pure_name }
+-  stmtTreeToStmts monad_names ctxt best_tree [last] last_fvs
++  stmtTreeToStmts monad_names ctxt (candTree final_candidate) [last] last_fvs
+   where
+     (stmts,(last,last_fvs)) = findLast stmts0
+     findLast [] = error "findLast"
+     findLast [last] = ([],last)
+     findLast (x:xs) = (x:rest,last) where (rest,last) = findLast xs
+ 
+-    traceRnFinalTree :: StmtsPermutationInfo -> [StmtsPermutationInfo] -> TcRn ()
+-    traceRnFinalTree best_tree stmt_trees =
+-      let original_cost = case stmt_trees of
++    traceRnFinalTree :: String -> StmtsPermutationInfo -> StmtsPermutationInfo -> [StmtsPermutationInfo] -> TcRn ()
++    traceRnFinalTree trace_label final_candidate best_candidate stmt_trees =
++      let original_cost = length stmts
++          original_ado_cost = case stmt_trees of
+                             original_cand : _ -> candCost original_cand
+                             [] -> panic "traceRnFinalTree: empty stmt_trees"
+-          minimum_cost = candCost best_tree
++          minimum_cost = candCost best_candidate
+           minimum_cost_permutations =
+             length (filter ((== minimum_cost) . candCost) stmt_trees)
+-      in traceRn "rearrangeForADo final tree:"
+-           (vcat [ text "candidate   = " <+> ppr (candIndex best_tree)
+-                 , text "index order = " <+> ppr (map sdiIndex (candPerm best_tree))
+-                 , text "statements  = " <+> ppr (map sdiStmt (candPerm best_tree))
+-                 , text "rearrangeForADo-resulting tree ="
+-                 , nest 2 (ppr (candTree best_tree))
+-                 , text "original-cost             =" <+> ppr original_cost
+-                 , text "minimum-cost              =" <+> ppr minimum_cost
+-                 , text "generated permutations    =" <+> ppr (length stmt_trees)
+-                 , text "minimum-cost permutations =" <+> ppr minimum_cost_permutations
++      in do
++        traceRn trace_label
++           (vcat [ text "candidate   = " <+> ppr (candIndex final_candidate)
++                  , text "index-order = " <+> ppr (map sdiIndex (candPerm final_candidate))
++                  , text "statements  = " <+> ppr (map sdiStmt (candPerm final_candidate))
++                  , text "rearrangeForADo-resulting tree ="
++                  , nest 2 (ppr (candTree final_candidate))
++                  , text "tree-cost =" <+> ppr (candCost final_candidate)
++                  ])    
++        traceRn "rearrangeForADo-Summary:"
++          (vcat [ text "minimum-cost-perm-index      =" <+> ppr (candIndex best_candidate)
++                  , text "original-cost                =" <+> ppr original_cost
++                  , text "applicative-do-cost          =" <+> ppr original_ado_cost
++                  , text "reorder-and-ado-minimum-cost =" <+> ppr minimum_cost
++                  , text "generated-permutations       =" <+> ppr (length stmt_trees)
++                  , text "minimum-cost-permutations    =" <+> ppr minimum_cost_permutations
+                  ])
+ 
+     traceTopSortCandidates :: [StmtsPermutationInfo] -> TcRn ()
+@@ -2133,11 +2150,11 @@ rearrangeForApplicativeDo ctxt stmts0 = do
+         traceOne cadidate_info =
+           traceRn "rearrangeForADo-permutation" $
+             vcat [ text "candidate   = " <+> ppr (candIndex cadidate_info)
+-                 , text "index order = " <+> ppr (map sdiIndex (candPerm cadidate_info))
++                 , text "index-order = " <+> ppr (map sdiIndex (candPerm cadidate_info))
+                  , text "statements  = " <+> ppr (map sdiStmt (candPerm cadidate_info))
+                  , text "rearrangeForADo-resulting tree ="
+                  , nest 2 (ppr (candTree cadidate_info))
+-                 , text "actual cost =" <+> ppr (candCost cadidate_info)
++                 , text "tree-cost =" <+> ppr (candCost cadidate_info)
+                  ]
+ 
+ -- | A data type to store information about each candidate permutation
+@@ -2189,8 +2206,8 @@ stmtTreeCost (StmtTreeApplicative ts) =
+     [] -> 0
+     _  -> Partial.maximum (map stmtTreeCost ts)
+ 
+--- | Data types to modelate a graph of dependencies between statements, where 
+--- nodes are statements and the edges are precedence constraints derived from RAW/WAR/WAW.
++-- | Data types to modelate a graph of dependencies between statements, where
++-- nodes are statements and the edges are precedence constraints derived from RAW.
+ data StmtDepInfo = StmtDepInfo
+   { sdiIndex       :: !Int
+   , sdiStmt        :: !(ExprLStmt GhcRn)
+@@ -2208,40 +2225,18 @@ instance Outputable StmtDepInfo where
+          , text "writes-local =" <+> ppr sdiWritesLocal
+          ]
+ 
+-data StmtPairDeps = StmtPairDeps
+-  { spdRAW :: !FreeVars
+-  , spdWAR :: !FreeVars
+-  , spdWAW :: !FreeVars
+-  }
+-
+ type StmtDepNode = DG.Node Int StmtDepInfo
+ type StmtDepGraph = DG.Graph StmtDepNode
+ 
+--- | Functions to get all dependencies variants between two statements
++-- | Get the RAW dependency between two statements.
+ depRAW :: StmtDepInfo -> StmtDepInfo -> FreeVars
+ depRAW si sj = sdiWritesLocal si `intersectNameSet` sdiReadsLocal sj
+ 
+-depWAR :: StmtDepInfo -> StmtDepInfo -> FreeVars
+-depWAR si sj = sdiReadsLocal si `intersectNameSet` sdiWritesLocal sj
+-
+-depWAW :: StmtDepInfo -> StmtDepInfo -> FreeVars
+-depWAW si sj = sdiWritesLocal si `intersectNameSet` sdiWritesLocal sj
+-
+-depKinds :: StmtDepInfo -> StmtDepInfo -> StmtPairDeps
+-depKinds si sj =
+-  StmtPairDeps
+-    { spdRAW = depRAW si sj
+-    , spdWAR = depWAR si sj
+-    , spdWAW = depWAW si sj
+-    }
+-
+-hasDependency :: StmtPairDeps -> Bool
+-hasDependency StmtPairDeps {..} =
+-  not (isEmptyNameSet spdRAW
+-    && isEmptyNameSet spdWAR
+-    && isEmptyNameSet spdWAW)
++hasDependency :: StmtDepInfo -> StmtDepInfo -> Bool
++hasDependency si sj = not (isEmptyNameSet (depRAW si sj))
+ 
+ -- Precedence graph construction
++-- sdi: statement dependency info
+ computeStmtsInfo :: [(ExprLStmt GhcRn, FreeVars)] -> [StmtDepInfo]
+ computeStmtsInfo stmts = zipWith mkStmtInfo [1 ..] stmts
+   where
+@@ -2266,7 +2261,7 @@ buildStmtDepNodes infos = map mkNode infos
+           [ sdiIndex sj
+           | sj <- infos
+           , sdiIndex si < sdiIndex sj
+-          , hasDependency (depKinds si sj)
++          , hasDependency si sj
+           ]
+       }
+ 
+@@ -2288,12 +2283,10 @@ traceStmtDependencyGraph graph = do
+       traceEdge (src, dst) =
+         let si = DG.node_payload src
+             sj = DG.node_payload dst
+-            deps = depKinds si sj
++            rawDeps = depRAW si sj
+         in traceRn "rearrangeForADo-dep" $
+              vcat [ text "pair           =" <+> ppr (sdiIndex si) <+> text " -> " <+> ppr (sdiIndex sj)
+-                  , text "RAW            =" <+> ppr (spdRAW deps)
+-                  , text "WAR            =" <+> ppr (spdWAR deps)
+-                  , text "WAW            =" <+> ppr (spdWAW deps)
++                  , text "RAW            =" <+> ppr rawDeps
+                   ]
+ 
+ type IndegreeMap = IM.IntMap Int
+-- 
+2.54.0
+

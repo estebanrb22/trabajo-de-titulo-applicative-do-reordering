@@ -63,8 +63,8 @@ Baseline de este mapa:
   - `isCommutativeQualifiedDo` (detecta opt-in con `QualifiedDo` via
     `__commutative_do__`).
   - `computeStmtsInfo`, `buildStmtsDependencyGraph` y
-    `enumerateSemanticTopSortsBounded` (grafo RAW/WAR/WAW y permutaciones
-    semanticas validas).
+    `enumerateSemanticTopSortsBounded` (grafo RAW y permutaciones semanticas
+    validas).
   - `StmtsPermutationInfo` y trazas `rearrangeForADo-permutation` /
     `rearrangeForADo final tree:`.
   - `mkStmtTreeHeuristic` / `mkStmtTreeOptimal`.
@@ -343,11 +343,16 @@ Cada nodo `StmtDepInfo` conserva:
 - lecturas locales (`sdiReadsLocal`),
 - escrituras locales (`sdiWritesLocal`).
 
-Las aristas representan dependencias que deben preservarse:
+Las aristas representan dependencias `RAW` que deben preservarse:
 
-- `RAW = WRITE_i ∩ READ_j`,
-- `WAR = READ_i ∩ WRITE_j`,
-- `WAW = WRITE_i ∩ WRITE_j`.
+- `RAW = WRITE_i ∩ READ_j`.
+
+El modelo general de asignaciones imperativas tambien considera `WAR` y `WAW`,
+pero esas restricciones no son posibles como dependencias internas en este punto
+del compilador. Despues del renombrado, los binders locales son `Name`s unicos:
+no hay sobrescritura de un mismo nombre renombrado y una lectura previa no puede
+depender de una definicion posterior fuera de scope. Por eso el grafo usado por
+`rearrangeForApplicativeDo` se especializa a relaciones def-use (`RAW`).
 
 El enumerador produce todos los ordenamientos topologicos validos del grafo. Si
 el bloque no es conmutativo, se usa una unica permutacion: el orden original.
@@ -372,7 +377,7 @@ Las trazas nuevas del Renamer son:
 
 - `rearrangeForADo-commutative-do`: indica si el bloque es conmutativo.
 - `rearrangeForADo-StmtsDependencyGraph` y `rearrangeForADo-dep`: muestran
-  aristas y dependencias RAW/WAR/WAW.
+  aristas y dependencias RAW.
 - `rearrangeForADo-permutation`: muestra cada candidato, orden de indices,
   statements, arbol resultante y costo.
 - `rearrangeForADo final tree:`: muestra el candidato elegido, su arbol,

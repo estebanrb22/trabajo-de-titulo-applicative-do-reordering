@@ -1,9 +1,12 @@
 _docs/
-experiments/_ado/
 _templates/
 .opencode/
-AGENTS.md
-ghc-backup/
-opencode.json
+experiments/ado/*
 **/dist-newstyle/
+**/*.hi
+**/*.o
 **/.cabal-store-mod-ghc/
+reports/
+**/cabal-build/
+AGENTS.md
+opencode.json

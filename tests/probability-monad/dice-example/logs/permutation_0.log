@@ -1,0 +1,19 @@
+-- Reordered do-notation
+CD.do
+  d1 <- die
+  d2 <- die
+  CD.return (d1 + d2)
+
+-- Renamer trace
+rearrangeForADo candidate selection tree (fado-reorder-candidate-n) =
+  candidate   =  0
+  index-order =  [1, 2]
+  statements  =  [d1_a1Y5 <- die, d2_a1Y6 <- die]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (d1_a1Y5 <- die, {die}))
+       (StmtTreeOne (d2_a1Y6 <- die, {die})))
+  tree-cost = 1
+
+-- Execution plan
+d1 | d2

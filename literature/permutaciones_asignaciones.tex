@@ -113,6 +113,9 @@ Trabajaremos bajo las siguientes hipótesis:
 
 Bajo estas suposiciones, la interacción entre instrucciones queda completamente descrita por las variables que cada una \emph{lee} y \emph{escribe}. Si alguna de estas hipótesis se abandona, el análisis puede requerir nociones adicionales de dependencia, por ejemplo sobre memoria compartida o efectos observables.
 
+\paragraph{Nota sobre el caso de \textsf{Haskell}/\textsf{GHC}.}
+El modelo anterior se mantiene como antecedente general para secuencias de asignaciones, donde las dependencias RAW, WAR y WAW son necesarias para preservar el estado final. En el caso concreto estudiado dentro del Renamer de \textsf{GHC}, los \textit{statements} de una \textit{do-notation} ya han sido renombrados y sus binders locales corresponden a \texttt{Name}s unicos. Por ello no existe sobrescritura interna del mismo nombre renombrado y las restricciones WAR/WAW no aparecen como dependencias reales del compilador. El grafo usado por el reordenamiento experimental se especializa entonces a dependencias RAW, es decir, relaciones definicion-uso entre \textit{statements}.
+
 \section{Lenguaje y semántica}
 
 \subsection{Variables, estados y expresiones}

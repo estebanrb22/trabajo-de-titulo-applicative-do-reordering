@@ -1,0 +1,19 @@
+-- Original program
+CD.do
+  d1 <- die
+  d2 <- die
+  CD.return (d1 + d2)
+
+-- Internal representation with free variables by statement
+ppsfa
+  [(d1_a1Y5 <- die, {die}),
+   (d2_a1Y6 <- die, {die}),
+   (CD.return (d1_a1Y5 + d2_a1Y6), {d1_a1Y5, d2_a1Y6, +, CD.return})]
+
+-- Precedence graph adjacency list
+<no precedence edges: 0 RAW dependencies, all statements are independent>
+1 -> {}
+2 -> {}
+
+-- Precedence graph RAW dependencies grouped by binder
+<no RAW dependencies to group>

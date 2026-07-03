@@ -1,0 +1,22 @@
+-- Reordered do-notation
+CD.do
+  x <- putStrLn "A" >> pure 1
+  y <- putStrLn "B" >> pure 2
+  CD.return (x + y)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  candidate   =  0
+  index-order =  [1, 2]
+  statements  =  [x_a1T2 <- putStrLn "A" >> pure 1,
+                  y_a1T3 <- putStrLn "B" >> pure 2]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x_a1T2 <- putStrLn "A" >> pure 1,
+                     {>>, pure, putStrLn}))
+       (StmtTreeOne (y_a1T3 <- putStrLn "B" >> pure 2,
+                     {>>, pure, putStrLn})))
+  tree-cost = 1
+
+-- Execution plan
+x | y

@@ -1,0 +1,7 @@
+--- /workspaces/tt-repo/tests/IO-monad/results/original.run.log	2026-07-03 21:45:14.194936564 +0000
++++ /workspaces/tt-repo/tests/IO-monad/results/permutation_1.run.log	2026-07-03 21:45:14.239937422 +0000
+@@ -1,3 +1,3 @@
+-A
+ B
++A
+ 3
