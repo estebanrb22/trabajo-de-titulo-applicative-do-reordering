@@ -1,0 +1,92 @@
+ppsfa
+  [(x1_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform}),
+   (Dist.certainly (), {(), Dist.certainly}),
+   (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform}),
+   (CD.return (x1_a1Y4, x2_a1Y5), {x1_a1Y4, x2_a1Y5, CD.return})]
+addUsedGRE CD.__commutative_do__
+rearrangeForADo-commutative-do commutative-do = True
+rearrangeForADo-StmtsDependencyGraph
+rearrangeForADo-permutation
+  candidate   =  0
+  index-order =  [1, 2, 3]
+  statements  =  [x1_a1Y4 <- Dist.uniform [1, 2], Dist.certainly (),
+                  x2_a1Y5 <- Dist.uniform [10, 20]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x1_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform}))
+       (StmtTreeOne (Dist.certainly (), {(), Dist.certainly}))
+       (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform})))
+  tree-cost = 1
+rearrangeForADo-permutation
+  candidate   =  1
+  index-order =  [1, 3, 2]
+  statements  =  [x1_a1Y4 <- Dist.uniform [1, 2],
+                  x2_a1Y5 <- Dist.uniform [10, 20], Dist.certainly ()]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x1_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform}))
+       (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform}))
+       (StmtTreeOne (Dist.certainly (), {(), Dist.certainly})))
+  tree-cost = 1
+rearrangeForADo-permutation
+  candidate   =  2
+  index-order =  [2, 1, 3]
+  statements  =  [Dist.certainly (), x1_a1Y4 <- Dist.uniform [1, 2],
+                  x2_a1Y5 <- Dist.uniform [10, 20]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (Dist.certainly (), {(), Dist.certainly}))
+       (StmtTreeOne (x1_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform}))
+       (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform})))
+  tree-cost = 1
+rearrangeForADo-permutation
+  candidate   =  3
+  index-order =  [2, 3, 1]
+  statements  =  [Dist.certainly (),
+                  x2_a1Y5 <- Dist.uniform [10, 20], x1_a1Y4 <- Dist.uniform [1, 2]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (Dist.certainly (), {(), Dist.certainly}))
+       (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform}))
+       (StmtTreeOne (x1_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform})))
+  tree-cost = 1
+rearrangeForADo-permutation
+  candidate   =  4
+  index-order =  [3, 1, 2]
+  statements  =  [x2_a1Y5 <- Dist.uniform [10, 20],
+                  x1_a1Y4 <- Dist.uniform [1, 2], Dist.certainly ()]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform}))
+       (StmtTreeOne (x1_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform}))
+       (StmtTreeOne (Dist.certainly (), {(), Dist.certainly})))
+  tree-cost = 1
+rearrangeForADo-permutation
+  candidate   =  5
+  index-order =  [3, 2, 1]
+  statements  =  [x2_a1Y5 <- Dist.uniform [10, 20],
+                  Dist.certainly (), x1_a1Y4 <- Dist.uniform [1, 2]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform}))
+       (StmtTreeOne (Dist.certainly (), {(), Dist.certainly}))
+       (StmtTreeOne (x1_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform})))
+  tree-cost = 1
+rearrangeForADo final tree:
+  candidate   =  0
+  index-order =  [1, 2, 3]
+  statements  =  [x1_a1Y4 <- Dist.uniform [1, 2], Dist.certainly (),
+                  x2_a1Y5 <- Dist.uniform [10, 20]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x1_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform}))
+       (StmtTreeOne (Dist.certainly (), {(), Dist.certainly}))
+       (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform})))
+  tree-cost = 1
+rearrangeForADo-Summary:
+  minimum-cost-perm-index      = 0
+  original-cost                = 3
+  applicative-do-cost          = 1
+  reorder-and-ado-minimum-cost = 1
+  generated-permutations       = 6
+  minimum-cost-permutations    = 6

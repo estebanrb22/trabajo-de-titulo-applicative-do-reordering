@@ -1,0 +1,48 @@
+-- Reordered do-notation
+CD.do
+  root <- Dist.uniform [1, 2]
+  a1 <- Dist.uniform [root + 10, root + 20]
+  a2 <- Dist.uniform [a1 + 1000, a1 + 2000]
+  b1 <- Dist.uniform [root + 100, root + 200]
+  b2 <- Dist.uniform [b1 + 10000, b1 + 20000]
+  join <- Dist.uniform [a2 + b2 + 100000, a2 + b2 + 200000]
+  CD.return (root, a1, a2, b1, b2, join)
+
+-- Renamer trace
+rearrangeForADo candidate selection tree (fado-reorder-candidate-n) =
+  candidate   =  2
+  index-order =  [1, 2, 4, 3, 5, 6]
+  statements  =  [root_a1Y4 <- Dist.uniform [1, 2],
+                  a1_a1Y5 <- Dist.uniform [root_a1Y4 + 10, root_a1Y4 + 20],
+                  a2_a1Y7 <- Dist.uniform [a1_a1Y5 + 1000, a1_a1Y5 + 2000],
+                  b1_a1Y6 <- Dist.uniform [root_a1Y4 + 100, root_a1Y4 + 200],
+                  b2_a1Y8 <- Dist.uniform [b1_a1Y6 + 10000, b1_a1Y6 + 20000],
+                  join_a1Y9 <- Dist.uniform
+                                 [a2_a1Y7 + b2_a1Y8 + 100000, a2_a1Y7 + b2_a1Y8 + 200000]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeOne (root_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform}))
+       (StmtTreeBind
+          (StmtTreeOne (a1_a1Y5 <- Dist.uniform
+                                     [root_a1Y4 + 10, root_a1Y4 + 20],
+                        {root_a1Y4, +, Dist.uniform}))
+          (StmtTreeBind
+             (StmtTreeApplicative
+                (StmtTreeOne (a2_a1Y7 <- Dist.uniform
+                                           [a1_a1Y5 + 1000, a1_a1Y5 + 2000],
+                              {a1_a1Y5, +, Dist.uniform}))
+                (StmtTreeOne (b1_a1Y6 <- Dist.uniform
+                                           [root_a1Y4 + 100, root_a1Y4 + 200],
+                              {root_a1Y4, +, Dist.uniform})))
+             (StmtTreeBind
+                (StmtTreeOne (b2_a1Y8 <- Dist.uniform
+                                           [b1_a1Y6 + 10000, b1_a1Y6 + 20000],
+                              {b1_a1Y6, +, Dist.uniform}))
+                (StmtTreeOne (join_a1Y9 <- Dist.uniform
+                                             [a2_a1Y7 + b2_a1Y8 + 100000,
+                                              a2_a1Y7 + b2_a1Y8 + 200000],
+                              {a2_a1Y7, b2_a1Y8, +, Dist.uniform}))))))
+  tree-cost = 5
+
+-- Execution plan
+root ; (a1 ; ((a2 | b1) ; (b2 ; join)))

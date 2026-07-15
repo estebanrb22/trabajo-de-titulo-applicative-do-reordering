@@ -1,0 +1,124 @@
+\begin{thebibliography}{10}
+  \providebibliographyfont{name}{}%
+  \providebibliographyfont{lastname}{}%
+  \providebibliographyfont{title}{\emph}%
+  \providebibliographyfont{jtitle}{\btxtitlefont}%
+  \providebibliographyfont{etal}{\emph}%
+  \providebibliographyfont{journal}{}%
+  \providebibliographyfont{volume}{}%
+  \providebibliographyfont{ISBN}{\MakeUppercase}%
+  \providebibliographyfont{ISSN}{\MakeUppercase}%
+  \providebibliographyfont{url}{\url}%
+  \providebibliographyfont{numeral}{}%
+  \expandafter\btxselectlanguage\expandafter {\btxfallbacklanguage}
+
+\btxselectlanguage {spanish}
+\bibitem {RomeroApplicativeDoRepo}
+\btxnamefont {\btxlastnamefont {Berríos}, Esteban\btxfnamespacelong
+  Romero}\btxauthorcolon\ \btxtitlefont {\btxifchangecase {Repositorio
+  experimental para el estudio de applicative-do y reordenamiento de statements
+  en ghc}{Repositorio experimental para el estudio de Applicative-Do y
+  reordenamiento de statements en GHC}}, 2026.
+\newblock {\latintext
+  \btxurlfont{https://github.com/estebanrb22/trabajo-de-titulo-applicative-do-reordering}},
+  GitHub repository.
+
+\btxselectlanguage {english}
+\bibitem {ghc_commit_8ecf6d8}
+\btxnamefont {\btxlastnamefont {{GHC Contributors}}}\btxauthorcolon\
+  \btxtitlefont {\btxifchangecase {Commit
+  8ecf6d8f7dfee9e5b1844cd196f83f00f3b6b879}{Commit
+  8ecf6d8f7dfee9e5b1844cd196f83f00f3b6b879}}, 2015.
+\newblock {\latintext
+  \btxurlfont{https://github.com/ghc/ghc/commit/8ecf6d8f7dfee9e5b1844cd196f83f00f3b6b879}},
+  GitHub commit.
+
+\btxselectlanguage {spanish}
+\bibitem {GHCApplicativeDoTestsuite}
+\btxnamefont {\btxlastnamefont {{GHC Contributors}}}\btxauthorcolon\
+  \btxtitlefont {\btxifchangecase {Testsuite de la extensión applicativedo en
+  ghc}{Testsuite de la extensión ApplicativeDo en GHC}}, 2026.
+\newblock {\latintext
+  \btxurlfont{https://github.com/ghc/ghc/tree/master/testsuite/tests/ado}},
+  Directorio \texttt{testsuite/tests/ado} del repositorio oficial de GHC.
+
+\btxselectlanguage {english}
+\bibitem {Jacobs2018}
+\btxnamefont {\btxlastnamefont {Jacobs}, Bart}\btxauthorcolon\ \btxjtitlefont
+  {\btxifchangecase {From probability monads to commutative effectuses}{From
+  Probability Monads to Commutative Effectuses}}.
+\newblock \btxjournalfont {Journal of Logical and Algebraic Methods in
+  Programming}, 94:200--237, 2018.
+\newblock {\latintext
+  \btxurlfont{https://doi.org/10.1016/j.jlamp.2016.11.006}}.
+
+\bibitem {Kock2012}
+\btxnamefont {\btxlastnamefont {Kock}, Anders}\btxauthorcolon\ \btxjtitlefont
+  {\btxifchangecase {Commutative monads as a theory of
+  distributions}{Commutative Monads as a Theory of Distributions}}.
+\newblock \btxjournalfont {Theory and Applications of Categories},
+  26(4):97--131, 2012.
+\newblock {\latintext
+  \btxurlfont{https://www.tac.mta.ca/tac/volumes/26/4/26-04.pdf}}.
+
+\bibitem {marlow_ado}
+\btxnamefont {\btxlastnamefont {Marlow}, Simon}\btxauthorcolon\ \btxtitlefont
+  {\btxifchangecase {ado}{ado}}, 2015.
+\newblock {\latintext \btxurlfont{https://github.com/simonmar/ado}}, GitHub
+  repository.
+
+\bibitem {MarlowPJKM2016}
+\btxnamefont {\btxlastnamefont {Marlow}, Simon}, \btxnamefont
+  {Simon\btxfnamespacelong Peyton \btxlastnamefont {Jones}}, \btxnamefont
+  {Edward \btxlastnamefont {Kmett}}\btxandcomma {} \btxandlong {}\ \btxnamefont
+  {Andrey \btxlastnamefont {Mokhov}}\btxauthorcolon\ \btxtitlefont
+  {\btxifchangecase {Desugaring {Haskell}'s do-notation into applicative
+  operations}{Desugaring {Haskell}'s do-notation into applicative operations}}.
+\newblock \Btxinlong {}\ \btxtitlefont {Proceedings of the 9th International
+  Symposium on Haskell}, \btxpageslong {}\ 92--104. \btxpublisherfont {ACM},
+  2016.
+\newblock {\latintext \btxurlfont{https://doi.org/10.1145/2976002.2976007}}.
+
+\bibitem {McBride2008}
+\btxnamefont {\btxlastnamefont {McBride}, Conor} \btxandlong {}\ \btxnamefont
+  {Ross \btxlastnamefont {Paterson}}\btxauthorcolon\ \btxjtitlefont
+  {\btxifchangecase {Applicative programming with effects}{Applicative
+  Programming with Effects}}.
+\newblock \btxjournalfont {Journal of Functional Programming}, 18(1):1--13,
+  2008.
+
+\bibitem {Pombrio2018}
+\btxnamefont {\btxlastnamefont {Pombrio}, Justin}\btxauthorcolon\ \btxtitlefont
+  {Resugaring: Lifting Evaluation Sequences through Syntactic Sugar}.
+\newblock \btxphdthesis {}, Brown University, 2018.
+\newblock {\latintext
+  \btxurlfont{https://cs.brown.edu/research/pubs/theses/phd/2018/pombrio.justin.pdf}}.
+
+\bibitem {ScibiorGG2015}
+\btxnamefont {\btxlastnamefont {{\'S}cibior}, Adam}, \btxnamefont {Zoubin
+  \btxlastnamefont {Ghahramani}}\btxandcomma {} \btxandlong {}\ \btxnamefont
+  {Andrew\btxfnamespacelong D. \btxlastnamefont {Gordon}}\btxauthorcolon\
+  \btxtitlefont {\btxifchangecase {Practical probabilistic programming with
+  monads}{Practical Probabilistic Programming with Monads}}.
+\newblock \Btxinlong {}\ \btxtitlefont {Proceedings of the 8th ACM SIGPLAN
+  Symposium on Haskell}, \btxpageslong {}\ 165--176. \btxpublisherfont {ACM},
+  2015.
+\newblock {\latintext \btxurlfont{https://doi.org/10.1145/2804302.2804317}}.
+
+\bibitem {Wadler1995}
+\btxnamefont {\btxlastnamefont {Wadler}, Philip}\btxauthorcolon\ \btxtitlefont
+  {\btxifchangecase {Monads for functional programming}{Monads for Functional
+  Programming}}.
+\newblock \Btxinlong {}\ \btxtitlefont {Advanced Functional Programming},
+  \btxvolumelong {}\ \btxvolumefont {925} \btxofserieslong {}\ \btxtitlefont
+  {Lecture Notes in Computer Science}, \btxpageslong {}\ 24--52.
+  \btxpublisherfont {Springer}, 1995.
+
+\bibitem {Yorgey2009}
+\btxnamefont {\btxlastnamefont {Yorgey}, Brent}\btxauthorcolon\ \btxjtitlefont
+  {\btxifchangecase {The typeclassopedia}{The Typeclassopedia}}.
+\newblock \btxjournalfont {The Monad.Reader}, 13:17--68, 2009.
+\newblock {\latintext
+  \btxurlfont{https://wiki.haskell.org/wikiupload/e/e9/Typeclassopedia.pdf}}.
+
+\end{thebibliography}

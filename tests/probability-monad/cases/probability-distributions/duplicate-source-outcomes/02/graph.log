@@ -1,0 +1,19 @@
+-- Original program
+CD.do
+  x1 <- Dist.Cons [(1, 1 / 4), (1, 1 / 4), (2, 1 / 2)]
+  x2 <- Dist.uniform [10, 20]
+  CD.return (x1, x2)
+
+-- Internal representation with free variables by statement
+ppsfa
+  [(x1_a1Y4 <- Dist.Cons [(1, 1 / 4), (1, 1 / 4), (2, 1 / 2)], {/, Dist.Cons}),
+   (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform}),
+   (CD.return (x1_a1Y4, x2_a1Y5), {x1_a1Y4, x2_a1Y5, CD.return})]
+
+-- Precedence graph adjacency list
+<no precedence edges: 0 RAW dependencies, all statements are independent>
+1 -> {}
+2 -> {}
+
+-- Precedence graph RAW dependencies grouped by binder
+<no RAW dependencies to group>

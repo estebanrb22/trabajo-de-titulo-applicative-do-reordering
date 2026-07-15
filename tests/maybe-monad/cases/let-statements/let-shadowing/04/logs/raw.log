@@ -1,0 +1,86 @@
+ppsfa
+  [(x_a1T2 <- Just 1, {Just}),
+   (oldX_a1T3 <- Just x_a1T2, {Just, x_a1T2}), (let x_a1T4 = 100, {}),
+   (y_a1T5 <- Just (x_a1T4 + oldX_a1T3),
+    {Just, oldX_a1T3, x_a1T4, +}),
+   (CD.return (oldX_a1T3, x_a1T4, y_a1T5),
+    {oldX_a1T3, x_a1T4, y_a1T5, CD.return})]
+addUsedGRE CD.__commutative_do__
+rearrangeForADo-commutative-do commutative-do = True
+rearrangeForADo-StmtsDependencyGraph
+rearrangeForADo-dep
+  pair           = 1  ->  2
+  RAW            = {x_a1T2}
+rearrangeForADo-dep
+  pair           = 2  ->  4
+  RAW            = {oldX_a1T3}
+rearrangeForADo-dep
+  pair           = 3  ->  4
+  RAW            = {x_a1T4}
+rearrangeForADo-permutation
+  candidate   =  0
+  index-order =  [1, 2, 3, 4]
+  statements  =  [x_a1T2 <- Just 1, oldX_a1T3 <- Just x_a1T2,
+                  let x_a1T4 = 100, y_a1T5 <- Just (x_a1T4 + oldX_a1T3)]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeOne (x_a1T2 <- Just 1, {Just}))
+       (StmtTreeBind
+          (StmtTreeOne (oldX_a1T3 <- Just x_a1T2, {Just, x_a1T2}))
+          (StmtTreeBind
+             (StmtTreeOne (let x_a1T4 = 100, {}))
+             (StmtTreeOne (y_a1T5 <- Just (x_a1T4 + oldX_a1T3),
+                           {Just, oldX_a1T3, x_a1T4, +})))))
+  tree-cost = 4
+rearrangeForADo-permutation
+  candidate   =  1
+  index-order =  [1, 3, 2, 4]
+  statements  =  [x_a1T2 <- Just 1, let x_a1T4 = 100,
+                  oldX_a1T3 <- Just x_a1T2, y_a1T5 <- Just (x_a1T4 + oldX_a1T3)]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeOne (x_a1T2 <- Just 1, {Just}))
+       (StmtTreeBind
+          (StmtTreeOne (let x_a1T4 = 100, {}))
+          (StmtTreeBind
+             (StmtTreeOne (oldX_a1T3 <- Just x_a1T2, {Just, x_a1T2}))
+             (StmtTreeOne (y_a1T5 <- Just (x_a1T4 + oldX_a1T3),
+                           {Just, oldX_a1T3, x_a1T4, +})))))
+  tree-cost = 4
+rearrangeForADo-permutation
+  candidate   =  2
+  index-order =  [3, 1, 2, 4]
+  statements  =  [let x_a1T4 = 100, x_a1T2 <- Just 1,
+                  oldX_a1T3 <- Just x_a1T2, y_a1T5 <- Just (x_a1T4 + oldX_a1T3)]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeOne (let x_a1T4 = 100, {}))
+       (StmtTreeBind
+          (StmtTreeOne (x_a1T2 <- Just 1, {Just}))
+          (StmtTreeBind
+             (StmtTreeOne (oldX_a1T3 <- Just x_a1T2, {Just, x_a1T2}))
+             (StmtTreeOne (y_a1T5 <- Just (x_a1T4 + oldX_a1T3),
+                           {Just, oldX_a1T3, x_a1T4, +})))))
+  tree-cost = 4
+rearrangeForADo final tree:
+  candidate   =  0
+  index-order =  [1, 2, 3, 4]
+  statements  =  [x_a1T2 <- Just 1, oldX_a1T3 <- Just x_a1T2,
+                  let x_a1T4 = 100, y_a1T5 <- Just (x_a1T4 + oldX_a1T3)]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeOne (x_a1T2 <- Just 1, {Just}))
+       (StmtTreeBind
+          (StmtTreeOne (oldX_a1T3 <- Just x_a1T2, {Just, x_a1T2}))
+          (StmtTreeBind
+             (StmtTreeOne (let x_a1T4 = 100, {}))
+             (StmtTreeOne (y_a1T5 <- Just (x_a1T4 + oldX_a1T3),
+                           {Just, oldX_a1T3, x_a1T4, +})))))
+  tree-cost = 4
+rearrangeForADo-Summary:
+  minimum-cost-perm-index      = 0
+  original-cost                = 4
+  applicative-do-cost          = 4
+  reorder-and-ado-minimum-cost = 4
+  generated-permutations       = 3
+  minimum-cost-permutations    = 3

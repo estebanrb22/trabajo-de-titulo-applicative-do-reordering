@@ -1,0 +1,64 @@
+%\documentclass[guia]{upropuesta}
+\documentclass{upropuesta}
+
+%\title{REFACTORIZACIÓN DE PROGRAMAS PROBABILÍSTICOS EN HASKELL}
+\title{EXTENSIÓN EXPERIMENTAL DE APPLICATIVEDO EN GHC MEDIANTE REORDENAMIENTO DE MÓNADAS CONMUTATIVAS EN PROGRAMAS PROBABILÍSTICOS DE HASKELL}
+
+\author{ESTEBAN ROMERO BERRÍOS}
+\guia{Federico Olmedo, Ismael Figueroa}
+\guia{FEDERICO OLMEDO, ISMAEL FIGUEROA}
+\modalidad{MEMORIA}
+
+\date{2026}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgfgantt}
+\usepackage{url}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{hyperref}
+
+%---------------------------------------------------------------------------%
+
+\usepackage{tcolorbox}
+\usepackage{xcolor}
+\usepackage[fixlanguage]{babelbib}
+
+% Toggle para activar o desactivar el resaltado
+\newif\ifshowchanges
+\showchangestrue   % <- activar
+%\showchangesfalse % <- desactivar
+
+% Macro para marcar texto agregado
+\newcommand{\nuevo}[1]{%
+\ifshowchanges
+\begin{tcolorbox}[colback=yellow!20,colframe=black!40,boxrule=0.5pt,arc=2pt]
+#1
+\end{tcolorbox}
+\else
+#1
+\fi
+}
+
+%---------------------------------------------------------------------------%
+
+
+\graphicspath{{imagenes/}}
+
+\begin{document}
+
+\maketitle
+
+\input{secciones/introduccion}
+\input{secciones/preliminares}
+\input{secciones/estado_del_arte}
+\input{secciones/objetivos}
+\input{secciones/solucion_propuesta}
+\input{secciones/plan_de_trabajo}
+\input{secciones/trabajo_adelantado}
+
+\bibliographystyle{babplain}
+\bibliography{bibliografia}
+
+\end{document}

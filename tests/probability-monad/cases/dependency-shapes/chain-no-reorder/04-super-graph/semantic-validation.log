@@ -1,0 +1,34 @@
+== Semantic validation reorder (Cabal) ==
+project-dir = /workspaces/tt-repo/experiments/probability-monad/cases/dependency-shapes/chain-no-reorder/04-super-graph
+input-file = /workspaces/tt-repo/experiments/probability-monad/cases/dependency-shapes/chain-no-reorder/04-super-graph/main.hs
+cabal-file = /workspaces/tt-repo/experiments/probability-monad/cases/dependency-shapes/chain-no-reorder/04-super-graph/probability-monad-cases-dependency-shapes-chain-no-reorder-n04-super-graph.cabal
+target = exe:probability-monad-cases-dependency-shapes-chain-no-reorder-n04-super-graph
+output-dir = /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/chain-no-reorder/04-super-graph
+cabal-build-root = /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/chain-no-reorder/04-super-graph/cabal-build
+
+[COMPILE] original -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/chain-no-reorder/04-super-graph/bin/original
+[COMPILE] original_ado -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/chain-no-reorder/04-super-graph/bin/original_ado
+[COMPILE] optimal-reorder -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/chain-no-reorder/04-super-graph/bin/optimal-reorder
+generated permutations = 1
+
+[COMPILE] permutation_0 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/chain-no-reorder/04-super-graph/bin/permutation_0
+
+[RUN] original -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/chain-no-reorder/04-super-graph/results/original.run.log
+[OUTPUT] fromFreqs [((1,11,112,1124),1 % 16),((1,11,112,2124),1 % 16),((1,11,212,1224),1 % 16),((1,11,212,2224),1 % 16),((1,21,122,1144),1 % 16),((1,21,122,2144),1 % 16),((1,21,222,1244),1 % 16),((1,21,222,2244),1 % 16),((2,12,114,1128),1 % 16),((2,12,114,2128),1 % 16),((2,12,214,1228),1 % 16),((2,12,214,2228),1 % 16),((2,22,124,1148),1 % 16),((2,22,124,2148),1 % 16),((2,22,224,1248),1 % 16),((2,22,224,2248),1 % 16)]
+[EXIT CODE] original = 0
+[RUN] original_ado -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/chain-no-reorder/04-super-graph/results/original_ado.run.log
+[OUTPUT] fromFreqs [((1,11,112,1124),1 % 16),((1,11,112,2124),1 % 16),((1,11,212,1224),1 % 16),((1,11,212,2224),1 % 16),((1,21,122,1144),1 % 16),((1,21,122,2144),1 % 16),((1,21,222,1244),1 % 16),((1,21,222,2244),1 % 16),((2,12,114,1128),1 % 16),((2,12,114,2128),1 % 16),((2,12,214,1228),1 % 16),((2,12,214,2228),1 % 16),((2,22,124,1148),1 % 16),((2,22,124,2148),1 % 16),((2,22,224,1248),1 % 16),((2,22,224,2248),1 % 16)]
+[EXIT CODE] original_ado = 0
+[RUN] optimal-reorder -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/chain-no-reorder/04-super-graph/results/optimal-reorder.run.log
+[OUTPUT] fromFreqs [((1,11,112,1124),1 % 16),((1,11,112,2124),1 % 16),((1,11,212,1224),1 % 16),((1,11,212,2224),1 % 16),((1,21,122,1144),1 % 16),((1,21,122,2144),1 % 16),((1,21,222,1244),1 % 16),((1,21,222,2244),1 % 16),((2,12,114,1128),1 % 16),((2,12,114,2128),1 % 16),((2,12,214,1228),1 % 16),((2,12,214,2228),1 % 16),((2,22,124,1148),1 % 16),((2,22,124,2148),1 % 16),((2,22,224,1248),1 % 16),((2,22,224,2248),1 % 16)]
+[EXIT CODE] optimal-reorder = 0
+[RUN] permutation_0 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/chain-no-reorder/04-super-graph/results/permutation_0.run.log
+[OUTPUT] fromFreqs [((1,11,112,1124),1 % 16),((1,11,112,2124),1 % 16),((1,11,212,1224),1 % 16),((1,11,212,2224),1 % 16),((1,21,122,1144),1 % 16),((1,21,122,2144),1 % 16),((1,21,222,1244),1 % 16),((1,21,222,2244),1 % 16),((2,12,114,1128),1 % 16),((2,12,114,2128),1 % 16),((2,12,214,1228),1 % 16),((2,12,214,2228),1 % 16),((2,22,124,1148),1 % 16),((2,22,124,2148),1 % 16),((2,22,224,1248),1 % 16),((2,22,224,2248),1 % 16)]
+[EXIT CODE] permutation_0 = 0
+
+== Semantic comparison ==
+[OK] original_ado   : identical output
+[OK] optimal-reorder: identical output
+[OK] permutation_0  : identical output
+
+RESULT: OK

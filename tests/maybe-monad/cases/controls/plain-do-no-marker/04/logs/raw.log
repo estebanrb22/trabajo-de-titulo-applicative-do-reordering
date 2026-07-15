@@ -1,0 +1,28 @@
+ppsfa
+  [(a1_a1S3 <- Just 1, {Just}), (b1_a1S4 <- Just 10, {Just}),
+   (a2_a1S5 <- Just (a1_a1S3 + 1), {Just, a1_a1S3, +}),
+   (b2_a1S6 <- Just (b1_a1S4 + 1), {Just, b1_a1S4, +}),
+   (return (a1_a1S3, a2_a1S5, b1_a1S4, b2_a1S6),
+    {return, a1_a1S3, b1_a1S4, a2_a1S5, b2_a1S6})]
+rearrangeForADo-commutative-do commutative-do = False
+rearrangeForADo final tree:
+  candidate   =  0
+  index-order =  [1, 2, 3, 4]
+  statements  =  [a1_a1S3 <- Just 1, b1_a1S4 <- Just 10,
+                  a2_a1S5 <- Just (a1_a1S3 + 1), b2_a1S6 <- Just (b1_a1S4 + 1)]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (a1_a1S3 <- Just 1, {Just}))
+          (StmtTreeOne (b1_a1S4 <- Just 10, {Just})))
+       (StmtTreeApplicative
+          (StmtTreeOne (a2_a1S5 <- Just (a1_a1S3 + 1), {Just, a1_a1S3, +}))
+          (StmtTreeOne (b2_a1S6 <- Just (b1_a1S4 + 1), {Just, b1_a1S4, +}))))
+  tree-cost = 2
+rearrangeForADo-Summary:
+  minimum-cost-perm-index      = 0
+  original-cost                = 4
+  applicative-do-cost          = 2
+  reorder-and-ado-minimum-cost = 2
+  generated-permutations       = 1
+  minimum-cost-permutations    = 1

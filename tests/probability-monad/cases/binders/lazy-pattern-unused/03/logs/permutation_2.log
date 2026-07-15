@@ -1,0 +1,26 @@
+-- Reordered do-notation
+CD.do
+  x2 <- Dist.uniform [10, 20]
+  x3 <- Dist.uniform [x2 + 1, x2 + 2]
+  ~[x1] <- Dist.certainly []
+  CD.return (x2, x3)
+
+-- Renamer trace
+rearrangeForADo candidate selection tree (fado-reorder-candidate-n) =
+  candidate   =  2
+  index-order =  [2, 3, 1]
+  statements  =  [x2_a1Y5 <- Dist.uniform [10, 20],
+                  x3_a1Y6 <- Dist.uniform [x2_a1Y5 + 1, x2_a1Y5 + 2],
+                  ~[x1_a1Y4] <- Dist.certainly []]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeBind
+          (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform}))
+          (StmtTreeOne (x3_a1Y6 <- Dist.uniform [x2_a1Y5 + 1, x2_a1Y5 + 2],
+                        {x2_a1Y5, +, Dist.uniform})))
+       (StmtTreeOne (~[x1_a1Y4] <- Dist.certainly [],
+                     {[], Dist.certainly})))
+  tree-cost = 2
+
+-- Execution plan
+(x2 ; x3) | ~[x1]

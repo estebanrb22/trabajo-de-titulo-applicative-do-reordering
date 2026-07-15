@@ -1,0 +1,111 @@
+ppsfa
+  [((x1_a1Y4 : x2_a1Y5 : xs_a1Y6) <- Dist.uniform
+                                       [[1, 10, 100], [2, 20, 200, 2000]],
+    {Dist.uniform}),
+   (x3_a1Y7 <- Dist.uniform
+                 [x1_a1Y4 + x2_a1Y5, x1_a1Y4 + x2_a1Y5 + 1],
+    {x1_a1Y4, x2_a1Y5, +, Dist.uniform}),
+   (x4_a1Y8 <- Dist.uniform [sum xs_a1Y6, sum xs_a1Y6 + 1],
+    {xs_a1Y6, sum, +, Dist.uniform}),
+   (x5_a1Y9 <- Dist.uniform
+                 [x3_a1Y7 + x4_a1Y8, x3_a1Y7 + x4_a1Y8 + 1],
+    {x3_a1Y7, x4_a1Y8, +, Dist.uniform}),
+   (CD.return (x1_a1Y4, x2_a1Y5, xs_a1Y6, x3_a1Y7, x4_a1Y8, x5_a1Y9),
+    {x1_a1Y4, x2_a1Y5, xs_a1Y6, x3_a1Y7, x4_a1Y8, x5_a1Y9, CD.return})]
+addUsedGRE CD.__commutative_do__
+rearrangeForADo-commutative-do commutative-do = True
+rearrangeForADo-StmtsDependencyGraph
+rearrangeForADo-dep
+  pair           = 1  ->  2
+  RAW            = {x1_a1Y4, x2_a1Y5}
+rearrangeForADo-dep
+  pair           = 1  ->  3
+  RAW            = {xs_a1Y6}
+rearrangeForADo-dep
+  pair           = 2  ->  4
+  RAW            = {x3_a1Y7}
+rearrangeForADo-dep
+  pair           = 3  ->  4
+  RAW            = {x4_a1Y8}
+rearrangeForADo-permutation
+  candidate   =  0
+  index-order =  [1, 2, 3, 4]
+  statements  =  [(x1_a1Y4 : x2_a1Y5 : xs_a1Y6) <- Dist.uniform
+                                                     [[1, 10, 100], [2, 20, 200, 2000]],
+                  x3_a1Y7 <- Dist.uniform [x1_a1Y4 + x2_a1Y5, x1_a1Y4 + x2_a1Y5 + 1],
+                  x4_a1Y8 <- Dist.uniform [sum xs_a1Y6, sum xs_a1Y6 + 1],
+                  x5_a1Y9 <- Dist.uniform [x3_a1Y7 + x4_a1Y8, x3_a1Y7 + x4_a1Y8 + 1]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeOne ((x1_a1Y4 : x2_a1Y5 : xs_a1Y6) <- Dist.uniform
+                                                        [[1, 10, 100], [2, 20, 200, 2000]],
+                     {Dist.uniform}))
+       (StmtTreeBind
+          (StmtTreeApplicative
+             (StmtTreeOne (x3_a1Y7 <- Dist.uniform
+                                        [x1_a1Y4 + x2_a1Y5, x1_a1Y4 + x2_a1Y5 + 1],
+                           {x1_a1Y4, x2_a1Y5, +, Dist.uniform}))
+             (StmtTreeOne (x4_a1Y8 <- Dist.uniform
+                                        [sum xs_a1Y6, sum xs_a1Y6 + 1],
+                           {xs_a1Y6, sum, +, Dist.uniform})))
+          (StmtTreeOne (x5_a1Y9 <- Dist.uniform
+                                     [x3_a1Y7 + x4_a1Y8, x3_a1Y7 + x4_a1Y8 + 1],
+                        {x3_a1Y7, x4_a1Y8, +, Dist.uniform}))))
+  tree-cost = 3
+rearrangeForADo-permutation
+  candidate   =  1
+  index-order =  [1, 3, 2, 4]
+  statements  =  [(x1_a1Y4 : x2_a1Y5 : xs_a1Y6) <- Dist.uniform
+                                                     [[1, 10, 100], [2, 20, 200, 2000]],
+                  x4_a1Y8 <- Dist.uniform [sum xs_a1Y6, sum xs_a1Y6 + 1],
+                  x3_a1Y7 <- Dist.uniform [x1_a1Y4 + x2_a1Y5, x1_a1Y4 + x2_a1Y5 + 1],
+                  x5_a1Y9 <- Dist.uniform [x3_a1Y7 + x4_a1Y8, x3_a1Y7 + x4_a1Y8 + 1]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeOne ((x1_a1Y4 : x2_a1Y5 : xs_a1Y6) <- Dist.uniform
+                                                        [[1, 10, 100], [2, 20, 200, 2000]],
+                     {Dist.uniform}))
+       (StmtTreeBind
+          (StmtTreeApplicative
+             (StmtTreeOne (x4_a1Y8 <- Dist.uniform
+                                        [sum xs_a1Y6, sum xs_a1Y6 + 1],
+                           {xs_a1Y6, sum, +, Dist.uniform}))
+             (StmtTreeOne (x3_a1Y7 <- Dist.uniform
+                                        [x1_a1Y4 + x2_a1Y5, x1_a1Y4 + x2_a1Y5 + 1],
+                           {x1_a1Y4, x2_a1Y5, +, Dist.uniform})))
+          (StmtTreeOne (x5_a1Y9 <- Dist.uniform
+                                     [x3_a1Y7 + x4_a1Y8, x3_a1Y7 + x4_a1Y8 + 1],
+                        {x3_a1Y7, x4_a1Y8, +, Dist.uniform}))))
+  tree-cost = 3
+rearrangeForADo final tree:
+  candidate   =  0
+  index-order =  [1, 2, 3, 4]
+  statements  =  [(x1_a1Y4 : x2_a1Y5 : xs_a1Y6) <- Dist.uniform
+                                                     [[1, 10, 100], [2, 20, 200, 2000]],
+                  x3_a1Y7 <- Dist.uniform [x1_a1Y4 + x2_a1Y5, x1_a1Y4 + x2_a1Y5 + 1],
+                  x4_a1Y8 <- Dist.uniform [sum xs_a1Y6, sum xs_a1Y6 + 1],
+                  x5_a1Y9 <- Dist.uniform [x3_a1Y7 + x4_a1Y8, x3_a1Y7 + x4_a1Y8 + 1]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeOne ((x1_a1Y4 : x2_a1Y5 : xs_a1Y6) <- Dist.uniform
+                                                        [[1, 10, 100], [2, 20, 200, 2000]],
+                     {Dist.uniform}))
+       (StmtTreeBind
+          (StmtTreeApplicative
+             (StmtTreeOne (x3_a1Y7 <- Dist.uniform
+                                        [x1_a1Y4 + x2_a1Y5, x1_a1Y4 + x2_a1Y5 + 1],
+                           {x1_a1Y4, x2_a1Y5, +, Dist.uniform}))
+             (StmtTreeOne (x4_a1Y8 <- Dist.uniform
+                                        [sum xs_a1Y6, sum xs_a1Y6 + 1],
+                           {xs_a1Y6, sum, +, Dist.uniform})))
+          (StmtTreeOne (x5_a1Y9 <- Dist.uniform
+                                     [x3_a1Y7 + x4_a1Y8, x3_a1Y7 + x4_a1Y8 + 1],
+                        {x3_a1Y7, x4_a1Y8, +, Dist.uniform}))))
+  tree-cost = 3
+rearrangeForADo-Summary:
+  minimum-cost-perm-index      = 0
+  original-cost                = 4
+  applicative-do-cost          = 3
+  reorder-and-ado-minimum-cost = 3
+  generated-permutations       = 2
+  minimum-cost-permutations    = 2

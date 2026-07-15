@@ -1,0 +1,22 @@
+-- do-notation
+do
+  x <- Just 1
+  oldX <- Just x
+  let x = 100
+  y <- Just (x + oldX)
+  return (oldX, x, y)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  (StmtTreeBind
+     (StmtTreeOne (x_a1S3 <- Just 1, {Just}))
+     (StmtTreeBind
+        (StmtTreeOne (oldX_a1S4 <- Just x_a1S3, {Just, x_a1S3}))
+        (StmtTreeBind
+           (StmtTreeOne (let x_a1S5 = 100, {}))
+           (StmtTreeOne (y_a1S6 <- Just (x_a1S5 + oldX_a1S4),
+                         {Just, oldX_a1S4, x_a1S5, +})))))
+  tree-cost = 4
+
+-- Execution plan
+x ; (oldX ; (x ; y))

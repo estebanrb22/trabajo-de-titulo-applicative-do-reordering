@@ -1,0 +1,37 @@
+-- do-notation
+do
+  root <- Dist.uniform [1, 2]
+  a1 <- Dist.uniform [root + 10, root + 20]
+  b1 <- Dist.uniform [root + 100, root + 200]
+  a2 <- Dist.uniform [a1 + 1000, a1 + 2000]
+  b2 <- Dist.uniform [b1 + 10000, b1 + 20000]
+  join <- Dist.uniform [a2 + b2 + 100000, a2 + b2 + 200000]
+  return (root, a1, a2, b1, b2, join)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  (StmtTreeBind
+     (StmtTreeOne (root_a1X5 <- Dist.uniform [1, 2], {Dist.uniform}))
+     (StmtTreeBind
+        (StmtTreeApplicative
+           (StmtTreeOne (a1_a1X6 <- Dist.uniform
+                                      [root_a1X5 + 10, root_a1X5 + 20],
+                         {root_a1X5, +, Dist.uniform}))
+           (StmtTreeOne (b1_a1X7 <- Dist.uniform
+                                      [root_a1X5 + 100, root_a1X5 + 200],
+                         {root_a1X5, +, Dist.uniform})))
+        (StmtTreeBind
+           (StmtTreeApplicative
+              (StmtTreeOne (a2_a1X8 <- Dist.uniform
+                                         [a1_a1X6 + 1000, a1_a1X6 + 2000],
+                            {a1_a1X6, +, Dist.uniform}))
+              (StmtTreeOne (b2_a1X9 <- Dist.uniform
+                                         [b1_a1X7 + 10000, b1_a1X7 + 20000],
+                            {b1_a1X7, +, Dist.uniform})))
+           (StmtTreeOne (join_a1Xa <- Dist.uniform
+                                        [a2_a1X8 + b2_a1X9 + 100000, a2_a1X8 + b2_a1X9 + 200000],
+                         {a2_a1X8, b2_a1X9, +, Dist.uniform})))))
+  tree-cost = 4
+
+-- Execution plan
+root ; ((a1 | b1) ; ((a2 | b2) ; join))

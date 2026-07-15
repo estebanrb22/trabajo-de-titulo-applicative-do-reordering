@@ -1,0 +1,39 @@
+== Semantic validation reorder (Cabal) ==
+project-dir = /workspaces/tt-repo/experiments/probability-monad/cases/binders/nested-pattern/04
+input-file = /workspaces/tt-repo/experiments/probability-monad/cases/binders/nested-pattern/04/main.hs
+cabal-file = /workspaces/tt-repo/experiments/probability-monad/cases/binders/nested-pattern/04/probability-monad-cases-binders-nested-pattern-n04.cabal
+target = exe:probability-monad-cases-binders-nested-pattern-n04
+output-dir = /workspaces/tt-repo/tests/probability-monad/cases/binders/nested-pattern/04
+cabal-build-root = /workspaces/tt-repo/tests/probability-monad/cases/binders/nested-pattern/04/cabal-build
+
+[COMPILE] original -> /workspaces/tt-repo/tests/probability-monad/cases/binders/nested-pattern/04/bin/original
+[COMPILE] original_ado -> /workspaces/tt-repo/tests/probability-monad/cases/binders/nested-pattern/04/bin/original_ado
+[COMPILE] optimal-reorder -> /workspaces/tt-repo/tests/probability-monad/cases/binders/nested-pattern/04/bin/optimal-reorder
+generated permutations = 2
+
+[COMPILE] permutation_0 -> /workspaces/tt-repo/tests/probability-monad/cases/binders/nested-pattern/04/bin/permutation_0
+[COMPILE] permutation_1 -> /workspaces/tt-repo/tests/probability-monad/cases/binders/nested-pattern/04/bin/permutation_1
+
+[RUN] original -> /workspaces/tt-repo/tests/probability-monad/cases/binders/nested-pattern/04/results/original.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000,101,1010,1111),1 % 16),((1,10,100,1000,101,1010,1112),1 % 16),((1,10,100,1000,101,1011,1112),1 % 16),((1,10,100,1000,101,1011,1113),1 % 16),((1,10,100,1000,102,1010,1112),1 % 16),((1,10,100,1000,102,1010,1113),1 % 16),((1,10,100,1000,102,1011,1113),1 % 16),((1,10,100,1000,102,1011,1114),1 % 16),((2,20,200,2000,202,2020,2222),1 % 16),((2,20,200,2000,202,2020,2223),1 % 16),((2,20,200,2000,202,2021,2223),1 % 16),((2,20,200,2000,202,2021,2224),1 % 16),((2,20,200,2000,203,2020,2223),1 % 16),((2,20,200,2000,203,2020,2224),1 % 16),((2,20,200,2000,203,2021,2224),1 % 16),((2,20,200,2000,203,2021,2225),1 % 16)]
+[EXIT CODE] original = 0
+[RUN] original_ado -> /workspaces/tt-repo/tests/probability-monad/cases/binders/nested-pattern/04/results/original_ado.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000,101,1010,1111),1 % 16),((1,10,100,1000,101,1010,1112),1 % 16),((1,10,100,1000,101,1011,1112),1 % 16),((1,10,100,1000,101,1011,1113),1 % 16),((1,10,100,1000,102,1010,1112),1 % 16),((1,10,100,1000,102,1010,1113),1 % 16),((1,10,100,1000,102,1011,1113),1 % 16),((1,10,100,1000,102,1011,1114),1 % 16),((2,20,200,2000,202,2020,2222),1 % 16),((2,20,200,2000,202,2020,2223),1 % 16),((2,20,200,2000,202,2021,2223),1 % 16),((2,20,200,2000,202,2021,2224),1 % 16),((2,20,200,2000,203,2020,2223),1 % 16),((2,20,200,2000,203,2020,2224),1 % 16),((2,20,200,2000,203,2021,2224),1 % 16),((2,20,200,2000,203,2021,2225),1 % 16)]
+[EXIT CODE] original_ado = 0
+[RUN] optimal-reorder -> /workspaces/tt-repo/tests/probability-monad/cases/binders/nested-pattern/04/results/optimal-reorder.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000,101,1010,1111),1 % 16),((1,10,100,1000,101,1010,1112),1 % 16),((1,10,100,1000,101,1011,1112),1 % 16),((1,10,100,1000,101,1011,1113),1 % 16),((1,10,100,1000,102,1010,1112),1 % 16),((1,10,100,1000,102,1010,1113),1 % 16),((1,10,100,1000,102,1011,1113),1 % 16),((1,10,100,1000,102,1011,1114),1 % 16),((2,20,200,2000,202,2020,2222),1 % 16),((2,20,200,2000,202,2020,2223),1 % 16),((2,20,200,2000,202,2021,2223),1 % 16),((2,20,200,2000,202,2021,2224),1 % 16),((2,20,200,2000,203,2020,2223),1 % 16),((2,20,200,2000,203,2020,2224),1 % 16),((2,20,200,2000,203,2021,2224),1 % 16),((2,20,200,2000,203,2021,2225),1 % 16)]
+[EXIT CODE] optimal-reorder = 0
+[RUN] permutation_0 -> /workspaces/tt-repo/tests/probability-monad/cases/binders/nested-pattern/04/results/permutation_0.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000,101,1010,1111),1 % 16),((1,10,100,1000,101,1010,1112),1 % 16),((1,10,100,1000,101,1011,1112),1 % 16),((1,10,100,1000,101,1011,1113),1 % 16),((1,10,100,1000,102,1010,1112),1 % 16),((1,10,100,1000,102,1010,1113),1 % 16),((1,10,100,1000,102,1011,1113),1 % 16),((1,10,100,1000,102,1011,1114),1 % 16),((2,20,200,2000,202,2020,2222),1 % 16),((2,20,200,2000,202,2020,2223),1 % 16),((2,20,200,2000,202,2021,2223),1 % 16),((2,20,200,2000,202,2021,2224),1 % 16),((2,20,200,2000,203,2020,2223),1 % 16),((2,20,200,2000,203,2020,2224),1 % 16),((2,20,200,2000,203,2021,2224),1 % 16),((2,20,200,2000,203,2021,2225),1 % 16)]
+[EXIT CODE] permutation_0 = 0
+[RUN] permutation_1 -> /workspaces/tt-repo/tests/probability-monad/cases/binders/nested-pattern/04/results/permutation_1.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000,101,1010,1111),1 % 16),((1,10,100,1000,101,1010,1112),1 % 16),((1,10,100,1000,101,1011,1112),1 % 16),((1,10,100,1000,101,1011,1113),1 % 16),((1,10,100,1000,102,1010,1112),1 % 16),((1,10,100,1000,102,1010,1113),1 % 16),((1,10,100,1000,102,1011,1113),1 % 16),((1,10,100,1000,102,1011,1114),1 % 16),((2,20,200,2000,202,2020,2222),1 % 16),((2,20,200,2000,202,2020,2223),1 % 16),((2,20,200,2000,202,2021,2223),1 % 16),((2,20,200,2000,202,2021,2224),1 % 16),((2,20,200,2000,203,2020,2223),1 % 16),((2,20,200,2000,203,2020,2224),1 % 16),((2,20,200,2000,203,2021,2224),1 % 16),((2,20,200,2000,203,2021,2225),1 % 16)]
+[EXIT CODE] permutation_1 = 0
+
+== Semantic comparison ==
+[OK] original_ado   : identical output
+[OK] optimal-reorder: identical output
+[OK] permutation_0  : identical output
+[OK] permutation_1  : identical output
+
+RESULT: OK

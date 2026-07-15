@@ -1,0 +1,37 @@
+-- do-notation
+do
+  a1 <- Just 1
+  b1 <- Just 10
+  a2 <- Just (a1 + 1)
+  b2 <- Just (b1 + 1)
+  a3 <- Just (a1 + a2 + 1)
+  b3 <- Just (b1 + b2 + 1)
+  a4 <- Just (a1 + a2 + a3 + 1)
+  b4 <- Just (b1 + b2 + b3 + 1)
+  return (a1, a2, a3, a4, b1, b2, b3, b4)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  (StmtTreeBind
+     (StmtTreeApplicative
+        (StmtTreeOne (a1_a1S3 <- Just 1, {Just}))
+        (StmtTreeOne (b1_a1S4 <- Just 10, {Just})))
+     (StmtTreeBind
+        (StmtTreeApplicative
+           (StmtTreeOne (a2_a1S5 <- Just (a1_a1S3 + 1), {Just, a1_a1S3, +}))
+           (StmtTreeOne (b2_a1S6 <- Just (b1_a1S4 + 1), {Just, b1_a1S4, +})))
+        (StmtTreeBind
+           (StmtTreeApplicative
+              (StmtTreeOne (a3_a1S7 <- Just (a1_a1S3 + a2_a1S5 + 1),
+                            {Just, a1_a1S3, a2_a1S5, +}))
+              (StmtTreeOne (b3_a1S8 <- Just (b1_a1S4 + b2_a1S6 + 1),
+                            {Just, b1_a1S4, b2_a1S6, +})))
+           (StmtTreeApplicative
+              (StmtTreeOne (a4_a1S9 <- Just (a1_a1S3 + a2_a1S5 + a3_a1S7 + 1),
+                            {Just, a1_a1S3, a2_a1S5, a3_a1S7, +}))
+              (StmtTreeOne (b4_a1Sa <- Just (b1_a1S4 + b2_a1S6 + b3_a1S8 + 1),
+                            {Just, b1_a1S4, b2_a1S6, b3_a1S8, +}))))))
+  tree-cost = 4
+
+-- Execution plan
+(a1 | b1) ; ((a2 | b2) ; ((a3 | b3) ; (a4 | b4)))

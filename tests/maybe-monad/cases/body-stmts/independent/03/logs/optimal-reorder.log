@@ -1,0 +1,21 @@
+-- Reordered do-notation
+CD.do
+  x1 <- Just 1
+  Just ()
+  x2 <- Just 10
+  CD.return (x1, x2)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  candidate   =  0
+  index-order =  [1, 2, 3]
+  statements  =  [x1_a1T2 <- Just 1, Just (), x2_a1T3 <- Just 10]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x1_a1T2 <- Just 1, {Just}))
+       (StmtTreeOne (Just (), {Just, ()}))
+       (StmtTreeOne (x2_a1T3 <- Just 10, {Just})))
+  tree-cost = 1
+
+-- Execution plan
+x1 | stmt2 | x2

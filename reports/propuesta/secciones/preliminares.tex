@@ -1,0 +1,133 @@
+\section{Preliminares}
+
+En primer lugar, es necesario fijar las nociones de \textit{functor} y \textit{aplicativo} en \textsf{Haskell}, ya que las \textit{mónadas} se introducen en el lenguaje como una extensión de dichas abstracciones. En particular, la noción de mónada fue presentada por Wadler en 1995 \cite{Wadler1995}. Por consiguiente, se comenzará por los \textit{functores}; posteriormente, se abordará su respectiva subclase, los \textit{aplicativos}, presentados por McBride y Paterson en 2008 \cite{McBride2008}; y, finalmente, las \textit{mónadas}, que constituyen una subclase de los aplicativos. 
+
+Una vez establecida esta base, se introducirá el caso particular de las \textit{mónadas de probabilidad}, ya que constituyen el dominio principal de aplicación de esta memoria y permiten conectar la teoría monádica con programas probabilísticos concretos en \textsf{Haskell}.
+
+Al igual, es importante mencionar que, al ser \textsf{Haskell} un lenguaje funcional, las funciones se tratan como valores de primera clase, lo que permite, entre otras cosas, la \emph{currificación} y \emph{aplicación parcial} de estas mismas. Un ejemplo claro es el operador \texttt{(+)}, cuyo tipo puede representarse como \texttt{(+) :: Num -> \ Num -> \ Num}. Si aplicamos parcialmente \texttt{(+)} al valor 5, obtenemos la función unaria \texttt{(+5)}, de tipo \texttt{Num -> \ Num}. En otras palabras, al aplicar la función con un solo argumento, se retorna una nueva función que espera el argumento restante.
+
+\subsection{Functores}
+
+En \textsf{Haskell}, un \textit{functor} es una \verb|typeclass| que representa a toda estructura que permita aplicar una función a los valores que contiene, sin la necesidad de cambiar la estructura en sí \cite{Yorgey2009}; por esto, se puede imaginar un functor como un contenedor. A partir de esta noción, para ejecutar cómputos sobre los valores contenidos en él, se implementa la función canónica de los functores, \texttt{fmap}. Esta función permite \textit{desempaquetar} un functor, aplicar una función \texttt{f} sobre su contenido y luego \textit{empaquetar} nuevamente el resultado. Además, \texttt{fmap} debe respetar las leyes de identidad y composición, lo cual garantiza que el mapeo preserva la estructura abstracta del contenedor \cite{Yorgey2009}.
+
+\newpage
+
+\begin{verbatim}
+    class Functor F where
+        fmap :: (a -> b) -> F a -> F b
+\end{verbatim}
+
+
+Los ejemplos clásicos de functores son las listas y árboles, debido a que, al aplicar \texttt{fmap} se transforman sus datos de manera uniforme, manteniendo la estructura subyacente.
+
+\subsection{Aplicativos}
+
+La \verb|typeclass| \textit{applicative} de \textsf{Haskell}, caracteriza la abstracción de un estilo aplicativo de programación, más debil que las mónadas y, por tanto, más ampliamente utilizado \cite{McBride2008}. Por ende, la necesidad de aplicar funciones más complejas a los functores; como lo sería una función binaria, se ve resuelta. Por ejemplo, para darle un caso de aplicación, tomaremos la función \texttt{(+)}.  
+
+Para resolver y aplicar la función antes mencionada, un functor aplicativo, permite operar con valores que ya se encuentran dentro de un contenedor a otro contenedor. Por lo cual, consideremos el aplicativo \texttt{Maybe Int}, que posee dos constructores: \texttt{Just Int} y \texttt{Nothing}. En el caso de sumar \texttt{Just 2} y \texttt{Just 3}, primero aplicamos \texttt{(+)} al primer contenedor, desempaquetando el número 2 y empaquetando la función ahora unaria \texttt{(+2)} en un nuevo aplicativo \texttt{Just (+2)} siendo de tipo \texttt{Maybe (Int -> \ Int)}. Luego, se aplica el contenido de este último al segundo contenedor, desempaquetando el número 3, realizando la operación y empaquetando el resultado 5 en un nuevo aplicativo \texttt{Just 5}. 
+
+Lo más destacable de los aplicativos es que permiten manejar cada abstracción específica dentro de sus propias implementaciones. Por ejemplo, para la clase \verb|Maybe Int|, si alguno de los dos sumandos es \texttt{Nothing}, se produce un cortocircuito que retorna al instante \texttt{Nothing}; cuya implementación se mostrará en los siguientes párrafos. De esta forma, \texttt{Maybe Int} actúa como un aplicativo que evita la necesidad de implementar sumas para cada aridad con múltiples líneas de \textit{Pattern Matching} anidado para verificar si un sumando es \texttt{Just Int} o \texttt{Nothing}.
+
+De este modo, los functores aplicativos permiten aplicar funciones con un número arbitrario de argumentos sin dificultad. Estos mismos, se describen mediante la siguiente definición:
+
+\begin{verbatim}
+    class Functor F => Applicative F where
+        pure :: a -> F a
+        <*>  :: F (a-> b) -> F a -> F b
+\end{verbatim}
+
+En particular, el \textit{aplicativo} \verb|Maybe T| considerando un tipo genérico \verb|T|, implementa los operadores \verb|pure| y \verb|<*>| conforme a su abstracción funcional específica, es decir, trabajar con valores opcionales dentro de un programa, y combinar operaciones que pueden fallar. Dado lo anterior, se muestran sus respectivas definiciones en el siguiente fragmento de código:
+
+\begin{verbatim}
+    instance Applicative Maybe where
+        pure = Just
+        Nothing <*> _ = Nothing
+        _ <*> Nothing = Nothing
+        (Just f) <*> (Just x) = Just (f x)
+\end{verbatim}
+
+Nótense que, en caso de que operar con algún objeto no definido, cuya abstracción equivale al constructor \verb|Nothing|, las siguientes aplicaciones retornarán a su vez un elemento \verb|Nothing|, modelando así el comportamiento de la clase \verb|Maybe T|. En caso contrario, si ambos operandos se encuentran definidos, es decir, son elementos encapsulados en el constructor \verb|Just|, se procede con la aplicación del primero sobre el segundo, para finalmente empaquetar el elemento resultante dentro del mismo constructor \verb|Just|. 
+
+Volviendo al ejemplo de aplicación de la suma \verb|(+)| sobre elementos de tipo \verb|Maybe Int|, se requiere que esta se encuentre encapsulada dentro del constructor \verb|Just|, ya que, si no lo estuviera, se rompería el invariante de desempaquetado y empaquetado asociado a la implementación del operador \verb|<*>|. Para resolver esto, es preciso utilizar \texttt{pure}, que permite empaquetar la función \verb|f| desde un principio. De este modo, la instacia concreta de la suma sobre \verb|Maybe Int| tendría la siguiente sintaxis:
+
+\begin{verbatim}
+    pure (+) <*> Just 2 <*> Just 3
+\end{verbatim}
+
+Posteriormente, para que la notación sea más limpia y versátil, se introduce el operador \verb|<$>|, el cual satisface la siguiente igualdad: \verb|f <$> m = pure f <*> m|. Esto quiere decir que, dada una función no empaquetada \verb|f| y un aplicativo \verb|m|, se empaqueta la respectiva función con \verb|pure| y luego se aplica. Por tanto, el ejemplo anterior se vería modificado, simplificando su sintaxis:
+
+\begin{verbatim}
+    (+) <$> Just 2 <*> Just 3
+\end{verbatim}
+
+Finalmente, nótese que en una expresión aplicativa, la estructura del cómputo queda fijada de antemano: cada argumento se evalúa en su propio contexto y luego se combinan sus resultados mediante la aplicación de una función pura. Esta característica hace que, a nivel semántico, los subcómputos asociados a los argumentos sean independientes entre sí (en el sentido de que ninguno puede \emph{usar} el resultado del otro para definirse), lo cual habilita optimizaciones como evaluación paralela cuando el contexto lo permite \cite{McBride2008}.
+
+Sin embargo, esta misma restricción implica que no es directo expresar dependencias entre argumentos. En particular, si se quisiera que el segundo argumento dependa del valor producido por el primero, el estilo aplicativo resulta insuficiente, ya que la forma del cómputo no puede adaptarse dinámicamente a resultados intermedios. Asimismo, existen situaciones en que la función a aplicar es de tipo \texttt{a -> \ F b}; es decir, retorna un valor ya encapsulado en el contexto, lo que rompe la firma esperada requiriendo un mecanismo adicional, lo cual motiva la introducción de mónadas \cite{Wadler1995}.
+
+\subsection{Mónadas}
+
+Las \textit{mónadas} de \textsf{Haskell} son una \verb|typeclass| que describe cómo encadenar operaciones que producen o manejan efectos, manteniendo un flujo de ejecución  ordenado dentro de un contexto \cite{Wadler1995}. Esto nos ayuda a solucionar los dos problemas descritos anteriormente mediante el operador \textit{bind}, el cual es escrito como \verb|M a >>= f|. Este operador desempaqueta la mónada de la izquierda y aplica la función de la derecha sobre el elemento \verb|a|, de manera que lo retornado por la ejecución de \texttt{f a} sea nuevamente una mónada \verb|M b|.
+
+\newpage
+
+\begin{verbatim}
+    class Applicative M => Monad M where
+        return :: a -> M a
+        (>>=)  :: M a -> (a -> M b) -> M b
+\end{verbatim}
+
+De esta manera, si queremos concatenar múltiples aplicaciones a distintas mónadas como con el operador \texttt{<*>}, hace falta declarar funciones anónimas $\lambda$ que nos permitan representar un flujo claro del código. En vista de lo expuesto, resulta que el tipo \texttt{Maybe T} también es una mónada, y para ilustrar el comportamiento de estas mismas, se utilizará el mismo ejemplo de la suma \verb|(+)| descrito en la sección anterior.
+
+En este caso, la implementación de los operadores \verb|return| y \verb|>>=|, que satisfacen el comportamiento de la clase \verb|Maybe T| con \verb|T| un tipo genérico, es la siguiente:
+
+\begin{verbatim}
+    instance Monad Maybe where
+        return x = Just x
+        Nothing >>= _ = Nothing
+        (Just x) >>= f = f x
+\end{verbatim}
+
+Por consiguiente, al igual que los aplicativos, la mónada \verb|Maybe T| implementa el operador \textit{bind} tal que respete la abstracción asociada a esta clase, es decir, trabajar con elementos opcionales. Por ende, en caso de aplicar una función a un elemento no definido, dicho de otro modo, que utiliza el constructor \verb|Nothing|, se retornará este mismo valor. En contraste con lo anterior, si el elemento a desempaquetar es de tipo \verb|Just|, se ejecuta la función \verb|f| sobre este. En este caso, la función que se ejecuta debe respetar la firma de tipos y retornar una nueva mónada. Ya explicado esto, el código equivalente a la aplicación de la función \verb|(+)| pero usando notación monádica es el siguiente: 
+
+\begin{verbatim}
+    Just 3 >>= (\x -> Just 2 >>= (\y -> return ((+) x y)))
+\end{verbatim}
+
+Por tanto, al ejecutar el operador \verb|>>=|, se desempaqueta el número 3 y se aplica la función anónima de la derecha sobre este valor, reemplazando todas las apariciones del identificador \texttt{x} por 3. A continuación, se realiza el mismo proceso con la mónada que contiene el 2, resultando finalmente en la instrucción \texttt{((+) 3 2)} que será empaquetada gracias a la instrucción \texttt{return} retornando la mónada \texttt{Just 5}.
+
+Cabe recalcar que ahora el identificador \texttt{x} está disponible en todo el \textit{scope} de la primera función anónima. Por lo que, \texttt{Just 2} podría perfectamente usar \texttt{x} para su definición, por ejemplo \texttt{Just ((*) 2 x)}. Esto nos permite declarar dependencias entre argumentos, lo que a su vez obliga a la ejecución secuencial de las funciones anónimas.
+
+En concecuencia, al reordenar el código de mejor manera quedaría:
+
+\begin{verbatim}
+    Just 3 >>= (\x -> 
+    Just 2 >>= (\y -> 
+        return ((+) x y)))
+\end{verbatim}
+
+\newpage
+
+Luego, \textsf{Haskell} agrega \textit{azúcar sintáctica}\footnote{La azúcar sintáctica busca hacer el lenguaje más digerible sin alterar la semántica del programa \cite{Pombrio2018}. Por ende la esencia de la aplicación del operador \textit{bind} no se ve alterada.} a la aplicación del operador \verb|>>=|, de esta manera se presenta la \textit{do-notation}:
+
+\begin{verbatim}
+    do
+        x <- Just 3
+        y <- Just 2
+        return ((+) x y)
+\end{verbatim}
+
+Por último, existe el operador \verb|join|, que se encarga de aplanar mónadas anidadas de la forma \verb|m (m a)| y retorna un valor de tipo \verb|m a|. Un ejemplo muy simple usando la mónada \verb|Maybe Int| sería el siguiente:
+
+\begin{verbatim}
+    join (Just (Just 1)) = Just 1
+\end{verbatim}
+
+\subsection{Mónadas de probabilidad}
+
+En el marco de la programación probabilística, una \textit{mónada de probabilidad} permite interpretar un programa como un proceso generativo que induce una distribución sobre sus posibles resultados. Desde esta perspectiva, las primitivas probabilísticas (por ejemplo, ``muestrear'' desde una distribución base) se integran en una interfaz monádica estándar: \texttt{return} representa una distribución degenerada sin incertidumbre, mientras que el operador \textit{bind} \verb|>>=| permite encadenar elecciones aleatorias, de modo que decisiones posteriores puedan depender de resultados previos. En consecuencia, la \textit{do-notation} de \textsf{Haskell} se vuelve una sintaxis particularmente natural para expresar modelos probabilísticos con dependencias de datos, condicionales y estructura secuencial.
+
+El trabajo de Ścibior muestra que el estilo monádico puede utilizarse de forma práctica en modelos de aprendizaje automático y estadística bayesiana, siempre que se acompañe de mecanismos de inferencia eficientes \cite{ScibiorGG2015}. En particular, se mantiene una interfaz monádica para construir modelos, mientras la inferencia opera sobre una representación interna de las distribuciones; además, se subraya la utilidad de contar con una semántica formal para precisar equivalencias entre programas.
+
+Para esta memoria, este antecedente es relevante porque (i) confirma que la \textit{do-notation} monádica es un patrón central para especificar modelos probabilísticos en \textsf{Haskell} y (ii) evidencia que la secuencialidad sintáctica puede ocultar independencia entre subcómputos. Por ello, una transformación que haga explícita dicha independencia preservando la semántica probabilística, puede habilitar reescrituras más paralelizables y reordenamientos seguros cuando corresponda.
+
+\newpage

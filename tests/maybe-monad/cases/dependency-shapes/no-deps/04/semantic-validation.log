@@ -33,85 +33,85 @@ generated permutations = 24
 [COMPILE] permutation_23 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/bin/permutation_23
 
 [RUN] original -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/original.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] original = 0
 [RUN] original_ado -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/original_ado.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] original_ado = 0
 [RUN] optimal-reorder -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/optimal-reorder.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] optimal-reorder = 0
 [RUN] permutation_0 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_0.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_0 = 0
 [RUN] permutation_1 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_1.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_1 = 0
 [RUN] permutation_2 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_2.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_2 = 0
 [RUN] permutation_3 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_3.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_3 = 0
 [RUN] permutation_4 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_4.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_4 = 0
 [RUN] permutation_5 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_5.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_5 = 0
 [RUN] permutation_6 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_6.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_6 = 0
 [RUN] permutation_7 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_7.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_7 = 0
 [RUN] permutation_8 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_8.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_8 = 0
 [RUN] permutation_9 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_9.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_9 = 0
 [RUN] permutation_10 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_10.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_10 = 0
 [RUN] permutation_11 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_11.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_11 = 0
 [RUN] permutation_12 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_12.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_12 = 0
 [RUN] permutation_13 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_13.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_13 = 0
 [RUN] permutation_14 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_14.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_14 = 0
 [RUN] permutation_15 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_15.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_15 = 0
 [RUN] permutation_16 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_16.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_16 = 0
 [RUN] permutation_17 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_17.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_17 = 0
 [RUN] permutation_18 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_18.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_18 = 0
 [RUN] permutation_19 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_19.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_19 = 0
 [RUN] permutation_20 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_20.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_20 = 0
 [RUN] permutation_21 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_21.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_21 = 0
 [RUN] permutation_22 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_22.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_22 = 0
 [RUN] permutation_23 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/no-deps/04/results/permutation_23.run.log
-[OUTPUT] Just 10
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_23 = 0
 
 == Semantic comparison ==

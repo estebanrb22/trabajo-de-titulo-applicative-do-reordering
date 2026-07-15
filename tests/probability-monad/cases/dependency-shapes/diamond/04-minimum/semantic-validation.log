@@ -1,0 +1,39 @@
+== Semantic validation reorder (Cabal) ==
+project-dir = /workspaces/tt-repo/experiments/probability-monad/cases/dependency-shapes/diamond/04-minimum
+input-file = /workspaces/tt-repo/experiments/probability-monad/cases/dependency-shapes/diamond/04-minimum/main.hs
+cabal-file = /workspaces/tt-repo/experiments/probability-monad/cases/dependency-shapes/diamond/04-minimum/probability-monad-cases-dependency-shapes-diamond-n04-minimum.cabal
+target = exe:probability-monad-cases-dependency-shapes-diamond-n04-minimum
+output-dir = /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/diamond/04-minimum
+cabal-build-root = /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/diamond/04-minimum/cabal-build
+
+[COMPILE] original -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/diamond/04-minimum/bin/original
+[COMPILE] original_ado -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/diamond/04-minimum/bin/original_ado
+[COMPILE] optimal-reorder -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/diamond/04-minimum/bin/optimal-reorder
+generated permutations = 2
+
+[COMPILE] permutation_0 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/diamond/04-minimum/bin/permutation_0
+[COMPILE] permutation_1 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/diamond/04-minimum/bin/permutation_1
+
+[RUN] original -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/diamond/04-minimum/results/original.run.log
+[OUTPUT] fromFreqs [((1,11,101,1112),1 % 16),((1,11,101,2112),1 % 16),((1,11,201,1212),1 % 16),((1,11,201,2212),1 % 16),((1,21,101,1122),1 % 16),((1,21,101,2122),1 % 16),((1,21,201,1222),1 % 16),((1,21,201,2222),1 % 16),((2,12,102,1114),1 % 16),((2,12,102,2114),1 % 16),((2,12,202,1214),1 % 16),((2,12,202,2214),1 % 16),((2,22,102,1124),1 % 16),((2,22,102,2124),1 % 16),((2,22,202,1224),1 % 16),((2,22,202,2224),1 % 16)]
+[EXIT CODE] original = 0
+[RUN] original_ado -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/diamond/04-minimum/results/original_ado.run.log
+[OUTPUT] fromFreqs [((1,11,101,1112),1 % 16),((1,11,101,2112),1 % 16),((1,11,201,1212),1 % 16),((1,11,201,2212),1 % 16),((1,21,101,1122),1 % 16),((1,21,101,2122),1 % 16),((1,21,201,1222),1 % 16),((1,21,201,2222),1 % 16),((2,12,102,1114),1 % 16),((2,12,102,2114),1 % 16),((2,12,202,1214),1 % 16),((2,12,202,2214),1 % 16),((2,22,102,1124),1 % 16),((2,22,102,2124),1 % 16),((2,22,202,1224),1 % 16),((2,22,202,2224),1 % 16)]
+[EXIT CODE] original_ado = 0
+[RUN] optimal-reorder -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/diamond/04-minimum/results/optimal-reorder.run.log
+[OUTPUT] fromFreqs [((1,11,101,1112),1 % 16),((1,11,101,2112),1 % 16),((1,11,201,1212),1 % 16),((1,11,201,2212),1 % 16),((1,21,101,1122),1 % 16),((1,21,101,2122),1 % 16),((1,21,201,1222),1 % 16),((1,21,201,2222),1 % 16),((2,12,102,1114),1 % 16),((2,12,102,2114),1 % 16),((2,12,202,1214),1 % 16),((2,12,202,2214),1 % 16),((2,22,102,1124),1 % 16),((2,22,102,2124),1 % 16),((2,22,202,1224),1 % 16),((2,22,202,2224),1 % 16)]
+[EXIT CODE] optimal-reorder = 0
+[RUN] permutation_0 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/diamond/04-minimum/results/permutation_0.run.log
+[OUTPUT] fromFreqs [((1,11,101,1112),1 % 16),((1,11,101,2112),1 % 16),((1,11,201,1212),1 % 16),((1,11,201,2212),1 % 16),((1,21,101,1122),1 % 16),((1,21,101,2122),1 % 16),((1,21,201,1222),1 % 16),((1,21,201,2222),1 % 16),((2,12,102,1114),1 % 16),((2,12,102,2114),1 % 16),((2,12,202,1214),1 % 16),((2,12,202,2214),1 % 16),((2,22,102,1124),1 % 16),((2,22,102,2124),1 % 16),((2,22,202,1224),1 % 16),((2,22,202,2224),1 % 16)]
+[EXIT CODE] permutation_0 = 0
+[RUN] permutation_1 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/diamond/04-minimum/results/permutation_1.run.log
+[OUTPUT] fromFreqs [((1,11,101,1112),1 % 16),((1,11,101,2112),1 % 16),((1,11,201,1212),1 % 16),((1,11,201,2212),1 % 16),((1,21,101,1122),1 % 16),((1,21,101,2122),1 % 16),((1,21,201,1222),1 % 16),((1,21,201,2222),1 % 16),((2,12,102,1114),1 % 16),((2,12,102,2114),1 % 16),((2,12,202,1214),1 % 16),((2,12,202,2214),1 % 16),((2,22,102,1124),1 % 16),((2,22,102,2124),1 % 16),((2,22,202,1224),1 % 16),((2,22,202,2224),1 % 16)]
+[EXIT CODE] permutation_1 = 0
+
+== Semantic comparison ==
+[OK] original_ado   : identical output
+[OK] optimal-reorder: identical output
+[OK] permutation_0  : identical output
+[OK] permutation_1  : identical output
+
+RESULT: OK

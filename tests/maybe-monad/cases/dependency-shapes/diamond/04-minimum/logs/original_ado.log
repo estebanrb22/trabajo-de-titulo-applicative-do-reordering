@@ -1,0 +1,24 @@
+-- do-notation
+do
+  root <- Just 1
+  a1 <- Just (root + 10)
+  b1 <- Just (root + 20)
+  join <- Just (a1 + b1)
+  return (root, a1, b1, join)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  (StmtTreeBind
+     (StmtTreeOne (root_a1S3 <- Just 1, {Just}))
+     (StmtTreeBind
+        (StmtTreeApplicative
+           (StmtTreeOne (a1_a1S4 <- Just (root_a1S3 + 10),
+                         {Just, root_a1S3, +}))
+           (StmtTreeOne (b1_a1S5 <- Just (root_a1S3 + 20),
+                         {Just, root_a1S3, +})))
+        (StmtTreeOne (join_a1S6 <- Just (a1_a1S4 + b1_a1S5),
+                      {Just, a1_a1S4, b1_a1S5, +}))))
+  tree-cost = 3
+
+-- Execution plan
+root ; ((a1 | b1) ; join)

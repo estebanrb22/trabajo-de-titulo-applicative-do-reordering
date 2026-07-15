@@ -6,7 +6,7 @@ do
   x4 <- Just (x3 + 1)
   x5 <- Just (x4 + 1)
   x6 <- Just (x5 + 1)
-  return x6
+  return (x1, x2, x3, x4, x5, x6)
 
 -- Renamer trace
 rearrangeForADo final tree:
@@ -22,6 +22,7 @@ rearrangeForADo final tree:
                  (StmtTreeOne (x5_a1S7 <- Just (x4_a1S6 + 1), {Just, x4_a1S6, +}))
                  (StmtTreeOne (x6_a1S8 <- Just (x5_a1S7 + 1),
                                {Just, x5_a1S7, +})))))))
+  tree-cost = 6
 
 -- Execution plan
 x1 ; (x2 ; (x3 ; (x4 ; (x5 ; x6))))

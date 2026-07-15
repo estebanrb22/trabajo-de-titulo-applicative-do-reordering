@@ -1,0 +1,40 @@
+== Semantic validation reorder (GHC) ==
+input-file = /workspaces/tt-repo/experiments/maybe-monad/cases/let-statements/let-depends-on-bind/03/main.hs
+output-dir = /workspaces/tt-repo/tests/maybe-monad/cases/let-statements/let-depends-on-bind/03
+
+[COMPILE] original -> /workspaces/tt-repo/tests/maybe-monad/cases/let-statements/let-depends-on-bind/03/bin/original
+[COMPILE] original_ado -> /workspaces/tt-repo/tests/maybe-monad/cases/let-statements/let-depends-on-bind/03/bin/original_ado
+[COMPILE] optimal-reorder -> /workspaces/tt-repo/tests/maybe-monad/cases/let-statements/let-depends-on-bind/03/bin/optimal-reorder
+generated permutations = 3
+
+[COMPILE] permutation_0 -> /workspaces/tt-repo/tests/maybe-monad/cases/let-statements/let-depends-on-bind/03/bin/permutation_0
+[COMPILE] permutation_1 -> /workspaces/tt-repo/tests/maybe-monad/cases/let-statements/let-depends-on-bind/03/bin/permutation_1
+[COMPILE] permutation_2 -> /workspaces/tt-repo/tests/maybe-monad/cases/let-statements/let-depends-on-bind/03/bin/permutation_2
+
+[RUN] original -> /workspaces/tt-repo/tests/maybe-monad/cases/let-statements/let-depends-on-bind/03/results/original.run.log
+[OUTPUT] Just (10,11,100)
+[EXIT CODE] original = 0
+[RUN] original_ado -> /workspaces/tt-repo/tests/maybe-monad/cases/let-statements/let-depends-on-bind/03/results/original_ado.run.log
+[OUTPUT] Just (10,11,100)
+[EXIT CODE] original_ado = 0
+[RUN] optimal-reorder -> /workspaces/tt-repo/tests/maybe-monad/cases/let-statements/let-depends-on-bind/03/results/optimal-reorder.run.log
+[OUTPUT] Just (10,11,100)
+[EXIT CODE] optimal-reorder = 0
+[RUN] permutation_0 -> /workspaces/tt-repo/tests/maybe-monad/cases/let-statements/let-depends-on-bind/03/results/permutation_0.run.log
+[OUTPUT] Just (10,11,100)
+[EXIT CODE] permutation_0 = 0
+[RUN] permutation_1 -> /workspaces/tt-repo/tests/maybe-monad/cases/let-statements/let-depends-on-bind/03/results/permutation_1.run.log
+[OUTPUT] Just (10,11,100)
+[EXIT CODE] permutation_1 = 0
+[RUN] permutation_2 -> /workspaces/tt-repo/tests/maybe-monad/cases/let-statements/let-depends-on-bind/03/results/permutation_2.run.log
+[OUTPUT] Just (10,11,100)
+[EXIT CODE] permutation_2 = 0
+
+== Semantic comparison ==
+[OK] original_ado   : identical output
+[OK] optimal-reorder: identical output
+[OK] permutation_0  : identical output
+[OK] permutation_1  : identical output
+[OK] permutation_2  : identical output
+
+RESULT: OK

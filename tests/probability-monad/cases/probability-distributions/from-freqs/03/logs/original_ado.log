@@ -1,0 +1,19 @@
+-- do-notation
+do
+  x1 <- Dist.fromFreqs [(1, 1), (2, 3)]
+  x2 <- Dist.fromFreqs [(10, 2), (20, 1)]
+  x3 <- Dist.uniform [100, 200]
+  return (x1, x2, x3)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  (StmtTreeApplicative
+     (StmtTreeOne (x1_a1X5 <- Dist.fromFreqs [(1, 1), (2, 3)],
+                   {Dist.fromFreqs}))
+     (StmtTreeOne (x2_a1X6 <- Dist.fromFreqs [(10, 2), (20, 1)],
+                   {Dist.fromFreqs}))
+     (StmtTreeOne (x3_a1X7 <- Dist.uniform [100, 200], {Dist.uniform})))
+  tree-cost = 1
+
+-- Execution plan
+x1 | x2 | x3

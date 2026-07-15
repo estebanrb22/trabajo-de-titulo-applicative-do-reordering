@@ -1,0 +1,17 @@
+-- Original program
+do
+  a1 <- Just 1
+  b1 <- Just 10
+  a2 <- Just (a1 + 1)
+  b2 <- Just (b1 + 1)
+  return (a1, a2, b1, b2)
+
+-- Internal representation with free variables by statement
+ppsfa
+  [(a1_a1T2 <- Just 1, {Just}),
+   (b1_a1T3 <- Just 10, {Just}),
+   (a2_a1T4 <- Just (a1_a1T2 + 1), {Just, a1_a1T2, +}),
+   (b2_a1T5 <- Just (b1_a1T3 + 1), {Just, b1_a1T3, +}),
+   (return (a1_a1T2, a2_a1T4, b1_a1T3, b2_a1T5), {return, a1_a1T2, b1_a1T3, a2_a1T4, b2_a1T5})]
+
+<reordering not executed: commutative-do conditions were not met>

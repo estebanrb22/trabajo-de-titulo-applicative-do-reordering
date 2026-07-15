@@ -7,17 +7,12 @@ import qualified Control.Monad.CommutativeDo as CD
 
 instance CD.CommutativeMonad Maybe
 
-safeDiv :: Int -> Int -> Maybe Int
-safeDiv _ 0 = Nothing
-safeDiv n d = Just (n `div` d)
-
-mixedDependencyExample :: Maybe Int
-mixedDependencyExample = CD.do
-  x1 <- Just 10
-  x2 <- Just 5
-  x3 <- safeDiv x1 2
-  x4 <- Just (x2 + 15)
-  CD.return (x3 + x4)
+rebindSameNameExample03 :: Maybe (Int, Int)
+rebindSameNameExample03 = CD.do
+  x <- Just 1
+  x <- Just 10
+  y <- Just 100
+  CD.return (x, y)
 
 main :: IO ()
-main = print mixedDependencyExample
+main = print rebindSameNameExample03

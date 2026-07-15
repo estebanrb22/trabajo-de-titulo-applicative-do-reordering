@@ -1,0 +1,31 @@
+-- Reordered do-notation
+CD.do
+  x <- Dist.uniform [1, 2]
+  oldX <- Dist.certainly x
+  let x = 100
+  y <- Dist.uniform [x + oldX, x + oldX + 1]
+  CD.return (oldX, x, y)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  candidate   =  0
+  index-order =  [1, 2, 3, 4]
+  statements  =  [x_a1Y4 <- Dist.uniform [1, 2],
+                  oldX_a1Y5 <- Dist.certainly x_a1Y4, let x_a1Y6 = 100,
+                  y_a1Y7 <- Dist.uniform
+                              [x_a1Y6 + oldX_a1Y5, x_a1Y6 + oldX_a1Y5 + 1]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeOne (x_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform}))
+       (StmtTreeBind
+          (StmtTreeOne (oldX_a1Y5 <- Dist.certainly x_a1Y4,
+                        {x_a1Y4, Dist.certainly}))
+          (StmtTreeBind
+             (StmtTreeOne (let x_a1Y6 = 100, {}))
+             (StmtTreeOne (y_a1Y7 <- Dist.uniform
+                                       [x_a1Y6 + oldX_a1Y5, x_a1Y6 + oldX_a1Y5 + 1],
+                           {oldX_a1Y5, x_a1Y6, +, Dist.uniform})))))
+  tree-cost = 4
+
+-- Execution plan
+x ; (oldX ; (x ; y))

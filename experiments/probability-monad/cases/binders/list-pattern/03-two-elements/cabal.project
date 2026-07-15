@@ -1,0 +1,2 @@
+import: /workspaces/tt-repo/config/cabal.project
+packages: .

@@ -1,0 +1,34 @@
+-- Reordered do-notation
+CD.do
+  x3 <- Just 100
+  x1 <- Just 1
+  x2 <- Just (x1 + 10)
+  x4 <- Just (x3 + 20)
+  x5 <- Just (x4 + 30)
+  x6 <- Just (x2 + 40)
+  CD.return (x1, x2, x3, x4, x5, x6)
+
+-- Renamer trace
+rearrangeForADo candidate selection tree (fado-reorder-candidate-n) =
+  candidate   =  10
+  index-order =  [3, 1, 2, 4, 5, 6]
+  statements  =  [x3_a1T5 <- Just 100, x1_a1T3 <- Just 1,
+                  x2_a1T4 <- Just (x1_a1T3 + 10), x4_a1T6 <- Just (x3_a1T5 + 20),
+                  x5_a1T7 <- Just (x4_a1T6 + 30), x6_a1T8 <- Just (x2_a1T4 + 40)]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (x3_a1T5 <- Just 100, {Just}))
+          (StmtTreeOne (x1_a1T3 <- Just 1, {Just})))
+       (StmtTreeBind
+          (StmtTreeApplicative
+             (StmtTreeOne (x2_a1T4 <- Just (x1_a1T3 + 10), {Just, x1_a1T3, +}))
+             (StmtTreeOne (x4_a1T6 <- Just (x3_a1T5 + 20), {Just, x3_a1T5, +})))
+          (StmtTreeApplicative
+             (StmtTreeOne (x5_a1T7 <- Just (x4_a1T6 + 30), {Just, x4_a1T6, +}))
+             (StmtTreeOne (x6_a1T8 <- Just (x2_a1T4 + 40),
+                           {Just, x2_a1T4, +})))))
+  tree-cost = 3
+
+-- Execution plan
+(x3 | x1) ; ((x2 | x4) ; (x5 | x6))

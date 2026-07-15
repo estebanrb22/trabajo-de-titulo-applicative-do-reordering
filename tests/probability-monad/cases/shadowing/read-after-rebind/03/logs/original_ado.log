@@ -1,0 +1,19 @@
+-- do-notation
+do
+  x <- Dist.uniform [1, 2]
+  x <- Dist.uniform [10, 20]
+  y <- Dist.uniform [x + 100, x + 200]
+  return (x, y)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  (StmtTreeApplicative
+     (StmtTreeOne (x_a1X5 <- Dist.uniform [1, 2], {Dist.uniform}))
+     (StmtTreeBind
+        (StmtTreeOne (x_a1X6 <- Dist.uniform [10, 20], {Dist.uniform}))
+        (StmtTreeOne (y_a1X7 <- Dist.uniform [x_a1X6 + 100, x_a1X6 + 200],
+                      {x_a1X6, +, Dist.uniform}))))
+  tree-cost = 2
+
+-- Execution plan
+x | (x ; y)

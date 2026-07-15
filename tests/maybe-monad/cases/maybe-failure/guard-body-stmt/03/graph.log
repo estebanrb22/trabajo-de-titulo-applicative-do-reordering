@@ -1,0 +1,21 @@
+-- Original program
+CD.do
+  x1 <- Just 0
+  if x1 > 0 then Just () else Nothing
+  x2 <- Just 10
+  CD.return (x1, x2)
+
+-- Internal representation with free variables by statement
+ppsfa
+  [(x1_a1T2 <- Just 0, {Just}),
+   (if x1_a1T2 > 0 then Just () else Nothing, {Nothing, Just, (), x1_a1T2, >}),
+   (x2_a1T3 <- Just 10, {Just}),
+   (CD.return (x1_a1T2, x2_a1T3), {x1_a1T2, x2_a1T3, CD.return})]
+
+-- Precedence graph adjacency list
+1 -> {2}
+2 -> {}
+3 -> {}
+
+-- Precedence graph RAW dependencies grouped by binder
+x1: 1 -> {2}

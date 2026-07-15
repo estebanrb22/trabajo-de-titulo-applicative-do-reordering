@@ -1,0 +1,24 @@
+-- Reordered do-notation
+CD.do
+  x1 <- Just 0
+  x2 <- Just 10
+  if x1 > 0 then Just () else Nothing
+  CD.return (x1, x2)
+
+-- Renamer trace
+rearrangeForADo candidate selection tree (fado-reorder-candidate-n) =
+  candidate   =  1
+  index-order =  [1, 3, 2]
+  statements  =  [x1_a1T3 <- Just 0, x2_a1T4 <- Just 10,
+                  if x1_a1T3 > 0 then Just () else Nothing]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (x1_a1T3 <- Just 0, {Just}))
+          (StmtTreeOne (x2_a1T4 <- Just 10, {Just})))
+       (StmtTreeOne (if x1_a1T3 > 0 then Just () else Nothing,
+                     {Nothing, Just, (), x1_a1T3, >})))
+  tree-cost = 2
+
+-- Execution plan
+(x1 | x2) ; stmt2

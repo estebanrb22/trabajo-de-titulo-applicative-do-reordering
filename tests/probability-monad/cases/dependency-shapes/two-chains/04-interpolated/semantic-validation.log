@@ -1,0 +1,59 @@
+== Semantic validation reorder (Cabal) ==
+project-dir = /workspaces/tt-repo/experiments/probability-monad/cases/dependency-shapes/two-chains/04-interpolated
+input-file = /workspaces/tt-repo/experiments/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/main.hs
+cabal-file = /workspaces/tt-repo/experiments/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/probability-monad-cases-dependency-shapes-two-chains-n04-interpolated.cabal
+target = exe:probability-monad-cases-dependency-shapes-two-chains-n04-interpolated
+output-dir = /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated
+cabal-build-root = /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/cabal-build
+
+[COMPILE] original -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/bin/original
+[COMPILE] original_ado -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/bin/original_ado
+[COMPILE] optimal-reorder -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/bin/optimal-reorder
+generated permutations = 6
+
+[COMPILE] permutation_0 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/bin/permutation_0
+[COMPILE] permutation_1 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/bin/permutation_1
+[COMPILE] permutation_2 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/bin/permutation_2
+[COMPILE] permutation_3 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/bin/permutation_3
+[COMPILE] permutation_4 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/bin/permutation_4
+[COMPILE] permutation_5 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/bin/permutation_5
+
+[RUN] original -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/results/original.run.log
+[OUTPUT] fromFreqs [((1,101,10,1010),1 % 16),((1,101,10,2010),1 % 16),((1,101,20,1020),1 % 16),((1,101,20,2020),1 % 16),((1,201,10,1010),1 % 16),((1,201,10,2010),1 % 16),((1,201,20,1020),1 % 16),((1,201,20,2020),1 % 16),((2,102,10,1010),1 % 16),((2,102,10,2010),1 % 16),((2,102,20,1020),1 % 16),((2,102,20,2020),1 % 16),((2,202,10,1010),1 % 16),((2,202,10,2010),1 % 16),((2,202,20,1020),1 % 16),((2,202,20,2020),1 % 16)]
+[EXIT CODE] original = 0
+[RUN] original_ado -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/results/original_ado.run.log
+[OUTPUT] fromFreqs [((1,101,10,1010),1 % 16),((1,101,10,2010),1 % 16),((1,101,20,1020),1 % 16),((1,101,20,2020),1 % 16),((1,201,10,1010),1 % 16),((1,201,10,2010),1 % 16),((1,201,20,1020),1 % 16),((1,201,20,2020),1 % 16),((2,102,10,1010),1 % 16),((2,102,10,2010),1 % 16),((2,102,20,1020),1 % 16),((2,102,20,2020),1 % 16),((2,202,10,1010),1 % 16),((2,202,10,2010),1 % 16),((2,202,20,1020),1 % 16),((2,202,20,2020),1 % 16)]
+[EXIT CODE] original_ado = 0
+[RUN] optimal-reorder -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/results/optimal-reorder.run.log
+[OUTPUT] fromFreqs [((1,101,10,1010),1 % 16),((1,101,10,2010),1 % 16),((1,101,20,1020),1 % 16),((1,101,20,2020),1 % 16),((1,201,10,1010),1 % 16),((1,201,10,2010),1 % 16),((1,201,20,1020),1 % 16),((1,201,20,2020),1 % 16),((2,102,10,1010),1 % 16),((2,102,10,2010),1 % 16),((2,102,20,1020),1 % 16),((2,102,20,2020),1 % 16),((2,202,10,1010),1 % 16),((2,202,10,2010),1 % 16),((2,202,20,1020),1 % 16),((2,202,20,2020),1 % 16)]
+[EXIT CODE] optimal-reorder = 0
+[RUN] permutation_0 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/results/permutation_0.run.log
+[OUTPUT] fromFreqs [((1,101,10,1010),1 % 16),((1,101,10,2010),1 % 16),((1,101,20,1020),1 % 16),((1,101,20,2020),1 % 16),((1,201,10,1010),1 % 16),((1,201,10,2010),1 % 16),((1,201,20,1020),1 % 16),((1,201,20,2020),1 % 16),((2,102,10,1010),1 % 16),((2,102,10,2010),1 % 16),((2,102,20,1020),1 % 16),((2,102,20,2020),1 % 16),((2,202,10,1010),1 % 16),((2,202,10,2010),1 % 16),((2,202,20,1020),1 % 16),((2,202,20,2020),1 % 16)]
+[EXIT CODE] permutation_0 = 0
+[RUN] permutation_1 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/results/permutation_1.run.log
+[OUTPUT] fromFreqs [((1,101,10,1010),1 % 16),((1,101,10,2010),1 % 16),((1,101,20,1020),1 % 16),((1,101,20,2020),1 % 16),((1,201,10,1010),1 % 16),((1,201,10,2010),1 % 16),((1,201,20,1020),1 % 16),((1,201,20,2020),1 % 16),((2,102,10,1010),1 % 16),((2,102,10,2010),1 % 16),((2,102,20,1020),1 % 16),((2,102,20,2020),1 % 16),((2,202,10,1010),1 % 16),((2,202,10,2010),1 % 16),((2,202,20,1020),1 % 16),((2,202,20,2020),1 % 16)]
+[EXIT CODE] permutation_1 = 0
+[RUN] permutation_2 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/results/permutation_2.run.log
+[OUTPUT] fromFreqs [((1,101,10,1010),1 % 16),((1,101,10,2010),1 % 16),((1,101,20,1020),1 % 16),((1,101,20,2020),1 % 16),((1,201,10,1010),1 % 16),((1,201,10,2010),1 % 16),((1,201,20,1020),1 % 16),((1,201,20,2020),1 % 16),((2,102,10,1010),1 % 16),((2,102,10,2010),1 % 16),((2,102,20,1020),1 % 16),((2,102,20,2020),1 % 16),((2,202,10,1010),1 % 16),((2,202,10,2010),1 % 16),((2,202,20,1020),1 % 16),((2,202,20,2020),1 % 16)]
+[EXIT CODE] permutation_2 = 0
+[RUN] permutation_3 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/results/permutation_3.run.log
+[OUTPUT] fromFreqs [((1,101,10,1010),1 % 16),((1,101,10,2010),1 % 16),((1,101,20,1020),1 % 16),((1,101,20,2020),1 % 16),((1,201,10,1010),1 % 16),((1,201,10,2010),1 % 16),((1,201,20,1020),1 % 16),((1,201,20,2020),1 % 16),((2,102,10,1010),1 % 16),((2,102,10,2010),1 % 16),((2,102,20,1020),1 % 16),((2,102,20,2020),1 % 16),((2,202,10,1010),1 % 16),((2,202,10,2010),1 % 16),((2,202,20,1020),1 % 16),((2,202,20,2020),1 % 16)]
+[EXIT CODE] permutation_3 = 0
+[RUN] permutation_4 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/results/permutation_4.run.log
+[OUTPUT] fromFreqs [((1,101,10,1010),1 % 16),((1,101,10,2010),1 % 16),((1,101,20,1020),1 % 16),((1,101,20,2020),1 % 16),((1,201,10,1010),1 % 16),((1,201,10,2010),1 % 16),((1,201,20,1020),1 % 16),((1,201,20,2020),1 % 16),((2,102,10,1010),1 % 16),((2,102,10,2010),1 % 16),((2,102,20,1020),1 % 16),((2,102,20,2020),1 % 16),((2,202,10,1010),1 % 16),((2,202,10,2010),1 % 16),((2,202,20,1020),1 % 16),((2,202,20,2020),1 % 16)]
+[EXIT CODE] permutation_4 = 0
+[RUN] permutation_5 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/two-chains/04-interpolated/results/permutation_5.run.log
+[OUTPUT] fromFreqs [((1,101,10,1010),1 % 16),((1,101,10,2010),1 % 16),((1,101,20,1020),1 % 16),((1,101,20,2020),1 % 16),((1,201,10,1010),1 % 16),((1,201,10,2010),1 % 16),((1,201,20,1020),1 % 16),((1,201,20,2020),1 % 16),((2,102,10,1010),1 % 16),((2,102,10,2010),1 % 16),((2,102,20,1020),1 % 16),((2,102,20,2020),1 % 16),((2,202,10,1010),1 % 16),((2,202,10,2010),1 % 16),((2,202,20,1020),1 % 16),((2,202,20,2020),1 % 16)]
+[EXIT CODE] permutation_5 = 0
+
+== Semantic comparison ==
+[OK] original_ado   : identical output
+[OK] optimal-reorder: identical output
+[OK] permutation_0  : identical output
+[OK] permutation_1  : identical output
+[OK] permutation_2  : identical output
+[OK] permutation_3  : identical output
+[OK] permutation_4  : identical output
+[OK] permutation_5  : identical output
+
+RESULT: OK

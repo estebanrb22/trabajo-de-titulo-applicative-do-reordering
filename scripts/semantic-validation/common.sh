@@ -7,6 +7,7 @@ fi
 
 declare -gA source_do_stmt_by_index=()
 declare -gA source_do_binder_by_index=()
+declare -gA source_do_binder_leaf_labels_by_index=()
 
 source_do_open=""
 source_do_return=""
@@ -19,7 +20,7 @@ semantic_validation_setup_output_dirs() {
   summary_log="$output_dir_abs/semantic-validation.log"
   renamer_raw_log="$logs_dir/raw.log"
   ado_summary_log="$output_dir_abs/summary.log"
-  graph_log="$logs_dir/graph.log"
+  graph_log="$output_dir_abs/graph.log"
 
   mkdir -p "$bin_dir" "$logs_dir" "$results_dir"
   : > "$summary_log"
@@ -65,6 +66,52 @@ extract_stmt_binder_label() {
   fi
 
   printf '%s\n' "$label"
+}
+
+extract_stmt_binder_leaf_labels() {
+  local stmt="$1"
+  local index="$2"
+  local label
+  local leaves
+
+  label="$(extract_stmt_binder_label "$stmt" "$index")"
+
+  leaves="$(printf '%s\n' "$label" | awk '
+    function is_keyword(s) {
+      return s == "case" || s == "class" || s == "data" || s == "default" ||
+             s == "deriving" || s == "do" || s == "else" || s == "foreign" ||
+             s == "if" || s == "import" || s == "in" || s == "infix" ||
+             s == "infixl" || s == "infixr" || s == "instance" || s == "let" ||
+             s == "module" || s == "newtype" || s == "of" || s == "then" ||
+             s == "type" || s == "where"
+    }
+
+    BEGIN {
+      ident_re = "[a-z_][A-Za-z0-9_" sprintf("%c", 39) "]*"
+    }
+
+    {
+      rest = $0
+      while (match(rest, ident_re)) {
+        token = substr(rest, RSTART, RLENGTH)
+        rest = substr(rest, RSTART + RLENGTH)
+
+        if (token != "_" && !is_keyword(token)) {
+          if (count > 0) {
+            printf " "
+          }
+          printf "%s", token
+          count++
+        }
+      }
+    }
+  ')"
+
+  if [ -z "$leaves" ]; then
+    leaves="$label"
+  fi
+
+  printf '%s\n' "$leaves"
 }
 
 load_source_do_notation() {
@@ -185,6 +232,7 @@ load_source_do_notation() {
       STMT)
         source_do_stmt_by_index["$index"]="$text"
         source_do_binder_by_index["$index"]="$(extract_stmt_binder_label "$text" "$index")"
+        source_do_binder_leaf_labels_by_index["$index"]="$(extract_stmt_binder_leaf_labels "$text" "$index")"
         source_do_stmt_count="$index"
         ;;
       RETURN)
@@ -370,26 +418,78 @@ write_graph_log_from_raw_log() {
   fi
 
   binder_labels_tmp="$(mktemp)"
+  binder_leaf_labels_tmp="$(mktemp)"
   for ((i = 1; i <= source_do_stmt_count; i++)); do
     if [ -z "${source_do_binder_by_index[$i]+_}" ]; then
       printf 'ERROR: missing source binder for graph log: %s\n' "$i" >&2
-      rm -f "$binder_labels_tmp"
+      rm -f "$binder_labels_tmp" "$binder_leaf_labels_tmp"
+      return 1
+    fi
+
+    if [ -z "${source_do_binder_leaf_labels_by_index[$i]+_}" ]; then
+      printf 'ERROR: missing source binder leaves for graph log: %s\n' "$i" >&2
+      rm -f "$binder_labels_tmp" "$binder_leaf_labels_tmp"
       return 1
     fi
 
     printf '%s\t%s\n' "$i" "${source_do_binder_by_index[$i]}" >> "$binder_labels_tmp"
+    printf '%s\t%s\n' "$i" "${source_do_binder_leaf_labels_by_index[$i]}" >> "$binder_leaf_labels_tmp"
   done
 
-  if ! awk -v stmt_count="$source_do_stmt_count" -v binder_labels_file="$binder_labels_tmp" '
+  if ! awk -v stmt_count="$source_do_stmt_count" \
+          -v binder_labels_file="$binder_labels_tmp" \
+          -v binder_leaf_labels_file="$binder_leaf_labels_tmp" '
     BEGIN {
       while ((getline binder_line < binder_labels_file) > 0) {
-        split(binder_line, binder_parts, "\t")
-        binder_index = binder_parts[1]
-        binder_label = binder_parts[2]
+        tab = index(binder_line, "\t")
+        if (tab == 0) {
+          continue
+        }
+
+        binder_index = substr(binder_line, 1, tab - 1)
+        binder_label = substr(binder_line, tab + 1)
         binder_by_index[binder_index] = binder_label
         binder_label_count[binder_label]++
       }
       close(binder_labels_file)
+
+      while ((getline leaf_line < binder_leaf_labels_file) > 0) {
+        tab = index(leaf_line, "\t")
+        if (tab == 0) {
+          continue
+        }
+
+        leaf_index = substr(leaf_line, 1, tab - 1)
+        leaf_labels = substr(leaf_line, tab + 1)
+        leaf_count = split(leaf_labels, leaf_parts, /[[:space:]]+/)
+
+        for (leaf_pos = 1; leaf_pos <= leaf_count; leaf_pos++) {
+          leaf_label = leaf_parts[leaf_pos]
+          if (leaf_label == "") {
+            continue
+          }
+
+          source_leaf_count[leaf_index]++
+          source_leaf_by_index[leaf_index, source_leaf_count[leaf_index]] = leaf_label
+
+          if (!leaf_seen_in_stmt[leaf_index, leaf_label]) {
+            leaf_label_count[leaf_label]++
+            leaf_seen_in_stmt[leaf_index, leaf_label] = 1
+          }
+        }
+      }
+      close(binder_leaf_labels_file)
+
+      for (binder_index = 1; binder_index <= stmt_count; binder_index++) {
+        if (source_leaf_count[binder_index] == 0) {
+          source_leaf_count[binder_index] = 1
+          source_leaf_by_index[binder_index, 1] = binder_by_index[binder_index]
+        }
+
+        for (leaf_pos = 1; leaf_pos <= source_leaf_count[binder_index]; leaf_pos++) {
+          register_group_order(binder_index, source_leaf_by_index[binder_index, leaf_pos])
+        }
+      }
     }
 
     function trim(s) {
@@ -398,12 +498,139 @@ write_graph_log_from_raw_log() {
       return s
     }
 
+    function register_group_order(src, label,   key) {
+      key = src SUBSEP label
+      if (!(key in group_order_seen)) {
+        group_order_count++
+        group_order_src[group_order_count] = src
+        group_order_label[group_order_count] = label
+        group_order_seen[key] = 1
+      }
+    }
+
+    function add_ppsfa_entry(s) {
+      s = trim(s)
+      if (s != "") {
+        ppsfa_entry_count++
+        ppsfa_entries[ppsfa_entry_count] = s
+      }
+    }
+
+    function split_ppsfa_entries(s,   i, ch, entry, paren_depth, brace_depth, bracket_depth) {
+      sub(/^[^[]*\[/, "", s)
+      sub(/\][^]]*$/, "", s)
+
+      entry = ""
+      paren_depth = 0
+      brace_depth = 0
+      bracket_depth = 0
+
+      for (i = 1; i <= length(s); i++) {
+        ch = substr(s, i, 1)
+
+        if (ch == "," && paren_depth == 0 && brace_depth == 0 && bracket_depth == 0) {
+          add_ppsfa_entry(entry)
+          entry = ""
+          continue
+        }
+
+        entry = entry ch
+
+        if (ch == "(") {
+          paren_depth++
+        } else if (ch == ")" && paren_depth > 0) {
+          paren_depth--
+        } else if (ch == "{") {
+          brace_depth++
+        } else if (ch == "}" && brace_depth > 0) {
+          brace_depth--
+        } else if (ch == "[") {
+          bracket_depth++
+        } else if (ch == "]" && bracket_depth > 0) {
+          bracket_depth--
+        }
+      }
+
+      add_ppsfa_entry(entry)
+    }
+
+    function extract_binder_names(s, out,   rest, token, count, ident_re) {
+      delete out
+      rest = s
+      ident_re = "[a-z_][A-Za-z0-9_" sprintf("%c", 39) "]*"
+
+      while (match(rest, ident_re)) {
+        token = substr(rest, RSTART, RLENGTH)
+        rest = substr(rest, RSTART + RLENGTH)
+
+        if (token != "_") {
+          count++
+          out[count] = token
+        }
+      }
+
+      return count
+    }
+
+    function parse_ppsfa_binders(   i, entry, lhs, renamed_count, leaf_count, leaf_pos) {
+      if (ppsfa_parsed) {
+        return
+      }
+
+      split_ppsfa_entries(ppsfa_buffer)
+
+      for (i = 1; i <= stmt_count && i <= ppsfa_entry_count; i++) {
+        entry = ppsfa_entries[i]
+        lhs = entry
+        sub(/[[:space:]]*<-.*/, "", lhs)
+
+        renamed_count = extract_binder_names(lhs, renamed_names)
+        leaf_count = source_leaf_count[i]
+
+        if (renamed_count == leaf_count) {
+          for (leaf_pos = 1; leaf_pos <= renamed_count; leaf_pos++) {
+            renamed_to_source_label[renamed_names[leaf_pos]] = source_leaf_by_index[i, leaf_pos]
+          }
+        }
+      }
+
+      ppsfa_parsed = 1
+    }
+
     function add_edge(src, dst) {
-      edge_count++
-      if (adjacency[src] == "") {
-        adjacency[src] = dst
-      } else {
-        adjacency[src] = adjacency[src] ", " dst
+      if (!edge_seen[src, dst]) {
+        edge_count++
+        edge_seen[src, dst] = 1
+
+        if (adjacency[src] == "") {
+          adjacency[src] = dst
+        } else {
+          adjacency[src] = adjacency[src] ", " dst
+        }
+      }
+    }
+
+    function add_grouped_edge(src, dst, label,   key) {
+      if (label == "") {
+        label = binder_by_index[src]
+      }
+
+      if (label == "") {
+        label = "stmt" src
+      }
+
+      register_group_order(src, label)
+      key = src SUBSEP label
+
+      if (!grouped_edge_seen[key, dst]) {
+        grouped_edge_seen[key, dst] = 1
+        grouped_edge_count++
+
+        if (grouped_adjacency[key] == "") {
+          grouped_adjacency[key] = dst
+        } else {
+          grouped_adjacency[key] = grouped_adjacency[key] ", " dst
+        }
       }
     }
 
@@ -412,8 +639,35 @@ write_graph_log_from_raw_log() {
       gsub(/[[:space:]]+/, "", line)
       split(line, parts, "->")
       if (parts[1] != "" && parts[2] != "") {
-        add_edge(parts[1] + 0, parts[2] + 0)
+        pending_src = parts[1] + 0
+        pending_dst = parts[2] + 0
+        add_edge(pending_src, pending_dst)
       }
+    }
+
+    function parse_raw(line,   raw, raw_count, raw_parts, raw_pos, renamed_name, source_label) {
+      if (pending_src <= 0 || pending_dst <= 0) {
+        return
+      }
+
+      raw = line
+      sub(/^[^=]*=[[:space:]]*/, "", raw)
+      sub(/^[[:space:]]*[{]/, "", raw)
+      sub(/[}].*$/, "", raw)
+      raw_count = split(raw, raw_parts, ",")
+
+      for (raw_pos = 1; raw_pos <= raw_count; raw_pos++) {
+        renamed_name = trim(raw_parts[raw_pos])
+        if (renamed_name == "") {
+          continue
+        }
+
+        source_label = renamed_to_source_label[renamed_name]
+        add_grouped_edge(pending_src, pending_dst, source_label)
+      }
+
+      pending_src = 0
+      pending_dst = 0
     }
 
     function binder_display_label(idx,   label) {
@@ -424,6 +678,14 @@ write_graph_log_from_raw_log() {
 
       if (binder_label_count[label] > 1) {
         return label "@" idx
+      }
+
+      return label
+    }
+
+    function group_display_label(src, label) {
+      if (leaf_label_count[label] > 1 || (leaf_label_count[label] == 0 && binder_label_count[label] > 1)) {
+        return label "@" src
       }
 
       return label
@@ -445,13 +707,26 @@ write_graph_log_from_raw_log() {
       }
     }
 
-    function print_grouped_by_binder(   i, printed_any) {
+    function print_grouped_by_binder(   i, key, src, label, printed_any) {
       print ""
       print "-- Precedence graph RAW dependencies grouped by binder"
-      for (i = 1; i <= stmt_count; i++) {
-        if (adjacency[i] != "") {
-          print binder_display_label(i) ": " i " -> {" adjacency[i] "}"
+      for (i = 1; i <= group_order_count; i++) {
+        src = group_order_src[i]
+        label = group_order_label[i]
+        key = src SUBSEP label
+
+        if (grouped_adjacency[key] != "") {
+          print group_display_label(src, label) ": " src " -> {" grouped_adjacency[key] "}"
           printed_any = 1
+        }
+      }
+
+      if (!printed_any && edge_count > 0) {
+        for (i = 1; i <= stmt_count; i++) {
+          if (adjacency[i] != "") {
+            print binder_display_label(i) ": " i " -> {" adjacency[i] "}"
+            printed_any = 1
+          }
         }
       }
 
@@ -468,6 +743,22 @@ write_graph_log_from_raw_log() {
       }
     }
 
+    /^ppsfa[[:space:]]*$/ && !ppsfa_found {
+      ppsfa_found = 1
+      ppsfa_capture = 1
+      next
+    }
+
+    ppsfa_capture && /^(addUsedGRE|rearrangeForADo-commutative-do|rearrangeForADo-StmtsDependencyGraph)/ {
+      parse_ppsfa_binders()
+      ppsfa_capture = 0
+    }
+
+    ppsfa_capture {
+      ppsfa_buffer = ppsfa_buffer " " trim($0)
+      next
+    }
+
     /^rearrangeForADo-StmtsDependencyGraph/ {
       found = 1
       capture = 1
@@ -482,6 +773,8 @@ write_graph_log_from_raw_log() {
     capture {
       if ($0 ~ /^[[:space:]]*pair[[:space:]]*=/) {
         parse_pair($0)
+      } else if ($0 ~ /^[[:space:]]*RAW[[:space:]]*=/) {
+        parse_raw($0)
       }
     }
 
@@ -490,6 +783,10 @@ write_graph_log_from_raw_log() {
     }
 
     END {
+      if (ppsfa_capture) {
+        parse_ppsfa_binders()
+      }
+
       if (found) {
         finish_graph()
       } else if (commutative_false) {
@@ -502,11 +799,11 @@ write_graph_log_from_raw_log() {
     }
   ' "$raw_log" >> "$graph_log"; then
     printf 'ERROR: could not write precedence graph section from %s\n' "$raw_log" >&2
-    rm -f "$binder_labels_tmp"
+    rm -f "$binder_labels_tmp" "$binder_leaf_labels_tmp"
     return 1
   fi
 
-  rm -f "$binder_labels_tmp"
+  rm -f "$binder_labels_tmp" "$binder_leaf_labels_tmp"
 }
 
 rewrite_original_ado_log_line() {
@@ -559,6 +856,7 @@ write_original_ado_log_from_compile_output() {
     }
 
     capture && /^[[:space:]]*tree-cost[[:space:]]*=/ {
+      print
       found = 1
       capture = 0
       exit

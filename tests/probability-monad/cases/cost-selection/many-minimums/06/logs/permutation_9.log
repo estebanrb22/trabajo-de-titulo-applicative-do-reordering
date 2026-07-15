@@ -1,0 +1,43 @@
+-- Reordered do-notation
+CD.do
+  x1 <- Dist.uniform [1, 2]
+  x3 <- Dist.uniform [100, 200]
+  x4 <- Dist.uniform [x3 + 1000, x3 + 2000]
+  x5 <- Dist.uniform [x4 + 10000, x4 + 20000]
+  x2 <- Dist.uniform [x1 + 10, x1 + 20]
+  x6 <- Dist.uniform [x2 + 100000, x2 + 200000]
+  CD.return (x1, x2, x3, x4, x5, x6)
+
+-- Renamer trace
+rearrangeForADo candidate selection tree (fado-reorder-candidate-n) =
+  candidate   =  9
+  index-order =  [1, 3, 4, 5, 2, 6]
+  statements  =  [x1_a1Y4 <- Dist.uniform [1, 2],
+                  x3_a1Y6 <- Dist.uniform [100, 200],
+                  x4_a1Y7 <- Dist.uniform [x3_a1Y6 + 1000, x3_a1Y6 + 2000],
+                  x5_a1Y8 <- Dist.uniform [x4_a1Y7 + 10000, x4_a1Y7 + 20000],
+                  x2_a1Y5 <- Dist.uniform [x1_a1Y4 + 10, x1_a1Y4 + 20],
+                  x6_a1Y9 <- Dist.uniform [x2_a1Y5 + 100000, x2_a1Y5 + 200000]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (x1_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform}))
+          (StmtTreeOne (x3_a1Y6 <- Dist.uniform [100, 200], {Dist.uniform})))
+       (StmtTreeApplicative
+          (StmtTreeBind
+             (StmtTreeOne (x4_a1Y7 <- Dist.uniform
+                                        [x3_a1Y6 + 1000, x3_a1Y6 + 2000],
+                           {x3_a1Y6, +, Dist.uniform}))
+             (StmtTreeOne (x5_a1Y8 <- Dist.uniform
+                                        [x4_a1Y7 + 10000, x4_a1Y7 + 20000],
+                           {x4_a1Y7, +, Dist.uniform})))
+          (StmtTreeBind
+             (StmtTreeOne (x2_a1Y5 <- Dist.uniform [x1_a1Y4 + 10, x1_a1Y4 + 20],
+                           {x1_a1Y4, +, Dist.uniform}))
+             (StmtTreeOne (x6_a1Y9 <- Dist.uniform
+                                        [x2_a1Y5 + 100000, x2_a1Y5 + 200000],
+                           {x2_a1Y5, +, Dist.uniform})))))
+  tree-cost = 3
+
+-- Execution plan
+(x1 | x3) ; ((x4 ; x5) | (x2 ; x6))

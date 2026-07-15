@@ -1,0 +1,37 @@
+ppsfa
+  [(a1_a1X5 <- Dist.uniform [1, 2], {Dist.uniform}),
+   (b1_a1X6 <- Dist.uniform [10, 20], {Dist.uniform}),
+   (a2_a1X7 <- Dist.uniform [a1_a1X5 + 100, a1_a1X5 + 200],
+    {a1_a1X5, +, Dist.uniform}),
+   (b2_a1X8 <- Dist.uniform [b1_a1X6 + 1000, b1_a1X6 + 2000],
+    {b1_a1X6, +, Dist.uniform}),
+   (return (a1_a1X5, a2_a1X7, b1_a1X6, b2_a1X8),
+    {return, a1_a1X5, b1_a1X6, a2_a1X7, b2_a1X8})]
+rearrangeForADo-commutative-do commutative-do = False
+rearrangeForADo final tree:
+  candidate   =  0
+  index-order =  [1, 2, 3, 4]
+  statements  =  [a1_a1X5 <- Dist.uniform [1, 2],
+                  b1_a1X6 <- Dist.uniform [10, 20],
+                  a2_a1X7 <- Dist.uniform [a1_a1X5 + 100, a1_a1X5 + 200],
+                  b2_a1X8 <- Dist.uniform [b1_a1X6 + 1000, b1_a1X6 + 2000]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (a1_a1X5 <- Dist.uniform [1, 2], {Dist.uniform}))
+          (StmtTreeOne (b1_a1X6 <- Dist.uniform [10, 20], {Dist.uniform})))
+       (StmtTreeApplicative
+          (StmtTreeOne (a2_a1X7 <- Dist.uniform
+                                     [a1_a1X5 + 100, a1_a1X5 + 200],
+                        {a1_a1X5, +, Dist.uniform}))
+          (StmtTreeOne (b2_a1X8 <- Dist.uniform
+                                     [b1_a1X6 + 1000, b1_a1X6 + 2000],
+                        {b1_a1X6, +, Dist.uniform}))))
+  tree-cost = 2
+rearrangeForADo-Summary:
+  minimum-cost-perm-index      = 0
+  original-cost                = 4
+  applicative-do-cost          = 2
+  reorder-and-ado-minimum-cost = 2
+  generated-permutations       = 1
+  minimum-cost-permutations    = 1

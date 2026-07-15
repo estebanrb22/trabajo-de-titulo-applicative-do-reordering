@@ -1,0 +1,99 @@
+ppsfa
+  [(let x1_a1Y4 = 1, {}),
+   (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform}),
+   (x3_a1Y6 <- Dist.uniform [100, 200], {Dist.uniform}),
+   (CD.return (x1_a1Y4, x2_a1Y5, x3_a1Y6),
+    {x1_a1Y4, x2_a1Y5, x3_a1Y6, CD.return})]
+addUsedGRE CD.__commutative_do__
+rearrangeForADo-commutative-do commutative-do = True
+rearrangeForADo-StmtsDependencyGraph
+rearrangeForADo-permutation
+  candidate   =  0
+  index-order =  [1, 2, 3]
+  statements  =  [let x1_a1Y4 = 1, x2_a1Y5 <- Dist.uniform [10, 20],
+                  x3_a1Y6 <- Dist.uniform [100, 200]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeBind
+          (StmtTreeOne (let x1_a1Y4 = 1, {}))
+          (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform})))
+       (StmtTreeOne (x3_a1Y6 <- Dist.uniform [100, 200], {Dist.uniform})))
+  tree-cost = 2
+rearrangeForADo-permutation
+  candidate   =  1
+  index-order =  [1, 3, 2]
+  statements  =  [let x1_a1Y4 = 1,
+                  x3_a1Y6 <- Dist.uniform [100, 200],
+                  x2_a1Y5 <- Dist.uniform [10, 20]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeBind
+          (StmtTreeOne (let x1_a1Y4 = 1, {}))
+          (StmtTreeOne (x3_a1Y6 <- Dist.uniform [100, 200], {Dist.uniform})))
+       (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform})))
+  tree-cost = 2
+rearrangeForADo-permutation
+  candidate   =  2
+  index-order =  [2, 1, 3]
+  statements  =  [x2_a1Y5 <- Dist.uniform [10, 20], let x1_a1Y4 = 1,
+                  x3_a1Y6 <- Dist.uniform [100, 200]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform}))
+       (StmtTreeBind
+          (StmtTreeOne (let x1_a1Y4 = 1, {}))
+          (StmtTreeOne (x3_a1Y6 <- Dist.uniform [100, 200],
+                        {Dist.uniform}))))
+  tree-cost = 2
+rearrangeForADo-permutation
+  candidate   =  3
+  index-order =  [2, 3, 1]
+  statements  =  [x2_a1Y5 <- Dist.uniform [10, 20],
+                  x3_a1Y6 <- Dist.uniform [100, 200], let x1_a1Y4 = 1]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform}))
+       (StmtTreeOne (x3_a1Y6 <- Dist.uniform [100, 200], {Dist.uniform}))
+       (StmtTreeOne (let x1_a1Y4 = 1, {})))
+  tree-cost = 1
+rearrangeForADo-permutation
+  candidate   =  4
+  index-order =  [3, 1, 2]
+  statements  =  [x3_a1Y6 <- Dist.uniform [100, 200],
+                  let x1_a1Y4 = 1, x2_a1Y5 <- Dist.uniform [10, 20]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x3_a1Y6 <- Dist.uniform [100, 200], {Dist.uniform}))
+       (StmtTreeBind
+          (StmtTreeOne (let x1_a1Y4 = 1, {}))
+          (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform}))))
+  tree-cost = 2
+rearrangeForADo-permutation
+  candidate   =  5
+  index-order =  [3, 2, 1]
+  statements  =  [x3_a1Y6 <- Dist.uniform [100, 200],
+                  x2_a1Y5 <- Dist.uniform [10, 20], let x1_a1Y4 = 1]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x3_a1Y6 <- Dist.uniform [100, 200], {Dist.uniform}))
+       (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform}))
+       (StmtTreeOne (let x1_a1Y4 = 1, {})))
+  tree-cost = 1
+rearrangeForADo final tree:
+  candidate   =  3
+  index-order =  [2, 3, 1]
+  statements  =  [x2_a1Y5 <- Dist.uniform [10, 20],
+                  x3_a1Y6 <- Dist.uniform [100, 200], let x1_a1Y4 = 1]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x2_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform}))
+       (StmtTreeOne (x3_a1Y6 <- Dist.uniform [100, 200], {Dist.uniform}))
+       (StmtTreeOne (let x1_a1Y4 = 1, {})))
+  tree-cost = 1
+rearrangeForADo-Summary:
+  minimum-cost-perm-index      = 3
+  original-cost                = 3
+  applicative-do-cost          = 2
+  reorder-and-ado-minimum-cost = 1
+  generated-permutations       = 6
+  minimum-cost-permutations    = 2

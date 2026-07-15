@@ -1,0 +1,17 @@
+-- do-notation
+do
+  x1 <- Just 1
+  Just ()
+  x2 <- Just 10
+  return (x1, x2)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  (StmtTreeApplicative
+     (StmtTreeOne (x1_a1S3 <- Just 1, {Just}))
+     (StmtTreeOne (Just (), {Just, ()}))
+     (StmtTreeOne (x2_a1S4 <- Just 10, {Just})))
+  tree-cost = 1
+
+-- Execution plan
+x1 | stmt2 | x2

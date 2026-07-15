@@ -1,0 +1,149 @@
+== Semantic validation reorder (Cabal) ==
+project-dir = /workspaces/tt-repo/experiments/probability-monad/cases/dependency-shapes/no-deps/04
+input-file = /workspaces/tt-repo/experiments/probability-monad/cases/dependency-shapes/no-deps/04/main.hs
+cabal-file = /workspaces/tt-repo/experiments/probability-monad/cases/dependency-shapes/no-deps/04/probability-monad-cases-dependency-shapes-no-deps-n04.cabal
+target = exe:probability-monad-cases-dependency-shapes-no-deps-n04
+output-dir = /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04
+cabal-build-root = /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/cabal-build
+
+[COMPILE] original -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/original
+[COMPILE] original_ado -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/original_ado
+[COMPILE] optimal-reorder -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/optimal-reorder
+generated permutations = 24
+
+[COMPILE] permutation_0 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_0
+[COMPILE] permutation_1 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_1
+[COMPILE] permutation_2 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_2
+[COMPILE] permutation_3 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_3
+[COMPILE] permutation_4 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_4
+[COMPILE] permutation_5 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_5
+[COMPILE] permutation_6 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_6
+[COMPILE] permutation_7 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_7
+[COMPILE] permutation_8 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_8
+[COMPILE] permutation_9 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_9
+[COMPILE] permutation_10 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_10
+[COMPILE] permutation_11 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_11
+[COMPILE] permutation_12 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_12
+[COMPILE] permutation_13 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_13
+[COMPILE] permutation_14 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_14
+[COMPILE] permutation_15 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_15
+[COMPILE] permutation_16 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_16
+[COMPILE] permutation_17 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_17
+[COMPILE] permutation_18 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_18
+[COMPILE] permutation_19 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_19
+[COMPILE] permutation_20 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_20
+[COMPILE] permutation_21 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_21
+[COMPILE] permutation_22 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_22
+[COMPILE] permutation_23 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/bin/permutation_23
+
+[RUN] original -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/original.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] original = 0
+[RUN] original_ado -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/original_ado.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] original_ado = 0
+[RUN] optimal-reorder -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/optimal-reorder.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] optimal-reorder = 0
+[RUN] permutation_0 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_0.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_0 = 0
+[RUN] permutation_1 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_1.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_1 = 0
+[RUN] permutation_2 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_2.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_2 = 0
+[RUN] permutation_3 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_3.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_3 = 0
+[RUN] permutation_4 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_4.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_4 = 0
+[RUN] permutation_5 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_5.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_5 = 0
+[RUN] permutation_6 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_6.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_6 = 0
+[RUN] permutation_7 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_7.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_7 = 0
+[RUN] permutation_8 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_8.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_8 = 0
+[RUN] permutation_9 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_9.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_9 = 0
+[RUN] permutation_10 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_10.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_10 = 0
+[RUN] permutation_11 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_11.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_11 = 0
+[RUN] permutation_12 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_12.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_12 = 0
+[RUN] permutation_13 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_13.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_13 = 0
+[RUN] permutation_14 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_14.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_14 = 0
+[RUN] permutation_15 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_15.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_15 = 0
+[RUN] permutation_16 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_16.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_16 = 0
+[RUN] permutation_17 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_17.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_17 = 0
+[RUN] permutation_18 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_18.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_18 = 0
+[RUN] permutation_19 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_19.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_19 = 0
+[RUN] permutation_20 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_20.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_20 = 0
+[RUN] permutation_21 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_21.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_21 = 0
+[RUN] permutation_22 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_22.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_22 = 0
+[RUN] permutation_23 -> /workspaces/tt-repo/tests/probability-monad/cases/dependency-shapes/no-deps/04/results/permutation_23.run.log
+[OUTPUT] fromFreqs [((1,10,100,1000),1 % 16),((1,10,100,2000),1 % 16),((1,10,200,1000),1 % 16),((1,10,200,2000),1 % 16),((1,20,100,1000),1 % 16),((1,20,100,2000),1 % 16),((1,20,200,1000),1 % 16),((1,20,200,2000),1 % 16),((2,10,100,1000),1 % 16),((2,10,100,2000),1 % 16),((2,10,200,1000),1 % 16),((2,10,200,2000),1 % 16),((2,20,100,1000),1 % 16),((2,20,100,2000),1 % 16),((2,20,200,1000),1 % 16),((2,20,200,2000),1 % 16)]
+[EXIT CODE] permutation_23 = 0
+
+== Semantic comparison ==
+[OK] original_ado   : identical output
+[OK] optimal-reorder: identical output
+[OK] permutation_0  : identical output
+[OK] permutation_1  : identical output
+[OK] permutation_2  : identical output
+[OK] permutation_3  : identical output
+[OK] permutation_4  : identical output
+[OK] permutation_5  : identical output
+[OK] permutation_6  : identical output
+[OK] permutation_7  : identical output
+[OK] permutation_8  : identical output
+[OK] permutation_9  : identical output
+[OK] permutation_10 : identical output
+[OK] permutation_11 : identical output
+[OK] permutation_12 : identical output
+[OK] permutation_13 : identical output
+[OK] permutation_14 : identical output
+[OK] permutation_15 : identical output
+[OK] permutation_16 : identical output
+[OK] permutation_17 : identical output
+[OK] permutation_18 : identical output
+[OK] permutation_19 : identical output
+[OK] permutation_20 : identical output
+[OK] permutation_21 : identical output
+[OK] permutation_22 : identical output
+[OK] permutation_23 : identical output
+
+RESULT: OK

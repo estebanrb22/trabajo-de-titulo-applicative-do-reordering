@@ -1,0 +1,19 @@
+-- do-notation
+do
+  x1 <- Dist.Cons [(1, 1 / 4), (2, 3 / 4)]
+  x2 <- Dist.Cons [(10, 2 / 3), (20, 1 / 3)]
+  x3 <- Dist.uniform [100, 200]
+  return (x1, x2, x3)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  (StmtTreeApplicative
+     (StmtTreeOne (x1_a1X5 <- Dist.Cons [(1, 1 / 4), (2, 3 / 4)],
+                   {/, Dist.Cons}))
+     (StmtTreeOne (x2_a1X6 <- Dist.Cons [(10, 2 / 3), (20, 1 / 3)],
+                   {/, Dist.Cons}))
+     (StmtTreeOne (x3_a1X7 <- Dist.uniform [100, 200], {Dist.uniform})))
+  tree-cost = 1
+
+-- Execution plan
+x1 | x2 | x3

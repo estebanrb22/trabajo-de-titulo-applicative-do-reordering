@@ -1,0 +1,375 @@
+== Semantic validation reorder (GHC) ==
+input-file = /workspaces/tt-repo/experiments/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/main.hs
+output-dir = /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado
+
+[COMPILE] original -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/original
+[COMPILE] original_ado -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/original_ado
+[COMPILE] optimal-reorder -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/optimal-reorder
+generated permutations = 70
+
+[COMPILE] permutation_0 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_0
+[COMPILE] permutation_1 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_1
+[COMPILE] permutation_2 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_2
+[COMPILE] permutation_3 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_3
+[COMPILE] permutation_4 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_4
+[COMPILE] permutation_5 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_5
+[COMPILE] permutation_6 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_6
+[COMPILE] permutation_7 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_7
+[COMPILE] permutation_8 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_8
+[COMPILE] permutation_9 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_9
+[COMPILE] permutation_10 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_10
+[COMPILE] permutation_11 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_11
+[COMPILE] permutation_12 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_12
+[COMPILE] permutation_13 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_13
+[COMPILE] permutation_14 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_14
+[COMPILE] permutation_15 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_15
+[COMPILE] permutation_16 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_16
+[COMPILE] permutation_17 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_17
+[COMPILE] permutation_18 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_18
+[COMPILE] permutation_19 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_19
+[COMPILE] permutation_20 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_20
+[COMPILE] permutation_21 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_21
+[COMPILE] permutation_22 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_22
+[COMPILE] permutation_23 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_23
+[COMPILE] permutation_24 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_24
+[COMPILE] permutation_25 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_25
+[COMPILE] permutation_26 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_26
+[COMPILE] permutation_27 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_27
+[COMPILE] permutation_28 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_28
+[COMPILE] permutation_29 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_29
+[COMPILE] permutation_30 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_30
+[COMPILE] permutation_31 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_31
+[COMPILE] permutation_32 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_32
+[COMPILE] permutation_33 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_33
+[COMPILE] permutation_34 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_34
+[COMPILE] permutation_35 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_35
+[COMPILE] permutation_36 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_36
+[COMPILE] permutation_37 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_37
+[COMPILE] permutation_38 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_38
+[COMPILE] permutation_39 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_39
+[COMPILE] permutation_40 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_40
+[COMPILE] permutation_41 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_41
+[COMPILE] permutation_42 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_42
+[COMPILE] permutation_43 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_43
+[COMPILE] permutation_44 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_44
+[COMPILE] permutation_45 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_45
+[COMPILE] permutation_46 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_46
+[COMPILE] permutation_47 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_47
+[COMPILE] permutation_48 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_48
+[COMPILE] permutation_49 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_49
+[COMPILE] permutation_50 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_50
+[COMPILE] permutation_51 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_51
+[COMPILE] permutation_52 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_52
+[COMPILE] permutation_53 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_53
+[COMPILE] permutation_54 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_54
+[COMPILE] permutation_55 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_55
+[COMPILE] permutation_56 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_56
+[COMPILE] permutation_57 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_57
+[COMPILE] permutation_58 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_58
+[COMPILE] permutation_59 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_59
+[COMPILE] permutation_60 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_60
+[COMPILE] permutation_61 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_61
+[COMPILE] permutation_62 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_62
+[COMPILE] permutation_63 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_63
+[COMPILE] permutation_64 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_64
+[COMPILE] permutation_65 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_65
+[COMPILE] permutation_66 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_66
+[COMPILE] permutation_67 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_67
+[COMPILE] permutation_68 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_68
+[COMPILE] permutation_69 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/bin/permutation_69
+
+[RUN] original -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/original.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] original = 0
+[RUN] original_ado -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/original_ado.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] original_ado = 0
+[RUN] optimal-reorder -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/optimal-reorder.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] optimal-reorder = 0
+[RUN] permutation_0 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_0.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_0 = 0
+[RUN] permutation_1 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_1.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_1 = 0
+[RUN] permutation_2 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_2.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_2 = 0
+[RUN] permutation_3 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_3.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_3 = 0
+[RUN] permutation_4 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_4.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_4 = 0
+[RUN] permutation_5 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_5.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_5 = 0
+[RUN] permutation_6 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_6.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_6 = 0
+[RUN] permutation_7 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_7.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_7 = 0
+[RUN] permutation_8 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_8.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_8 = 0
+[RUN] permutation_9 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_9.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_9 = 0
+[RUN] permutation_10 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_10.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_10 = 0
+[RUN] permutation_11 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_11.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_11 = 0
+[RUN] permutation_12 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_12.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_12 = 0
+[RUN] permutation_13 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_13.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_13 = 0
+[RUN] permutation_14 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_14.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_14 = 0
+[RUN] permutation_15 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_15.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_15 = 0
+[RUN] permutation_16 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_16.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_16 = 0
+[RUN] permutation_17 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_17.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_17 = 0
+[RUN] permutation_18 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_18.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_18 = 0
+[RUN] permutation_19 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_19.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_19 = 0
+[RUN] permutation_20 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_20.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_20 = 0
+[RUN] permutation_21 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_21.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_21 = 0
+[RUN] permutation_22 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_22.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_22 = 0
+[RUN] permutation_23 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_23.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_23 = 0
+[RUN] permutation_24 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_24.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_24 = 0
+[RUN] permutation_25 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_25.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_25 = 0
+[RUN] permutation_26 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_26.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_26 = 0
+[RUN] permutation_27 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_27.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_27 = 0
+[RUN] permutation_28 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_28.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_28 = 0
+[RUN] permutation_29 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_29.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_29 = 0
+[RUN] permutation_30 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_30.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_30 = 0
+[RUN] permutation_31 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_31.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_31 = 0
+[RUN] permutation_32 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_32.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_32 = 0
+[RUN] permutation_33 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_33.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_33 = 0
+[RUN] permutation_34 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_34.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_34 = 0
+[RUN] permutation_35 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_35.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_35 = 0
+[RUN] permutation_36 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_36.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_36 = 0
+[RUN] permutation_37 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_37.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_37 = 0
+[RUN] permutation_38 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_38.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_38 = 0
+[RUN] permutation_39 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_39.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_39 = 0
+[RUN] permutation_40 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_40.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_40 = 0
+[RUN] permutation_41 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_41.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_41 = 0
+[RUN] permutation_42 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_42.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_42 = 0
+[RUN] permutation_43 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_43.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_43 = 0
+[RUN] permutation_44 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_44.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_44 = 0
+[RUN] permutation_45 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_45.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_45 = 0
+[RUN] permutation_46 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_46.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_46 = 0
+[RUN] permutation_47 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_47.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_47 = 0
+[RUN] permutation_48 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_48.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_48 = 0
+[RUN] permutation_49 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_49.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_49 = 0
+[RUN] permutation_50 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_50.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_50 = 0
+[RUN] permutation_51 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_51.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_51 = 0
+[RUN] permutation_52 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_52.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_52 = 0
+[RUN] permutation_53 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_53.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_53 = 0
+[RUN] permutation_54 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_54.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_54 = 0
+[RUN] permutation_55 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_55.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_55 = 0
+[RUN] permutation_56 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_56.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_56 = 0
+[RUN] permutation_57 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_57.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_57 = 0
+[RUN] permutation_58 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_58.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_58 = 0
+[RUN] permutation_59 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_59.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_59 = 0
+[RUN] permutation_60 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_60.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_60 = 0
+[RUN] permutation_61 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_61.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_61 = 0
+[RUN] permutation_62 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_62.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_62 = 0
+[RUN] permutation_63 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_63.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_63 = 0
+[RUN] permutation_64 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_64.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_64 = 0
+[RUN] permutation_65 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_65.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_65 = 0
+[RUN] permutation_66 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_66.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_66 = 0
+[RUN] permutation_67 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_67.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_67 = 0
+[RUN] permutation_68 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_68.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_68 = 0
+[RUN] permutation_69 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/two-chains/08-reorder-improves-ado/results/permutation_69.run.log
+[OUTPUT] Just (1,2,3,4,10,11,12,13)
+[EXIT CODE] permutation_69 = 0
+
+== Semantic comparison ==
+[OK] original_ado   : identical output
+[OK] optimal-reorder: identical output
+[OK] permutation_0  : identical output
+[OK] permutation_1  : identical output
+[OK] permutation_2  : identical output
+[OK] permutation_3  : identical output
+[OK] permutation_4  : identical output
+[OK] permutation_5  : identical output
+[OK] permutation_6  : identical output
+[OK] permutation_7  : identical output
+[OK] permutation_8  : identical output
+[OK] permutation_9  : identical output
+[OK] permutation_10 : identical output
+[OK] permutation_11 : identical output
+[OK] permutation_12 : identical output
+[OK] permutation_13 : identical output
+[OK] permutation_14 : identical output
+[OK] permutation_15 : identical output
+[OK] permutation_16 : identical output
+[OK] permutation_17 : identical output
+[OK] permutation_18 : identical output
+[OK] permutation_19 : identical output
+[OK] permutation_20 : identical output
+[OK] permutation_21 : identical output
+[OK] permutation_22 : identical output
+[OK] permutation_23 : identical output
+[OK] permutation_24 : identical output
+[OK] permutation_25 : identical output
+[OK] permutation_26 : identical output
+[OK] permutation_27 : identical output
+[OK] permutation_28 : identical output
+[OK] permutation_29 : identical output
+[OK] permutation_30 : identical output
+[OK] permutation_31 : identical output
+[OK] permutation_32 : identical output
+[OK] permutation_33 : identical output
+[OK] permutation_34 : identical output
+[OK] permutation_35 : identical output
+[OK] permutation_36 : identical output
+[OK] permutation_37 : identical output
+[OK] permutation_38 : identical output
+[OK] permutation_39 : identical output
+[OK] permutation_40 : identical output
+[OK] permutation_41 : identical output
+[OK] permutation_42 : identical output
+[OK] permutation_43 : identical output
+[OK] permutation_44 : identical output
+[OK] permutation_45 : identical output
+[OK] permutation_46 : identical output
+[OK] permutation_47 : identical output
+[OK] permutation_48 : identical output
+[OK] permutation_49 : identical output
+[OK] permutation_50 : identical output
+[OK] permutation_51 : identical output
+[OK] permutation_52 : identical output
+[OK] permutation_53 : identical output
+[OK] permutation_54 : identical output
+[OK] permutation_55 : identical output
+[OK] permutation_56 : identical output
+[OK] permutation_57 : identical output
+[OK] permutation_58 : identical output
+[OK] permutation_59 : identical output
+[OK] permutation_60 : identical output
+[OK] permutation_61 : identical output
+[OK] permutation_62 : identical output
+[OK] permutation_63 : identical output
+[OK] permutation_64 : identical output
+[OK] permutation_65 : identical output
+[OK] permutation_66 : identical output
+[OK] permutation_67 : identical output
+[OK] permutation_68 : identical output
+[OK] permutation_69 : identical output
+
+RESULT: OK

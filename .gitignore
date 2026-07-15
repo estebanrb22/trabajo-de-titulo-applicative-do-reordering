@@ -1,12 +1,11 @@
 _docs/
-_templates/
+_logs/
 .opencode/
-experiments/ado/*
 **/dist-newstyle/
 **/*.hi
 **/*.o
 **/.cabal-store-mod-ghc/
-reports/
+**/bin/
 **/cabal-build/
 AGENTS.md
 opencode.json

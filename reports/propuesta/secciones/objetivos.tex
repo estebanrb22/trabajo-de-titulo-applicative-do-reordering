@@ -1,0 +1,30 @@
+\section{Objetivos}\label{chap:obj}
+
+\subsection*{Objetivo General}\label{sec:obj-g}
+
+Extender experimentalmente la implementación actual de \texttt{ApplicativeDo} en el compilador \textsf{GHC}, de modo que pueda considerar reordenamientos semánticamente válidos de 	\textit{statements} dentro de la \textit{do-notation} cuando se trabaja con mónadas conmutativas, con el fin de mejorar el plan de ejecución generado sin alterar la semántica del programa.
+
+\subsection*{Objetivos Específicos}\label{sec:obj-e}
+
+\begin{enumerate}
+    \item Caracterizar la implementación actual del algoritmo de transformación monádica en el compilador \textsf{GHC}, identificando los módulos, estructuras de datos y puntos de extensión relevantes para su modificación.
+    
+    \item Diseñar e implementar un algoritmo capaz de generar permutaciones válidas de \textit{}{statements} dentro de una mónada conmutativa, respetando las restricciones \textbf{def-use} y preservando la semántica del programa.
+    
+    \item Integrar las permutaciones válidas generadas al algoritmo propuesto por Marlow et al. \cite{marlow_ado}, de modo de evaluar los planes de ejecución candidatos y seleccionar aquel que minimice el costo según el modelo adoptado.
+
+    \item Extender experimentalmente la implementación de \texttt{ApplicativeDo} en \textsf{GHC} para incorporar el reordenamiento de 	\textit{statements} dentro del pipeline actual de transformación monádica.
+
+    \item Verificar que la extensión propuesta preserve la semántica probabilística del programa original y evaluar su efecto sobre los planes de ejecución obtenidos.
+   
+\end{enumerate}
+
+\newpage
+
+\subsection*{Evaluación}\label{sec:eval}
+
+La evaluación del trabajo se realizará a partir de un conjunto de casos de prueba construido sobre dos fuentes complementarias. En primer lugar, se utilizarán como base la \textit{testsuite} oficial de \textsf{GHC} asociados a la extensión \texttt{ApplicativeDo} \cite{GHCApplicativeDoTestsuite}, ya que estos constituyen la validación más directa del comportamiento actualmente aceptado por el compilador para la transformación propuesta por Marlow et al. En segundo lugar, se incorporarán casos adicionales diseñados específicamente para esta memoria, orientados a cubrir situaciones donde el nuevo algoritmo de permutación de \textit{statements} dentro de mónadas conmutativas pueda alterar el plan de ejecución sin modificar la semántica probabilística esperada.
+
+La equivalencia semántica entre el programa original y el programa transformado se verificará comparando que ambos induzcan la misma distribución de probabilidad de salida sobre los casos de prueba considerados. En términos prácticos, esto significa comprobar que la transformación preserve los resultados probabilísticos observables del programa, aun cuando se haya modificado el orden sintáctico de los \textit{statements} o la estructura interna del plan de ejecución. De esta manera, el objetivo específico de preservación semántica se evaluará no solo a nivel sintáctico o estructural, sino en función de la distribución probabilística finalmente representada por el programa transformado.
+
+Por otra parte, la noción de optimalidad utilizada en esta memoria se definirá con respecto al sistema de costos simple ya establecido en el artículo base de Marlow et al \cite{MarlowPJKM2016}. En consecuencia, el \textit{baseline} de comparación no estará dado por tiempos reales de ejecución, sino por el costo abstracto asignado a cada plan de ejecución según dicho modelo. Así, para cada permutación válida generada, se calculará el plan de ejecución que produce el  algoritmo en la etapa de \textit{rearrangement} y se asociará a dicho plan el costo definido en el paper. Luego, se compararán los costos obtenidos para todas las permutaciones válidas consideradas, y se seleccionará como resultado óptimo el plan de ejecución menos costoso.

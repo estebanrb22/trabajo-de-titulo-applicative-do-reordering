@@ -1,0 +1,34 @@
+-- Original program
+CD.do
+  root <- Dist.uniform [1, 2]
+  a1 <- Dist.uniform [root + 10, root + 20]
+  b1 <- Dist.uniform [root + 100, root + 200]
+  a2 <- Dist.uniform [a1 + 1000, a1 + 2000]
+  b2 <- Dist.uniform [b1 + 10000, b1 + 20000]
+  join <- Dist.uniform [a2 + b2 + 100000, a2 + b2 + 200000]
+  CD.return (root, a1, a2, b1, b2, join)
+
+-- Internal representation with free variables by statement
+ppsfa
+  [(root_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform}),
+   (a1_a1Y5 <- Dist.uniform [root_a1Y4 + 10, root_a1Y4 + 20], {root_a1Y4, +, Dist.uniform}),
+   (b1_a1Y6 <- Dist.uniform [root_a1Y4 + 100, root_a1Y4 + 200], {root_a1Y4, +, Dist.uniform}),
+   (a2_a1Y7 <- Dist.uniform [a1_a1Y5 + 1000, a1_a1Y5 + 2000], {a1_a1Y5, +, Dist.uniform}),
+   (b2_a1Y8 <- Dist.uniform [b1_a1Y6 + 10000, b1_a1Y6 + 20000], {b1_a1Y6, +, Dist.uniform}),
+   (join_a1Y9 <- Dist.uniform [a2_a1Y7 + b2_a1Y8 + 100000, a2_a1Y7 + b2_a1Y8 + 200000], {a2_a1Y7, b2_a1Y8, +, Dist.uniform}),
+   (CD.return (root_a1Y4, a1_a1Y5, a2_a1Y7, b1_a1Y6, b2_a1Y8, join_a1Y9), {root_a1Y4, a1_a1Y5, b1_a1Y6, a2_a1Y7, b2_a1Y8, join_a1Y9, CD.return})]
+
+-- Precedence graph adjacency list
+1 -> {2, 3}
+2 -> {4}
+3 -> {5}
+4 -> {6}
+5 -> {6}
+6 -> {}
+
+-- Precedence graph RAW dependencies grouped by binder
+root: 1 -> {2, 3}
+a1: 2 -> {4}
+b1: 3 -> {5}
+a2: 4 -> {6}
+b2: 5 -> {6}

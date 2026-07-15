@@ -1,0 +1,26 @@
+cabal-version:      3.14
+name:               cabal-template
+version:            0.1.0.0
+synopsis:           Reordenamiento de mónadas conmutativas
+-- description:
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             estebanrb22
+maintainer:         esteban.romero.b@ug.uchile.cl
+-- copyright:
+category:           Development
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+-- extra-source-files:
+
+common warnings
+    ghc-options: -Wall
+
+executable cabal-template
+    import:           warnings
+    main-is:          Main.hs
+    -- other-modules:
+    -- other-extensions:
+    build-depends:    base ^>=4.22.0.0
+    hs-source-dirs:   .
+    default-language: Haskell2010

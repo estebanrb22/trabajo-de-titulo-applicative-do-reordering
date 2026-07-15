@@ -1,0 +1,91 @@
+ppsfa
+  [(x_a1T2 <- Just 1, {Just}), (x_a1T3 <- Just 10, {Just}),
+   (y_a1T4 <- Just 100, {Just}),
+   (CD.return (x_a1T3, y_a1T4), {x_a1T3, y_a1T4, CD.return})]
+addUsedGRE CD.__commutative_do__
+rearrangeForADo-commutative-do commutative-do = True
+rearrangeForADo-StmtsDependencyGraph
+rearrangeForADo-permutation
+  candidate   =  0
+  index-order =  [1, 2, 3]
+  statements  =  [x_a1T2 <- Just 1, x_a1T3 <- Just 10,
+                  y_a1T4 <- Just 100]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x_a1T2 <- Just 1, {Just}))
+       (StmtTreeOne (x_a1T3 <- Just 10, {Just}))
+       (StmtTreeOne (y_a1T4 <- Just 100, {Just})))
+  tree-cost = 1
+rearrangeForADo-permutation
+  candidate   =  1
+  index-order =  [1, 3, 2]
+  statements  =  [x_a1T2 <- Just 1, y_a1T4 <- Just 100,
+                  x_a1T3 <- Just 10]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x_a1T2 <- Just 1, {Just}))
+       (StmtTreeOne (y_a1T4 <- Just 100, {Just}))
+       (StmtTreeOne (x_a1T3 <- Just 10, {Just})))
+  tree-cost = 1
+rearrangeForADo-permutation
+  candidate   =  2
+  index-order =  [2, 1, 3]
+  statements  =  [x_a1T3 <- Just 10, x_a1T2 <- Just 1,
+                  y_a1T4 <- Just 100]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x_a1T3 <- Just 10, {Just}))
+       (StmtTreeOne (x_a1T2 <- Just 1, {Just}))
+       (StmtTreeOne (y_a1T4 <- Just 100, {Just})))
+  tree-cost = 1
+rearrangeForADo-permutation
+  candidate   =  3
+  index-order =  [2, 3, 1]
+  statements  =  [x_a1T3 <- Just 10, y_a1T4 <- Just 100,
+                  x_a1T2 <- Just 1]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x_a1T3 <- Just 10, {Just}))
+       (StmtTreeOne (y_a1T4 <- Just 100, {Just}))
+       (StmtTreeOne (x_a1T2 <- Just 1, {Just})))
+  tree-cost = 1
+rearrangeForADo-permutation
+  candidate   =  4
+  index-order =  [3, 1, 2]
+  statements  =  [y_a1T4 <- Just 100, x_a1T2 <- Just 1,
+                  x_a1T3 <- Just 10]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (y_a1T4 <- Just 100, {Just}))
+       (StmtTreeOne (x_a1T2 <- Just 1, {Just}))
+       (StmtTreeOne (x_a1T3 <- Just 10, {Just})))
+  tree-cost = 1
+rearrangeForADo-permutation
+  candidate   =  5
+  index-order =  [3, 2, 1]
+  statements  =  [y_a1T4 <- Just 100, x_a1T3 <- Just 10,
+                  x_a1T2 <- Just 1]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (y_a1T4 <- Just 100, {Just}))
+       (StmtTreeOne (x_a1T3 <- Just 10, {Just}))
+       (StmtTreeOne (x_a1T2 <- Just 1, {Just})))
+  tree-cost = 1
+rearrangeForADo final tree:
+  candidate   =  0
+  index-order =  [1, 2, 3]
+  statements  =  [x_a1T2 <- Just 1, x_a1T3 <- Just 10,
+                  y_a1T4 <- Just 100]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeOne (x_a1T2 <- Just 1, {Just}))
+       (StmtTreeOne (x_a1T3 <- Just 10, {Just}))
+       (StmtTreeOne (y_a1T4 <- Just 100, {Just})))
+  tree-cost = 1
+rearrangeForADo-Summary:
+  minimum-cost-perm-index      = 0
+  original-cost                = 3
+  applicative-do-cost          = 1
+  reorder-and-ado-minimum-cost = 1
+  generated-permutations       = 6
+  minimum-cost-permutations    = 6

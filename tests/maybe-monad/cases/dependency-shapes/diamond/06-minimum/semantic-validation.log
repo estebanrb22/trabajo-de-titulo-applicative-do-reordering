@@ -1,0 +1,55 @@
+== Semantic validation reorder (GHC) ==
+input-file = /workspaces/tt-repo/experiments/maybe-monad/cases/dependency-shapes/diamond/06-minimum/main.hs
+output-dir = /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum
+
+[COMPILE] original -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/bin/original
+[COMPILE] original_ado -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/bin/original_ado
+[COMPILE] optimal-reorder -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/bin/optimal-reorder
+generated permutations = 6
+
+[COMPILE] permutation_0 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/bin/permutation_0
+[COMPILE] permutation_1 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/bin/permutation_1
+[COMPILE] permutation_2 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/bin/permutation_2
+[COMPILE] permutation_3 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/bin/permutation_3
+[COMPILE] permutation_4 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/bin/permutation_4
+[COMPILE] permutation_5 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/bin/permutation_5
+
+[RUN] original -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/results/original.run.log
+[OUTPUT] Just (1,11,12,21,22,34)
+[EXIT CODE] original = 0
+[RUN] original_ado -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/results/original_ado.run.log
+[OUTPUT] Just (1,11,12,21,22,34)
+[EXIT CODE] original_ado = 0
+[RUN] optimal-reorder -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/results/optimal-reorder.run.log
+[OUTPUT] Just (1,11,12,21,22,34)
+[EXIT CODE] optimal-reorder = 0
+[RUN] permutation_0 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/results/permutation_0.run.log
+[OUTPUT] Just (1,11,12,21,22,34)
+[EXIT CODE] permutation_0 = 0
+[RUN] permutation_1 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/results/permutation_1.run.log
+[OUTPUT] Just (1,11,12,21,22,34)
+[EXIT CODE] permutation_1 = 0
+[RUN] permutation_2 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/results/permutation_2.run.log
+[OUTPUT] Just (1,11,12,21,22,34)
+[EXIT CODE] permutation_2 = 0
+[RUN] permutation_3 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/results/permutation_3.run.log
+[OUTPUT] Just (1,11,12,21,22,34)
+[EXIT CODE] permutation_3 = 0
+[RUN] permutation_4 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/results/permutation_4.run.log
+[OUTPUT] Just (1,11,12,21,22,34)
+[EXIT CODE] permutation_4 = 0
+[RUN] permutation_5 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/diamond/06-minimum/results/permutation_5.run.log
+[OUTPUT] Just (1,11,12,21,22,34)
+[EXIT CODE] permutation_5 = 0
+
+== Semantic comparison ==
+[OK] original_ado   : identical output
+[OK] optimal-reorder: identical output
+[OK] permutation_0  : identical output
+[OK] permutation_1  : identical output
+[OK] permutation_2  : identical output
+[OK] permutation_3  : identical output
+[OK] permutation_4  : identical output
+[OK] permutation_5  : identical output
+
+RESULT: OK

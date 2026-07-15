@@ -1,0 +1,33 @@
+-- Original program
+CD.do
+  x1 <- Dist.uniform [1, 2]
+  x2 <- Dist.uniform [x1 + 10, x1 + 20]
+  x3 <- Dist.uniform [100, 200]
+  x4 <- Dist.uniform [x3 + 1000, x3 + 2000]
+  x5 <- Dist.uniform [x4 + 10000, x4 + 20000]
+  x6 <- Dist.uniform [x2 + 100000, x2 + 200000]
+  CD.return (x1, x2, x3, x4, x5, x6)
+
+-- Internal representation with free variables by statement
+ppsfa
+  [(x1_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform}),
+   (x2_a1Y5 <- Dist.uniform [x1_a1Y4 + 10, x1_a1Y4 + 20], {x1_a1Y4, +, Dist.uniform}),
+   (x3_a1Y6 <- Dist.uniform [100, 200], {Dist.uniform}),
+   (x4_a1Y7 <- Dist.uniform [x3_a1Y6 + 1000, x3_a1Y6 + 2000], {x3_a1Y6, +, Dist.uniform}),
+   (x5_a1Y8 <- Dist.uniform [x4_a1Y7 + 10000, x4_a1Y7 + 20000], {x4_a1Y7, +, Dist.uniform}),
+   (x6_a1Y9 <- Dist.uniform [x2_a1Y5 + 100000, x2_a1Y5 + 200000], {x2_a1Y5, +, Dist.uniform}),
+   (CD.return (x1_a1Y4, x2_a1Y5, x3_a1Y6, x4_a1Y7, x5_a1Y8, x6_a1Y9), {x1_a1Y4, x2_a1Y5, x3_a1Y6, x4_a1Y7, x5_a1Y8, x6_a1Y9, CD.return})]
+
+-- Precedence graph adjacency list
+1 -> {2}
+2 -> {6}
+3 -> {4}
+4 -> {5}
+5 -> {}
+6 -> {}
+
+-- Precedence graph RAW dependencies grouped by binder
+x1: 1 -> {2}
+x2: 2 -> {6}
+x3: 3 -> {4}
+x4: 4 -> {5}

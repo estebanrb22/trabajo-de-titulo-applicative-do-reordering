@@ -1,0 +1,23 @@
+{-# LANGUAGE ApplicativeDo #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE QualifiedDo #-}
+
+module Main (main) where
+
+import qualified Control.Monad.CommutativeDo as CD
+import qualified Numeric.Probability.Distribution as Dist
+
+instance CD.CommutativeMonad (Dist.T Rational)
+
+manyMinimumsExample06 :: Dist.T Rational (Int, Int, Int, Int, Int, Int)
+manyMinimumsExample06 = CD.do
+  x1 <- Dist.uniform [1, 2]
+  x2 <- Dist.uniform [x1 + 10, x1 + 20]
+  x3 <- Dist.uniform [100, 200]
+  x4 <- Dist.uniform [x3 + 1000, x3 + 2000]
+  x5 <- Dist.uniform [x4 + 10000, x4 + 20000]
+  x6 <- Dist.uniform [x2 + 100000, x2 + 200000]
+  CD.return (x1, x2, x3, x4, x5, x6)
+
+main :: IO ()
+main = print (Dist.norm manyMinimumsExample06)

@@ -1,0 +1,21 @@
+-- Original program
+CD.do
+  x <- Dist.uniform [1, 2]
+  x <- Dist.uniform [10, 20]
+  y <- Dist.uniform [x + 100, x + 200]
+  CD.return (x, y)
+
+-- Internal representation with free variables by statement
+ppsfa
+  [(x_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform}),
+   (x_a1Y5 <- Dist.uniform [10, 20], {Dist.uniform}),
+   (y_a1Y6 <- Dist.uniform [x_a1Y5 + 100, x_a1Y5 + 200], {x_a1Y5, +, Dist.uniform}),
+   (CD.return (x_a1Y5, y_a1Y6), {x_a1Y5, y_a1Y6, CD.return})]
+
+-- Precedence graph adjacency list
+1 -> {}
+2 -> {3}
+3 -> {}
+
+-- Precedence graph RAW dependencies grouped by binder
+x@2: 2 -> {3}

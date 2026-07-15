@@ -4,7 +4,7 @@ CD.do
   x2 <- Just (x1 + 1)
   x3 <- Just (x2 + 1)
   x4 <- Just (x3 + 1)
-  CD.return x4
+  CD.return (x1, x2, x3, x4)
 
 -- Renamer trace
 rearrangeForADo candidate selection tree (fado-reorder-candidate-n) =

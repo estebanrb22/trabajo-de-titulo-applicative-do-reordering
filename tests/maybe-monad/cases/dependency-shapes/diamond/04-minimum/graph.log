@@ -1,0 +1,26 @@
+-- Original program
+CD.do
+  root <- Just 1
+  a1 <- Just (root + 10)
+  b1 <- Just (root + 20)
+  join <- Just (a1 + b1)
+  CD.return (root, a1, b1, join)
+
+-- Internal representation with free variables by statement
+ppsfa
+  [(root_a1T2 <- Just 1, {Just}),
+   (a1_a1T3 <- Just (root_a1T2 + 10), {Just, root_a1T2, +}),
+   (b1_a1T4 <- Just (root_a1T2 + 20), {Just, root_a1T2, +}),
+   (join_a1T5 <- Just (a1_a1T3 + b1_a1T4), {Just, a1_a1T3, b1_a1T4, +}),
+   (CD.return (root_a1T2, a1_a1T3, b1_a1T4, join_a1T5), {root_a1T2, a1_a1T3, b1_a1T4, join_a1T5, CD.return})]
+
+-- Precedence graph adjacency list
+1 -> {2, 3}
+2 -> {4}
+3 -> {4}
+4 -> {}
+
+-- Precedence graph RAW dependencies grouped by binder
+root: 1 -> {2, 3}
+a1: 2 -> {4}
+b1: 3 -> {4}

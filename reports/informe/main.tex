@@ -1,0 +1,55 @@
+% se puede agregar la opción [english] para 
+%  memorias o tesis en inglés (borrando el archivo .aux)
+\documentclass{umemoria} 
+
+\input{secciones/portada.tex}
+
+\usepackage{lipsum}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+
+\begin{resumen}
+\lipsum[1-4]
+\end{resumen}
+
+% opcional: incluir para tesis en inglés;
+%  en este caso hay que tener el resumen y abstract
+%   en ambos idiomas
+%\begin{abstract}
+%\lipsum[1-4]
+%\end{abstract}
+
+\begin{dedicatoria}
+Una dedicatoria corta.
+\end{dedicatoria}
+
+\begin{thanks}
+\lipsum[1-2]
+\end{thanks}
+
+\tableofcontents
+\listoftables % opcional
+\listoffigures % opcional
+
+\mainmatter
+
+\input{secciones/intro.tex}
+\input{secciones/cap2.tex}
+\input{secciones/cap3.tex}
+\input{secciones/conclu.tex}
+
+% ver https://www.overleaf.com/learn/latex/Glossaries
+% \input{glosario.tex} % opcional
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{bibliografia}
+
+% opcional ...
+\begin{appendices}
+\input{secciones/anexoA.tex}
+\end{appendices}
+\end{document}

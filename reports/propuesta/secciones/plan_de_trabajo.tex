@@ -1,0 +1,31 @@
+\section{Plan de trabajo}\label{sec:plan_de_trabajo}
+
+La lista de pasos a seguir para desarrollar la solución propuesta, son los siguientes:
+
+\begin{enumerate}
+    \item \textbf{Caracterización en GHC}. Identificación de los módulos, estructuras de datos y puntos de extensión relevantes del algoritmo actualmente implementado.
+    
+    \item \textbf{Diseño del algoritmo de permutaciones válidas}. Definición de los criterios que debe satisfacer una permutación de 	\textit{statements} dentro de una mónada conmutativa.
+    
+    \item \textbf{Implementación del generador de permutaciones}. Desarrollo del componente encargado de producir las permutaciones válidas que serán evaluadas posteriormente.
+
+    \item \textbf{Extensión experimental de ApplicativeDo en GHC}. Modificación de la implementación actual del compilador en los puntos de extensión identificados, de modo que el pipeline pueda recibir y procesar órdenes alternativos de \textit{statements} dentro de la transformación monádica.
+
+    \item \textbf{Integración y selección de planes de ejecución}. Conexión entre la generación de permutaciones válidas, su ingreso al algoritmo de Marlow et al. y la comparación de los planes resultantes para seleccionar el de menor costo según el modelo adoptado.
+
+    \item \textbf{Evaluación y validación}. Verificación de preservación semántica y análisis de optimalidad mediante el \textit{testsuite} oficial y casos adicionales.
+\end{enumerate}
+
+\begin{ganttchart}{1}{15}
+    \gantttitle{Semana}{15} \\
+    \gantttitlelist{1,...,15}{1} \\
+    \ganttbar{Tarea 1}{1}{2} \\
+    \ganttbar{Tarea 2}{3}{4} \\
+    \ganttbar{Tarea 3}{4}{6} \\
+    \ganttbar{Tarea 4}{7}{8} \\
+    \ganttbar{Tarea 5}{9}{11} \\
+    \ganttbar{Tarea 6}{12}{13} \\
+    \ganttbar{Escribir la memoria}{3}{15}
+\end{ganttchart}
+
+\newpage

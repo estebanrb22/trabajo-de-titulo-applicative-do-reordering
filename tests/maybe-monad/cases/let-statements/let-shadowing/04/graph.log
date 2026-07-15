@@ -1,0 +1,26 @@
+-- Original program
+CD.do
+  x <- Just 1
+  oldX <- Just x
+  let x = 100
+  y <- Just (x + oldX)
+  CD.return (oldX, x, y)
+
+-- Internal representation with free variables by statement
+ppsfa
+  [(x_a1T2 <- Just 1, {Just}),
+   (oldX_a1T3 <- Just x_a1T2, {Just, x_a1T2}),
+   (let x_a1T4 = 100, {}),
+   (y_a1T5 <- Just (x_a1T4 + oldX_a1T3), {Just, oldX_a1T3, x_a1T4, +}),
+   (CD.return (oldX_a1T3, x_a1T4, y_a1T5), {oldX_a1T3, x_a1T4, y_a1T5, CD.return})]
+
+-- Precedence graph adjacency list
+1 -> {2}
+2 -> {4}
+3 -> {4}
+4 -> {}
+
+-- Precedence graph RAW dependencies grouped by binder
+x@1: 1 -> {2}
+oldX: 2 -> {4}
+x@3: 3 -> {4}

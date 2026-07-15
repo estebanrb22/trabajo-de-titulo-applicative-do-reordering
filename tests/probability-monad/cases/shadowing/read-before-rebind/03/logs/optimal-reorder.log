@@ -1,0 +1,25 @@
+-- Reordered do-notation
+CD.do
+  x <- Dist.uniform [1, 2]
+  y <- Dist.uniform [x + 10, x + 20]
+  x <- Dist.uniform [100, 200]
+  CD.return (y, x)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  candidate   =  0
+  index-order =  [1, 2, 3]
+  statements  =  [x_a1Y4 <- Dist.uniform [1, 2],
+                  y_a1Y5 <- Dist.uniform [x_a1Y4 + 10, x_a1Y4 + 20],
+                  x_a1Y6 <- Dist.uniform [100, 200]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeBind
+          (StmtTreeOne (x_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform}))
+          (StmtTreeOne (y_a1Y5 <- Dist.uniform [x_a1Y4 + 10, x_a1Y4 + 20],
+                        {x_a1Y4, +, Dist.uniform})))
+       (StmtTreeOne (x_a1Y6 <- Dist.uniform [100, 200], {Dist.uniform})))
+  tree-cost = 2
+
+-- Execution plan
+(x ; y) | x

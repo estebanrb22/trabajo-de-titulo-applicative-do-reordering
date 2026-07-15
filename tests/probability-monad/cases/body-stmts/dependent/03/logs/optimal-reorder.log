@@ -1,0 +1,24 @@
+-- Reordered do-notation
+CD.do
+  x1 <- Dist.uniform [1, 2]
+  Dist.certainly (x1 + 10)
+  x2 <- Dist.uniform [100, 200]
+  CD.return (x1, x2)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  candidate   =  0
+  index-order =  [1, 2, 3]
+  statements  =  [x1_a1Y4 <- Dist.uniform [1, 2],
+                  Dist.certainly (x1_a1Y4 + 10), x2_a1Y5 <- Dist.uniform [100, 200]]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative
+       (StmtTreeBind
+          (StmtTreeOne (x1_a1Y4 <- Dist.uniform [1, 2], {Dist.uniform}))
+          (StmtTreeOne (Dist.certainly (x1_a1Y4 + 10),
+                        {x1_a1Y4, +, Dist.certainly})))
+       (StmtTreeOne (x2_a1Y5 <- Dist.uniform [100, 200], {Dist.uniform})))
+  tree-cost = 2
+
+-- Execution plan
+(x1 ; stmt2) | x2

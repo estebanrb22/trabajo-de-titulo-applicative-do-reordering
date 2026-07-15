@@ -1,0 +1,30 @@
+-- do-notation
+do
+  x1 <- Dist.uniform [1, 2]
+  x2 <- Dist.uniform [x1 + 10, x1 + 20]
+  x3 <- Dist.uniform [x2 + 100, x2 + 200]
+  (x4, _) <- Dist.uniform [(40, 0), (50, 0)]
+  x5 <- Dist.uniform [x3 + 1000, x3 + 2000]
+  return (x1, x2, x3, x4, x5)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  (StmtTreeBind
+     (StmtTreeOne (x1_a1X5 <- Dist.uniform [1, 2], {Dist.uniform}))
+     (StmtTreeBind
+        (StmtTreeOne (x2_a1X6 <- Dist.uniform [x1_a1X5 + 10, x1_a1X5 + 20],
+                      {x1_a1X5, +, Dist.uniform}))
+        (StmtTreeBind
+           (StmtTreeOne (x3_a1X7 <- Dist.uniform
+                                      [x2_a1X6 + 100, x2_a1X6 + 200],
+                         {x2_a1X6, +, Dist.uniform}))
+           (StmtTreeBind
+              (StmtTreeOne ((x4_a1X8, _) <- Dist.uniform [(40, 0), (50, 0)],
+                            {Dist.uniform}))
+              (StmtTreeOne (x5_a1X9 <- Dist.uniform
+                                         [x3_a1X7 + 1000, x3_a1X7 + 2000],
+                            {x3_a1X7, +, Dist.uniform}))))))
+  tree-cost = 5
+
+-- Execution plan
+x1 ; (x2 ; (x3 ; ((x4, _) ; x5)))

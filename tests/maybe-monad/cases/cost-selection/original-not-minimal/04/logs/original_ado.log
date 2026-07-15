@@ -1,0 +1,22 @@
+-- do-notation
+do
+  x1 <- Just 1
+  x2 <- Just (x1 + 10)
+  x3 <- Just 100
+  x4 <- Just (x1 + x3)
+  return (x1, x2, x3, x4)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  (StmtTreeBind
+     (StmtTreeOne (x1_a1S3 <- Just 1, {Just}))
+     (StmtTreeApplicative
+        (StmtTreeOne (x2_a1S4 <- Just (x1_a1S3 + 10), {Just, x1_a1S3, +}))
+        (StmtTreeBind
+           (StmtTreeOne (x3_a1S5 <- Just 100, {Just}))
+           (StmtTreeOne (x4_a1S6 <- Just (x1_a1S3 + x3_a1S5),
+                         {Just, x1_a1S3, x3_a1S5, +})))))
+  tree-cost = 3
+
+-- Execution plan
+x1 ; (x2 | (x3 ; x4))

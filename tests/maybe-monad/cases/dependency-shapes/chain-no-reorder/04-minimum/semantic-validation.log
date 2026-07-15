@@ -10,16 +10,16 @@ generated permutations = 1
 [COMPILE] permutation_0 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/chain-no-reorder/04-minimum/bin/permutation_0
 
 [RUN] original -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/chain-no-reorder/04-minimum/results/original.run.log
-[OUTPUT] Just 4
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] original = 0
 [RUN] original_ado -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/chain-no-reorder/04-minimum/results/original_ado.run.log
-[OUTPUT] Just 4
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] original_ado = 0
 [RUN] optimal-reorder -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/chain-no-reorder/04-minimum/results/optimal-reorder.run.log
-[OUTPUT] Just 4
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] optimal-reorder = 0
 [RUN] permutation_0 -> /workspaces/tt-repo/tests/maybe-monad/cases/dependency-shapes/chain-no-reorder/04-minimum/results/permutation_0.run.log
-[OUTPUT] Just 4
+[OUTPUT] Just (1,2,3,4)
 [EXIT CODE] permutation_0 = 0
 
 == Semantic comparison ==

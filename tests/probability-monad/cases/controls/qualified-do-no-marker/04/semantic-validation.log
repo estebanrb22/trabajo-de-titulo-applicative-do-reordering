@@ -1,0 +1,12 @@
+== Semantic validation reorder (Cabal) ==
+project-dir = /workspaces/tt-repo/experiments/probability-monad/cases/controls/qualified-do-no-marker/04
+input-file = /workspaces/tt-repo/experiments/probability-monad/cases/controls/qualified-do-no-marker/04/main.hs
+cabal-file = /workspaces/tt-repo/experiments/probability-monad/cases/controls/qualified-do-no-marker/04/probability-monad-cases-controls-qualified-do-no-marker-n04.cabal
+target = exe:probability-monad-cases-controls-qualified-do-no-marker-n04
+output-dir = /workspaces/tt-repo/tests/probability-monad/cases/controls/qualified-do-no-marker/04
+cabal-build-root = /workspaces/tt-repo/tests/probability-monad/cases/controls/qualified-do-no-marker/04/cabal-build
+
+[COMPILE] no-reorder -> /workspaces/tt-repo/tests/probability-monad/cases/controls/qualified-do-no-marker/04/bin/optimal-reorder
+generated reorder permutations = 0
+
+RESULT: OK

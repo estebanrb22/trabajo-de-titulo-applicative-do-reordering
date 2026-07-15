@@ -1,0 +1,12 @@
+== Semantic validation reorder (GHC) ==
+input-file = /workspaces/tt-repo/experiments/maybe-monad/cases/controls/qualified-do-marker/04/main.hs
+output-dir = /workspaces/tt-repo/tests/maybe-monad/cases/controls/qualified-do-marker/04
+
+[COMPILE] optimal-reorder -> /workspaces/tt-repo/tests/maybe-monad/cases/controls/qualified-do-marker/04/bin/optimal-reorder
+generated permutations = 6
+
+[RUN] optimal-reorder -> /workspaces/tt-repo/tests/maybe-monad/cases/controls/qualified-do-marker/04/results/optimal-reorder.run.log
+[OUTPUT] Just (1,2,10,11)
+[EXIT CODE] optimal-reorder = 0
+
+RESULT: OK

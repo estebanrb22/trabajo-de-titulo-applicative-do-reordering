@@ -1,8 +1,8 @@
 ppsfa
   [(x1_a1T2 <- Just 1, {Just}), (x2_a1T3 <- Just 2, {Just}),
    (x3_a1T4 <- Just 3, {Just}), (x4_a1T5 <- Just 4, {Just}),
-   (CD.return (x1_a1T2 + x2_a1T3 + x3_a1T4 + x4_a1T5),
-    {x1_a1T2, x2_a1T3, x3_a1T4, x4_a1T5, +, CD.return})]
+   (CD.return (x1_a1T2, x2_a1T3, x3_a1T4, x4_a1T5),
+    {x1_a1T2, x2_a1T3, x3_a1T4, x4_a1T5, CD.return})]
 addUsedGRE CD.__commutative_do__
 rearrangeForADo-commutative-do commutative-do = True
 rearrangeForADo-StmtsDependencyGraph

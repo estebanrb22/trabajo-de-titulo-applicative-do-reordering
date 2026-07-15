@@ -1,0 +1,12 @@
+== Semantic validation reorder (GHC) ==
+input-file = /workspaces/tt-repo/experiments/maybe-monad/cases/controls/plain-do-no-marker/04/main.hs
+output-dir = /workspaces/tt-repo/tests/maybe-monad/cases/controls/plain-do-no-marker/04
+
+[COMPILE] original_ado -> /workspaces/tt-repo/tests/maybe-monad/cases/controls/plain-do-no-marker/04/bin/original_ado
+generated reorder permutations = 0
+
+[RUN] original_ado -> /workspaces/tt-repo/tests/maybe-monad/cases/controls/plain-do-no-marker/04/results/original_ado.run.log
+[OUTPUT] Just (1,2,10,11)
+[EXIT CODE] original_ado = 0
+
+RESULT: OK

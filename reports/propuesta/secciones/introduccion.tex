@@ -1,0 +1,49 @@
+% !TEX root = ../propuesta.tex
+
+\section{Introducción}\label{sec:intro} 
+
+Los programas probabilísticos constituyen una herramienta de suma relevancia en la actualidad, debido a que estos permiten razonar sobre distribuciones de probabilidad de manera directa; aquello entrega la posibilidad de modelar fenómenos inciertos y predecir eventos en el mundo real.
+
+En particular, estos programas han demostrado ser fundamentales para diversas áreas de la computación, así como en ciberseguridad, mediante sus algoritmos de generación de números aleatorios, al igual que la criptografía,  mediante sus protocolos de seguridad. Asimismo, en campos más recientes,  este paradigma resulta clave para el entrenamiento de distintos modelos de Machine Learning y el desarrollo de sistemas de Inteligencia Artificial.
+
+Cabe destacar que, en la mayoría de los lenguajes de programación tradicionales, la ejecución de un programa probabilístico tiende a reducirse a la obtención de una sola muestra. Un ejemplo de esto sería que, si se declara la abstracción de un lanzamiento de moneda, el cómputo retornaría únicamente un resultado, el cual sería “cara” o “sello”; por tanto, esta restricción limita la expresividad y la versatilidad del programa. En cambio, un lenguaje puro y funcional como lo es \textsf{Haskell}, implementa programas probabilísticos mediante el uso de mónadas de probabilidad, las cuales nos permiten generar y computar todos los posibles resultados de una distribución de probabilidad implícitamente definida por un programa, considerando de forma simultánea cada evento de esta misma; este proceso es conocido como \textit{inferencia}.
+
+Gracias a la forma en la cual se implementan las mónadas de probabilidad en \textsf{Haskell}, es posible realizar consultas y operaciones de manera directa sobre la distribución de salida de un programa. Por ejemplo, si se desea inferir la distribución asociada al lanzamiento de una moneda seguido del lanzamiento de un dado, la \textit{do-notation} de las mónadas de \textsf{Haskell} permite usar la siguiente sintaxis:
+
+\begin{verbatim}
+    flipCoinRollDice = do 
+        c <- uniform [Head, Tail]
+        d <- uniform [1 .. 6]
+        return (c, d)
+\end{verbatim}
+
+En el código anterior, se logra apreciar que la variable \verb|c| codifica cada evento de la primera distribución de probabilidad (moneda) y, por otro lado, la variable \verb|d| hace lo propio, de manera análoga, con la segunda (dado); al formar la tupla con ambos eventos, se obtiene la distribución correspondiente a la ejecución conjunta de los dos experimentos. Siendo más precisos, esta nueva distribución estaría compuesta por doce tuplas de eventos.
+
+Es pertinente recaltar que, en el programa anterior, las dos variables que representan cada distribución son independientes entre sí; en otras palabras, se podría conmutar el orden de sus declaraciones y el resultado sería el mismo. Esto propone la posibilidad de aprovechar los recursos disponibles y ejecutar en paralelo el cálculo de cada distribución por separado. Si bien, en el ejemplo mostrado, la paralelización puede parecer innecesaria, en escenarios reales con millones de posibles eventos por distribución resulta fundamental, ya que se deben generar todas las posibles opciones. Por consiguiente, el proceso de inferir nuevos resultados dadas unas distribuciones iniciales (moneda y dado en el ejemplo) tiene un costo computacional elevado.
+
+Al igual, es importante señalar que los programas probabilísticos en \textsf{Haskell} generalmente presentan una complejidad superior al ejemplo básico anteriormente mencionado. Es común que existan dependencias entre las declaraciones de cada distribución, lo cual se muestra en el siguiente ejemplo:
+
+\begin{verbatim}
+    do
+        d1 <- uniform [1 .. 6]
+        d2 <- uniform [1 .. 6]
+        d3 <- uniform [1 .. d1]
+        d4 <- uniform [1 .. d2]
+        return (d3, d4) fhdjskhfjdsk
+\end{verbatim}
+
+Esto modela la inferencia del lanzamiento de dos dados de forma simultánea \verb|d3| y \verb|d4|, con la particularidad de que la cantidad de caras de cada dado está determinada por el resultado obtenido en los primeros lanzamientos de \verb|d1| y \verb|d2|. Con esto, en la instrucción \verb|return| se generará una nueva distribución con todas las tuplas posibles al lanzar los dados \verb|d3| y \verb|d4| después del proceso de selección de caras definido por \verb|d1| y \verb|d2|. Por lo que las probabilidades resultantes difieren de las habituales.
+
+En este caso, para obtener la tupla \verb|(6,6)| en la distribución de salida, es necesario que en ambos lanzamientos de \verb|d1| y \verb|d2| se obtenga el número 6. Luego, se determina que los dados \verb|d3| y \verb|d4| tendrán 6 caras cada uno y, finalmente, deberán arrojar el número 6 cada uno por separado. En consecuencia, la tupla \verb|(6,6)| tiene una probabilidad asociada de \verb|1/1296|.
+
+El problema yace en que, el uso de la \textit{do-notation} para representar programas probabilísticos no permite la paralelización de los mismos. Esto se debe a que codifica cómputos inherentemente secuenciales; en el primer ejemplo mostrado, la variable \texttt{c} del primer muestreo queda en el contexto del resto del cuerpo del \textit{do-return}; es decir, puede ser usada para la propia declaración de la variable \texttt{d}. Esto mismo sucede en el segundo ejemplo; el resultado del lanzamiento de los primeros dados se consume en la declaración de los dados \verb|d3| y \verb|d4|. 
+
+Una alternativa para resolver esto sería escribir el programa con otra sintaxis, pero manteniendo la misma semántica, de modo que la ejecución pueda ser paralelizada. Sin embargo, esto conllevaría la pérdida de la \textit{do-notation}, la cual se usa de forma universal en \textsf{Haskell}; lo ideal sería que esta pudiera seguir utilizándose.
+
+Finalmente, el hecho de poder paralelizar el cómputo de las mónadas de probabilidad, lograría una optimización del tiempo que impactaría directamente en todas las áreas que hacen uso de estas estructuras; por lo cual, resultaría especialmente valioso encontrar un método que permita paralelizar las mónadas de probabilidad sin sacrificar su notación versátil y universal. En el ejemplo, debería identificarse, por un lado, el subcómputo asociado a \verb|d1| y \verb|d3|. Mientras que, por otro lado, el subcómputo asociado a \verb|d2| y \verb|d4|.
+
+\newpage
+
+El conflicto abordado en esta memoria se sitúa en la etapa inicial de la paralelización de programas probabilísticos en \textsf{Haskell}. Más específicamente, se centra en extender el algoritmo actualmente utilizado por \textsf{GHC}\footnote{\textit{Glasgow Haskell Compiler} es el compilador estándar, de código abierto y más utilizado para el lenguaje de programación funcional \textsf{Haskell}} para la transformación de expresiones monádicas en expresiones paralelizables en el proceso de compilación. De modo que este pueda considerar reordenamientos semánticamente válidos de \textit{statements} dentro de la \textit{do-notation} cuando se trabaja con mónadas conmutativas o su ejemplo canónico, monadas de probabilidad. 
+
+El objetivo de la memoria es mejorar el plan de ejecución generado por el compilador de \textsf{Haskell}, ampliando el espacio de configuraciones que el algoritmo puede evaluar sin alterar la semántica del programa. En particular, este trabajo basará su solución en los procedimientos y algoritmos propuestos por Marlow et al. \cite{MarlowPJKM2016} que ya se encuentran implementados en \textsf{GHC}.

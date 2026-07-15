@@ -1,0 +1,16 @@
+== Semantic validation reorder (Cabal) ==
+project-dir = /workspaces/tt-repo/experiments/probability-monad/cases/controls/qualified-do-marker/04
+input-file = /workspaces/tt-repo/experiments/probability-monad/cases/controls/qualified-do-marker/04/main.hs
+cabal-file = /workspaces/tt-repo/experiments/probability-monad/cases/controls/qualified-do-marker/04/probability-monad-cases-controls-qualified-do-marker-n04.cabal
+target = exe:probability-monad-cases-controls-qualified-do-marker-n04
+output-dir = /workspaces/tt-repo/tests/probability-monad/cases/controls/qualified-do-marker/04
+cabal-build-root = /workspaces/tt-repo/tests/probability-monad/cases/controls/qualified-do-marker/04/cabal-build
+
+[COMPILE] optimal-reorder -> /workspaces/tt-repo/tests/probability-monad/cases/controls/qualified-do-marker/04/bin/optimal-reorder
+generated permutations = 6
+
+[RUN] optimal-reorder -> /workspaces/tt-repo/tests/probability-monad/cases/controls/qualified-do-marker/04/results/optimal-reorder.run.log
+[OUTPUT] fromFreqs [((1,101,10,1010),1 % 16),((1,101,10,2010),1 % 16),((1,101,20,1020),1 % 16),((1,101,20,2020),1 % 16),((1,201,10,1010),1 % 16),((1,201,10,2010),1 % 16),((1,201,20,1020),1 % 16),((1,201,20,2020),1 % 16),((2,102,10,1010),1 % 16),((2,102,10,2010),1 % 16),((2,102,20,1020),1 % 16),((2,102,20,2020),1 % 16),((2,202,10,1010),1 % 16),((2,202,10,2010),1 % 16),((2,202,20,1020),1 % 16),((2,202,20,2020),1 % 16)]
+[EXIT CODE] optimal-reorder = 0
+
+RESULT: OK
