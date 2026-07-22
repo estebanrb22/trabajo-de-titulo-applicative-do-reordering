@@ -1,0 +1,31 @@
+% !TEX root = ../../main.tex
+
+\section{ApplicativeDo}
+
+\texttt{ApplicativeDo} es una extensión de \textsf{GHC} basada en el trabajo de Marlow, Peyton Jones, Kmett y Mokhov \cite{MarlowPJKM2016}. Su objetivo es permitir que programas escritos con \textit{do-notation} usen combinadores aplicativos cuando las dependencias lo permiten. De esta forma, el programador conserva la sintaxis monádica habitual, mientras el compilador puede generar una estructura de ejecución más estática.
+
+El proceso conceptual descrito por Marlow et al. tiene dos etapas. Primero, la etapa de \textit{rearrangement} analiza la lista de statements de un bloque \texttt{do} y construye un plan que combina secuencias monádicas con grupos applicative. Luego, la etapa de \textit{desugaring} traduce ese plan a expresiones con operaciones como \texttt{fmap}, \texttt{pure}, \verb|(<*>)|, \texttt{join} y \verb|(>>=)|.
+
+La Figura~\ref{fig:rearrangement-marlow} resume la etapa de \textit{rearrangement}. Esta etapa busca cortes válidos en la secuencia de statements, de modo que partes independientes puedan agruparse applicativamente. La validez de un corte depende de que las variables definidas en una parte no sean requeridas por la otra de forma incompatible con el alcance del programa.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\textwidth]{imagenes/rearrangement.png}
+  \caption{Etapa de \textit{rearrangement} propuesta por Marlow et al.}
+  \label{fig:rearrangement-marlow}
+\end{figure}
+
+La Figura~\ref{fig:desugaring-marlow} muestra la segunda etapa. Una vez construido el plan, el compilador reemplaza la notación de alto nivel por combinadores explícitos. Así, un bloque que originalmente parece puramente monádico puede terminar expresado parcialmente en términos aplicativos.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\textwidth]{imagenes/desugar.png}
+  \caption{Etapa de \textit{desugaring} propuesta por Marlow et al.}
+  \label{fig:desugaring-marlow}
+\end{figure}
+
+El modelo de costos asociado distingue entre secuencias y grupos applicative. Un statement elemental tiene costo unitario; una secuencia suma los costos de sus componentes; y un grupo applicative toma el máximo costo entre sus ramas. Por lo tanto, exponer independencia puede reducir el costo abstracto del plan, incluso si el programa fuente se mantiene escrito con \texttt{do}.
+
+La limitación relevante para esta memoria es que \texttt{ApplicativeDo} preserva el orden relativo original de los statements. Esto es necesario para mónadas arbitrarias, pero impide considerar planes que requieren mover statements independientes antes de aplicar el algoritmo. El aporte de esta memoria se ubica exactamente en esa brecha: no reemplaza \texttt{ApplicativeDo}, sino que le entrega órdenes alternativos cuando el bloque fue marcado como conmutativo.
+
+Con esto queda establecida la brecha que desarrolla el siguiente capítulo: \texttt{ApplicativeDo} mejora planes al introducir estructura applicative, pero no explora permutaciones del orden escrito por el programador.

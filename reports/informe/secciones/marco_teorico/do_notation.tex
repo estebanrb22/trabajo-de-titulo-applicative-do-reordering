@@ -1,0 +1,25 @@
+% !TEX root = ../../main.tex
+
+\section{Do-Notation}
+
+La \textit{do-notation} es una sintaxis de \textsf{Haskell} para escribir cómputos monádicos de forma secuencial. Un bloque \texttt{do} contiene statements que pueden vincular resultados intermedios y usarlos en los statements posteriores. Por ejemplo:
+
+\begin{verbatim}
+example :: Maybe Int
+example = do
+  x <- Just 1
+  y <- Just (x + 1)
+  return (x + y)
+\end{verbatim}
+
+Intuitivamente, este bloque se traduce a una composición con \verb|(>>=)|, donde el cuerpo posterior queda dentro de una función que recibe el valor producido por el statement anterior:
+
+\begin{verbatim}
+Just 1 >>= \x ->
+Just (x + 1) >>= \y ->
+return (x + y)
+\end{verbatim}
+
+La consecuencia es que el orden de los statements no es solo una decisión estética. En el ejemplo, \texttt{y} depende de \texttt{x}, porque la expresión \texttt{Just (x + 1)} usa una variable definida antes. Si se intentara mover el segundo statement antes del primero, el programa dejaría de estar bien formado: \texttt{x} todavía no estaría en alcance.
+
+Esta observación introduce la noción de dependencia \textit{def-use}: un statement que usa una variable local debe mantenerse después del statement que la define. La extensión propuesta en esta memoria conserva esta restricción. Su aporte consiste en explorar cambios de orden solamente cuando no violan esas dependencias locales y cuando el bloque fue marcado bajo una hipótesis de conmutatividad.

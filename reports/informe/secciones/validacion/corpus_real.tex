@@ -1,0 +1,19 @@
+% !TEX root = ../../main.tex
+
+\section{Corpus Real}
+
+La validación con corpus real forma parte del plan de evaluación de la memoria. No se presenta como trabajo futuro, sino como una sección de resultados que debe completarse cuando se seleccionen, adapten y ejecuten programas probabilísticos externos o menos sintéticos.
+
+Los criterios de selección son los siguientes:
+
+\begin{itemize}
+    \item programas escritos en \textsf{Haskell} con bloques \texttt{do} probabilísticos;
+    \item presencia de dependencias no triviales entre statements;
+    \item existencia de subcómputos potencialmente independientes;
+    \item salida determinista y comparable por el pipeline;
+    \item tamaño de soporte suficientemente pequeño para ejecutar la validación completa.
+\end{itemize}
+
+El protocolo de adaptación debe documentar cada cambio realizado: reemplazo de \texttt{do} por \texttt{CD.do}, incorporación de la instancia conmutativa si corresponde, normalización de la salida y simplificaciones necesarias para ejecutar el caso en el entorno reproducible. Para cada programa real se deben reportar las mismas métricas que en los corpus sintéticos: costos, cantidad de permutaciones, candidato seleccionado y resultado semántico.
+
+Esta sección permitirá evaluar aplicabilidad externa. Los corpus sintéticos muestran que la extensión funciona sobre fenómenos controlados; el corpus real debe mostrar si esos fenómenos aparecen en programas representativos y si el costo del espacio de permutaciones sigue siendo manejable.

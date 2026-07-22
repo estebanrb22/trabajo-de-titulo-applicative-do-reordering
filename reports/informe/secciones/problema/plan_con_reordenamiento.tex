@@ -1,0 +1,23 @@
+% !TEX root = ../../main.tex
+
+\section{Plan con Reordenamiento}
+
+Si se permite reordenar statements bajo la hipótesis de conmutatividad, las dependencias del ejemplo admiten la permutación \verb|[1,3,2,4]|. En términos de statements, esta permutación corresponde a:
+
+\begin{verbatim}
+s1 ; s3 ; s2 ; s4
+\end{verbatim}
+
+El reordenamiento es válido porque conserva las dependencias necesarias: \texttt{s1} sigue antes de \texttt{s2}, \texttt{s1} sigue antes de \texttt{s4} y \texttt{s3} sigue antes de \texttt{s4}. Al entregar este nuevo orden al algoritmo de \texttt{ApplicativeDo}, el plan resultante es:
+
+\begin{verbatim}
+(s1 | s3) ; (s2 | s4)
+\end{verbatim}
+
+Su costo es:
+
+\[
+\max(1, 1) + \max(1, 1) = 2
+\]
+
+Este plan expresa la mejora central de la memoria. Primero se ejecutan en paralelo \texttt{s1} y \texttt{s3}; luego, una vez disponibles \texttt{x1} y \texttt{x3}, se ejecutan en paralelo \texttt{s2} y \texttt{s4}. El algoritmo de \texttt{ApplicativeDo} no fue reemplazado: la extensión amplía su entrada con órdenes semánticamente admisibles y selecciona el candidato de menor costo.

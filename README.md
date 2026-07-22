@@ -7,11 +7,11 @@ Los parches de este repositorio son los artefactos principales de aporte para la
 
 ## Objetivo de la memoria
 
-Esta memoria estudia una extensión experimental de `ApplicativeDo` en GHC para explorar reordenamientos semanticamente válidos de statements en una `do-notation` cuando la mónada usada es conmutativa (permite el reordenamiento de statements manteniendo la semántica del programa).
+Esta memoria estudia una extensión experimental de `ApplicativeDo` en GHC para explorar reordenamientos semánticamente válidos de statements en una `do-notation` cuando la mónada usada es conmutativa (permite el reordenamiento de statements manteniendo la semántica del programa).
 
-La extensión modifica el Renamer de GHC para que, al detectar bloques marcados con `QualifiedDo` mediante `CD.do` y `CD.return`, construya un grafo de precedencia entre statements usando dependencias RAW (Read after Write). A partir de ese grafo se enumeran permutaciones topológicas válidas, se construye un plan de ejecución ingresando cada permutación candidata al algoritmo presente en `ApplicativeDo` y se selecciona la mejor segun su costo (sistema de costo simple).
+La extensión modifica el Renamer de GHC para que, al detectar bloques marcados con `QualifiedDo` mediante `CD.do` y `CD.return`, construya un grafo de precedencia entre statements usando dependencias RAW (Read after Write). A partir de ese grafo se enumeran permutaciones topológicas válidas, se construye un plan de ejecución ingresando cada permutación candidata al algoritmo presente en `ApplicativeDo` y se selecciona la mejor según su costo (sistema de costo simple).
 
-La activacion experimental se realiza usando el modulo `Control.Monad.CommutativeDo` que fue agregado al compilador GHC por esta memoria, normalmente es importado como `CD`. Un bloque `CD.do` y terminando en `CD.return` indica que el programador declara que la mónada puede tratarse como conmutativa para efectos de reordenamiento.
+La activación experimental se realiza usando el módulo `Control.Monad.CommutativeDo` que fue agregado al compilador GHC por esta memoria, normalmente es importado como `CD`. Un bloque `CD.do` y terminando en `CD.return` indica que el programador declara que la mónada puede tratarse como conmutativa para efectos de reordenamiento.
 
 ## Uso del Dev Container
 
@@ -30,16 +30,23 @@ Este repositorio incluye una configuración de desarrollo en `.devcontainer/` pa
 
 ## Experimentos y resultados
 
-Los programas experimentales viven bajo `experiments/`. En particular, el corpus sintético de `Maybe` se organiza por familia, caso y variante:
+Los programas experimentales viven bajo `experiments/`. Los casos sintéticos de `Maybe` y de la mónada de probabilidades (`Dist.T Rational` del paquete `probability`) se encuentran implementados y testeados.
+
+Cada mónada mantiene un archivo descriptivo con los casos evaluados:
+
+- `experiments/maybe-monad/cases.md`: corpus sintético para `Maybe`.
+- `experiments/probability-monad/cases.md`: corpus sintético para la mónada de probabilidades.
+
+Ambos corpus se organizan por familia, caso y variante. Actualmente, `<monad>` corresponde a `maybe-monad` o `probability-monad`:
 
 ```text
-experiments/maybe-monad/cases/<familia>/<caso>/<variante>/
+experiments/<monad>/cases/<familia>/<caso>/<variante>/
 ```
 
 Los resultados generados por el pipeline de validación se guardan espejando esa ruta bajo `tests/`:
 
 ```text
-tests/maybe-monad/cases/<familia>/<caso>/<variante>/
+tests/<monad>/cases/<familia>/<caso>/<variante>/
 ```
 
 ### Estructura de resultados en tests/
@@ -79,7 +86,7 @@ Si no se cumplen las condiciones para ejecutar el reordenamiento conmutativo, po
 <reordering not executed: commutative-do conditions were not met>
 ```
 
-En `logs/optimal-reorder.log`, la seccion `-- Execution plan` resume el plan elegido: `|` indica composicion applicativa y `;` indica dependencia secuencial.
+En `logs/optimal-reorder.log`, la sección `-- Execution plan` resume el plan elegido: `|` indica composición applicativa y `;` indica dependencia secuencial.
 
 ## Flujo recomendado con Makefile
 
@@ -104,14 +111,14 @@ make reproduce
 ### Comandos generales
 
 - `make help`: muestra ayuda y comandos disponibles.
-- `make verify-toolchain`: verifica que la toolchain del contenedor este disponible.
+- `make verify-toolchain`: verifica que la toolchain del contenedor esté disponible.
 - `make reproduce`: ejecuta el flujo reproducible completo (`verify-toolchain`, `setup-ghc-build`, `patches`, `build`, `test`).
 
-### Preparacion de submodulo GHC
+### Preparación de submódulo GHC
 
 - `make add-submodule`: agrega o reutiliza `vendor/ghc` y lo fija al commit objetivo.
-- `make init-submodule-recursive`: inicializa submodulos anidados de GHC (necesario para `./boot`).
-- `make verify-submodule`: verifica que `vendor/ghc` este en el commit esperado.
+- `make init-submodule-recursive`: inicializa submódulos anidados de GHC (necesario para `./boot`).
+- `make verify-submodule`: verifica que `vendor/ghc` esté en el commit esperado.
 - `make setup-ghc-build`: corre `add-submodule`, `init-submodule-recursive` y `verify-submodule`.
 
 ### Parches, build y pruebas
@@ -123,7 +130,7 @@ make reproduce
 
 ### Utilidades de experimentos
 
-- `make restart-ghc`: reinicia el submodulo `vendor/ghc` al commit objetivo (usa `git reset --hard` y `git clean -ffd` dentro de `vendor/ghc`).
+- `make restart-ghc`: reinicia el submódulo `vendor/ghc` al commit objetivo (usa `git reset --hard` y `git clean -ffd` dentro de `vendor/ghc`).
 - `make cabal-project <project-dir>`: crea un proyecto Cabal Maybe bajo `experiments/` con un ejemplo usando `CD.do`.
 - `make cabal-prob-project <project-dir>`: crea un proyecto Cabal probabilístico bajo `experiments/` con `probability ^>=0.2.9.1` y un ejemplo de dos dados usando `CD.do`.
 

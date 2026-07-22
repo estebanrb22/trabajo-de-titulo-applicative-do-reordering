@@ -1,0 +1,16 @@
+% !TEX root = ../../main.tex
+
+\section{Objetivos}
+
+El objetivo general de esta memoria es extender experimentalmente la implementación de \texttt{ApplicativeDo} en \textsf{GHC}, de modo que pueda considerar reordenamientos semánticamente válidos de statements dentro de bloques \texttt{do} cuando la mónada usada es declarada como conmutativa. El propósito es ampliar el espacio de planes de ejecución evaluados por el compilador y seleccionar, bajo el modelo de costos adoptado, un plan no peor que el obtenido a partir del orden sintáctico original.
+
+Los objetivos específicos son los siguientes:
+
+\begin{enumerate}
+    \item Caracterizar el funcionamiento y las limitaciones de \texttt{ApplicativeDo} en \textsf{GHC} respecto del procesamiento de bloques \texttt{do} y la generación de planes de ejecución.
+    \item Diseñar un modelo de dependencias locales entre statements que permita identificar reordenamientos semánticamente válidos bajo una hipótesis de conmutatividad.
+    \item Implementar una extensión experimental que detecte bloques conmutativos, genere órdenes alternativos válidos y evalúe cada alternativa mediante el algoritmo existente de \texttt{ApplicativeDo}.
+    \item Integrar la extensión en una versión modificada de \textsf{GHC}, incorporando mecanismos explícitos de activación y control experimental.
+    \item Validar semánticamente la extensión sobre corpus sintéticos, comparando salidas observables y costos asociados a los planes de ejecución generados.
+    \item Construir y validar un corpus real de programas probabilísticos, definiendo criterios de selección, adaptación y comparación para evaluar la extensión fuera de casos sintéticos.
+\end{enumerate}

@@ -1,0 +1,21 @@
+% !TEX root = ../../main.tex
+
+\section{Trabajo Futuro}
+
+Una línea directa de trabajo futuro es refinar el modelo de costos. La implementación actual usa costo uniforme por statement, siguiendo un criterio simple y reproducible. Una extensión posterior podría permitir costos anotados o inferidos, por ejemplo \texttt{low}, \texttt{medium} y \texttt{high}, interpretados como costos 1, 2 y 3. Con ello, dos planes con el mismo número de niveles applicative podrían diferenciarse por el peso relativo de sus statements.
+
+\begin{verbatim}
+defaultExample :: Maybe Int
+defaultExample = CD.do
+  x1 <- Just 5          -- high
+  x2 <- Just 10         -- low
+  x3 <- Just (x1 + 15)  -- medium
+  x4 <- Just (x2 + 20)  -- high
+  CD.return (x3 + x4)
+\end{verbatim}
+
+Otra línea es reducir el espacio de búsqueda. En lugar de enumerar todos los ordenamientos topológicos, el compilador podría usar heurísticas, límites configurables o búsqueda guiada por costo parcial. Esto permitiría aplicar la idea a bloques más grandes sin pagar siempre el costo de una enumeración exhaustiva.
+
+También queda abierta una evaluación de rendimiento real. La memoria compara planes usando un costo abstracto heredado de \texttt{ApplicativeDo}; un trabajo posterior podría medir tiempos de compilación, tiempos de ejecución y efectos sobre backends o librerías que aprovechen paralelismo applicative.
+
+Finalmente, sería valioso integrar casos de esta extensión en una testsuite más cercana a \textsf{GHC}, mejorar las trazas para inspección humana y avanzar hacia una formalización más completa de la preservación semántica bajo la hipótesis de conmutatividad. El corpus real, en cambio, no se lista aquí como trabajo futuro, porque forma parte de la validación definida en el capítulo anterior.

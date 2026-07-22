@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.19)  25 JUN 2026 12:13
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.19)  15 JUL 2026 10:44
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/home/esteb/Documentos/Memoria/tt-repo/reports/propuesta/propuesta.tex
-(/home/esteb/Documentos/Memoria/tt-repo/reports/propuesta/propuesta.tex
+**propuesta.tex
+(./propuesta.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
 (./upropuesta.cls
@@ -654,7 +654,42 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 LaTeX Warning: Unused global option(s):
     [openany].
 
-(./propuesta.aux)
+(build/propuesta.aux
+LaTeX Info: Redefining \. on input line 11.
+LaTeX Info: Redefining \% on input line 11.
+Package babel Info: 'spanish' activates 'spanish' shorthands.
+(babel)             Reported on input line 11.
+
+
+LaTeX Warning: Label `sec:sa' multiply defined.
+
+
+LaTeX Warning: Label `sec:sa' multiply defined.
+
+
+LaTeX Warning: Label `fig:mi-figura' multiply defined.
+
+
+LaTeX Warning: Label `sec:sa' multiply defined.
+
+
+LaTeX Warning: Label `sec:sa' multiply defined.
+
+LaTeX Info: Redefining \. on input line 93.
+LaTeX Info: Redefining \% on input line 93.
+LaTeX Info: Redefining \. on input line 94.
+LaTeX Info: Redefining \% on input line 94.
+LaTeX Info: Redefining \. on input line 96.
+LaTeX Info: Redefining \% on input line 96.
+LaTeX Info: Redefining \. on input line 98.
+LaTeX Info: Redefining \% on input line 98.
+LaTeX Info: Redefining \. on input line 100.
+LaTeX Info: Redefining \% on input line 100.
+LaTeX Info: Redefining \. on input line 101.
+LaTeX Info: Redefining \% on input line 101.
+LaTeX Info: Redefining \. on input line 102.
+LaTeX Info: Redefining \% on input line 102.
+)
 \openout1 = `propuesta.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 49.
@@ -737,9 +772,8 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
 LaTeX Info: Redefining \. on input line 49.
 LaTeX Info: Redefining \% on input line 49.
-Package babel Info: 'spanish' activates 'spanish' shorthands.
-(babel)             Reported on input line 49.
 Package hyperref Info: Link coloring OFF on input line 49.
+ (build/propuesta.out) (build/propuesta.out)
 \@outlinefile=\write5
 \openout5 = `propuesta.out'.
 
@@ -761,7 +795,7 @@ babelbib extension \btxifchangecaseoff added to \extrasspanish
 )
 babelbib: Load BibTeX extensions \bibsspanish for spanish
 babelbib: Set language for keywords in the bibliography fixed to spanish
-<imagenes/institucion/escudoU2014.pdf, id=7, 320.19624pt x 689.57625pt>
+<imagenes/institucion/escudoU2014.pdf, id=91, 320.19624pt x 689.57625pt>
 File: imagenes/institucion/escudoU2014.pdf Graphic file (type pdf)
 <use imagenes/institucion/escudoU2014.pdf>
 Package pdftex.def Info: imagenes/institucion/escudoU2014.pdf  used on input line 51.
@@ -780,66 +814,239 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has b
 <to be read again> 
                    \relax 
 l.23 
-      [1] [2]
-
-LaTeX Warning: Citation `MarlowPJKM2016' on page 3 undefined on input line 49.
-
-) (./secciones/preliminares.tex
-
-LaTeX Warning: Citation `Wadler1995' on page 3 undefined on input line 3.
-
-
-LaTeX Warning: Citation `McBride2008' on page 3 undefined on input line 3.
-
-
-LaTeX Warning: Citation `Yorgey2009' on page 3 undefined on input line 11.
-
-
-LaTeX Warning: Citation `Yorgey2009' on page 3 undefined on input line 11.
-
-[3]
-
-LaTeX Warning: Citation `McBride2008' on page 4 undefined on input line 25.
-
-[4]
-
-LaTeX Warning: Citation `McBride2008' on page 5 undefined on input line 63.
-
-
-LaTeX Warning: Citation `Wadler1995' on page 5 undefined on input line 65.
-
-
-LaTeX Warning: Citation `Wadler1995' on page 5 undefined on input line 69.
-
-[5] [6]
-
-LaTeX Warning: Citation `Pombrio2018' on page 7 undefined on input line 110.
+      [1] [2]) (./secciones/preliminares.tex [3] [4] [5] [6] [7]) (./secciones/estado_del_arte.tex [8]
+<imagenes/rearrangement.png, id=174, 533.74406pt x 550.30594pt>
+File: imagenes/rearrangement.png Graphic file (type png)
+<use imagenes/rearrangement.png>
+Package pdftex.def Info: imagenes/rearrangement.png  used on input line 23.
+(pdftex.def)             Requested size: 240.73332pt x 248.20638pt.
+ [9
+pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.35 
+      <./imagenes/rearrangement.png (PNG copy)>]
+<imagenes/desugar.png, id=181, 507.39563pt x 544.28343pt>
+File: imagenes/desugar.png Graphic file (type png)
+<use imagenes/desugar.png>
+Package pdftex.def Info: imagenes/desugar.png  used on input line 57.
+(pdftex.def)             Requested size: 240.73332pt x 258.23003pt.
+ [10] [11
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.92 
+      <./imagenes/desugar.png (PNG copy)>] [12]
+Overfull \hbox (12.7265pt too wide) in paragraph at lines 154--154
+[]    \T1/cmtt/m/n/12 d <- uniform [1 .. 6][] 
+ []
 
 
-LaTeX Warning: Citation `ScibiorGG2015' on page 7 undefined on input line 129.
+Overfull \hbox (37.42047pt too wide) in paragraph at lines 155--155
+[]    \T1/cmtt/m/n/12 c <- uniform [Head, Tail][] 
+ []
 
-[7])
+[13]
+Overfull \hbox (18.9pt too wide) in paragraph at lines 191--191
+[]    \T1/cmtt/m/n/12 d1 <- uniform [1 .. 6][] 
+ []
 
-! LaTeX Error: File `secciones/estado_del_arte.tex' not found.
 
-Type X to quit or <RETURN> to proceed,
-or enter new name. (Default extension: tex)
+Overfull \hbox (25.07349pt too wide) in paragraph at lines 192--192
+[]    \T1/cmtt/m/n/12 d3 <- uniform [1 .. d1][] 
+ []
 
-Enter file name: 
-/home/esteb/Documentos/Memoria/tt-repo/reports/propuesta/propuesta.tex:55: Emergency stop.
-<read *> 
-         
-l.55 \input{secciones/estado_del_arte}
-                                      ^^M
-*** (cannot \read from terminal in nonstop modes)
 
- 
+Overfull \hbox (18.9pt too wide) in paragraph at lines 193--193
+[]    \T1/cmtt/m/n/12 d2 <- uniform [1 .. 6][] 
+ []
+
+
+Overfull \hbox (25.07349pt too wide) in paragraph at lines 194--194
+[]    \T1/cmtt/m/n/12 d4 <- uniform [1 .. d2][] 
+ []
+
+./secciones/estado_del_arte.tex:208: Undefined control sequence.
+l.208 \new
+          
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+[14]) (./secciones/objetivos.tex [15]) (./secciones/solucion_propuesta.tex [16] [17]) (./secciones/plan_de_trabajo.tex [18]) (./secciones/trabajo_adelantado.tex [19]
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <14.4> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 17.
+ [20] [21]) (build/propuesta.bbl
+babelbib: Using the BibTeX style's default font for `name'.
+babelbib: Using the BibTeX style's default font for `lastname'.
+babelbib: Using the BibTeX style's default font for `title'.
+babelbib: Using the BibTeX style's default font for `jtitle'.
+babelbib: Using the BibTeX style's default font for `etal'.
+babelbib: Using the BibTeX style's default font for `journal'.
+babelbib: Using the BibTeX style's default font for `volume'.
+babelbib: Using the BibTeX style's default font for `ISBN'.
+babelbib: Using the BibTeX style's default font for `ISSN'.
+babelbib: Using the BibTeX style's default font for `url'.
+babelbib: Using the BibTeX style's default font for `numeral'.
+LaTeX Info: Redefining \sptext on input line 13.
+LaTeX Info: Redefining \lsc on input line 13.
+LaTeX Info: Redefining \. on input line 13.
+LaTeX Info: Redefining \% on input line 13.
+LaTeX Info: Redefining \dotlessi on input line 13.
+LaTeX Info: Redefining \sptext on input line 13.
+LaTeX Info: Redefining \lsc on input line 13.
+LaTeX Info: Redefining \. on input line 13.
+LaTeX Info: Redefining \% on input line 13.
+LaTeX Info: Redefining \dotlessi on input line 13.
+LaTeX Info: Redefining \sptext on input line 15.
+LaTeX Info: Redefining \lsc on input line 15.
+LaTeX Info: Redefining \. on input line 15.
+LaTeX Info: Redefining \% on input line 15.
+LaTeX Info: Redefining \dotlessi on input line 15.
+LaTeX Info: Redefining \sptext on input line 15.
+LaTeX Info: Redefining \lsc on input line 15.
+LaTeX Info: Redefining \. on input line 15.
+LaTeX Info: Redefining \% on input line 15.
+LaTeX Info: Redefining \dotlessi on input line 15.
+
+Underfull \hbox (badness 10000) in paragraph at lines 22--24
+\T1/cmtt/m/n/12 / / github . com / ghc / ghc / commit / 8ecf6d8f7dfee9e5b1844cd196f83f00f3b6b879$[]\T1/cmr/m/n/12 ,
+ []
+
+LaTeX Info: Redefining \sptext on input line 25.
+LaTeX Info: Redefining \lsc on input line 25.
+LaTeX Info: Redefining \. on input line 25.
+LaTeX Info: Redefining \% on input line 25.
+LaTeX Info: Redefining \dotlessi on input line 25.
+Package babel Info: 'english' activates 'spanish' shorthands.
+(babel)             Reported on input line 25.
+LaTeX Info: Redefining \sptext on input line 25.
+LaTeX Info: Redefining \lsc on input line 25.
+LaTeX Info: Redefining \. on input line 25.
+LaTeX Info: Redefining \% on input line 25.
+LaTeX Info: Redefining \dotlessi on input line 25.
+
+Underfull \hbox (badness 5231) in paragraph at lines 27--29
+[]\T1/cmr/m/n/12 GHC Con-tri-bu-tors: \T1/cmr/m/it/12 Tes-tsui-te de la ex-ten-sión Ap-pli-ca-ti-ve-Do en GHC\T1/cmr/m/n/12 , 2026.
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 27--29
+[]$\T1/cmtt/m/n/12 https : / / github . com / ghc / ghc / tree / master / testsuite / tests / ado$[]\T1/cmr/m/n/12 , Di-rec-to-rio
+ []
+
+LaTeX Info: Redefining \sptext on input line 46.
+LaTeX Info: Redefining \lsc on input line 46.
+LaTeX Info: Redefining \. on input line 46.
+LaTeX Info: Redefining \% on input line 46.
+LaTeX Info: Redefining \dotlessi on input line 46.
+LaTeX Info: Redefining \sptext on input line 47.
+LaTeX Info: Redefining \lsc on input line 47.
+LaTeX Info: Redefining \. on input line 47.
+LaTeX Info: Redefining \% on input line 47.
+LaTeX Info: Redefining \dotlessi on input line 47.
+LaTeX Info: Redefining \sptext on input line 47.
+LaTeX Info: Redefining \lsc on input line 47.
+LaTeX Info: Redefining \. on input line 47.
+LaTeX Info: Redefining \% on input line 47.
+LaTeX Info: Redefining \dotlessi on input line 47.
+LaTeX Info: Redefining \sptext on input line 51.
+LaTeX Info: Redefining \lsc on input line 51.
+LaTeX Info: Redefining \. on input line 51.
+LaTeX Info: Redefining \% on input line 51.
+LaTeX Info: Redefining \dotlessi on input line 51.
+LaTeX Info: Redefining \sptext on input line 56.
+LaTeX Info: Redefining \lsc on input line 56.
+LaTeX Info: Redefining \. on input line 56.
+LaTeX Info: Redefining \% on input line 56.
+LaTeX Info: Redefining \dotlessi on input line 56.
+LaTeX Info: Redefining \sptext on input line 60.
+LaTeX Info: Redefining \lsc on input line 60.
+LaTeX Info: Redefining \. on input line 60.
+LaTeX Info: Redefining \% on input line 60.
+LaTeX Info: Redefining \dotlessi on input line 60.
+LaTeX Info: Redefining \sptext on input line 61.
+LaTeX Info: Redefining \lsc on input line 61.
+LaTeX Info: Redefining \. on input line 61.
+LaTeX Info: Redefining \% on input line 61.
+LaTeX Info: Redefining \dotlessi on input line 61.
+LaTeX Info: Redefining \sptext on input line 61.
+LaTeX Info: Redefining \lsc on input line 61.
+LaTeX Info: Redefining \. on input line 61.
+LaTeX Info: Redefining \% on input line 61.
+LaTeX Info: Redefining \dotlessi on input line 61.
+LaTeX Info: Redefining \sptext on input line 66.
+LaTeX Info: Redefining \lsc on input line 66.
+LaTeX Info: Redefining \. on input line 66.
+LaTeX Info: Redefining \% on input line 66.
+LaTeX Info: Redefining \dotlessi on input line 66.
+LaTeX Info: Redefining \sptext on input line 66.
+LaTeX Info: Redefining \lsc on input line 66.
+LaTeX Info: Redefining \. on input line 66.
+LaTeX Info: Redefining \% on input line 66.
+LaTeX Info: Redefining \dotlessi on input line 66.
+LaTeX Info: Redefining \sptext on input line 66.
+LaTeX Info: Redefining \lsc on input line 66.
+LaTeX Info: Redefining \. on input line 66.
+LaTeX Info: Redefining \% on input line 66.
+LaTeX Info: Redefining \dotlessi on input line 66.
+LaTeX Info: Redefining \sptext on input line 66.
+LaTeX Info: Redefining \lsc on input line 66.
+LaTeX Info: Redefining \. on input line 66.
+LaTeX Info: Redefining \% on input line 66.
+LaTeX Info: Redefining \dotlessi on input line 66.
+LaTeX Info: Redefining \. on input line 73.
+LaTeX Info: Redefining \% on input line 73.
+LaTeX Info: Redefining \. on input line 73.
+LaTeX Info: Redefining \% on input line 73.
+LaTeX Info: Redefining \. on input line 73.
+LaTeX Info: Redefining \% on input line 73.
+LaTeX Info: Redefining \. on input line 73.
+LaTeX Info: Redefining \% on input line 73.
+) [22] (build/propuesta.aux
+LaTeX Info: Redefining \. on input line 11.
+LaTeX Info: Redefining \% on input line 11.
+LaTeX Info: Redefining \. on input line 93.
+LaTeX Info: Redefining \% on input line 93.
+LaTeX Info: Redefining \. on input line 94.
+LaTeX Info: Redefining \% on input line 94.
+LaTeX Info: Redefining \. on input line 96.
+LaTeX Info: Redefining \% on input line 96.
+LaTeX Info: Redefining \. on input line 98.
+LaTeX Info: Redefining \% on input line 98.
+LaTeX Info: Redefining \. on input line 100.
+LaTeX Info: Redefining \% on input line 100.
+LaTeX Info: Redefining \. on input line 101.
+LaTeX Info: Redefining \% on input line 101.
+LaTeX Info: Redefining \. on input line 102.
+LaTeX Info: Redefining \% on input line 102.
+)
+ ***********
+LaTeX2e <2025-11-01>
+L3 programming layer <2026-01-19>
+ ***********
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+Package rerunfilecheck Info: File `propuesta.out' has not changed.
+(rerunfilecheck)             Checksum: E9F350C6874E125B042AD61C9B773AB5;4123.
+ ) 
 Here is how much of TeX's memory you used:
- 29892 strings out of 469453
- 586688 string characters out of 5469037
- 1032156 words of memory out of 5000000
- 58054 multiletter control sequences out of 15000+600000
- 644978 words of font info for 81 fonts, out of 8000000 for 9000
+ 30467 strings out of 469453
+ 598635 string characters out of 5469037
+ 1043178 words of memory out of 5000000
+ 58544 multiletter control sequences out of 15000+600000
+ 646830 words of font info for 88 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
- 112i,8n,132p,996b,509s stack positions out of 10000i,1000n,20000p,200000b,200000s
-/home/esteb/Documentos/Memoria/tt-repo/reports/propuesta/propuesta.tex:55:  ==> Fatal error occurred, no output PDF file produced!
+ 112i,9n,132p,1383b,740s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1728.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfss1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfss1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfti1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb>
+Output written on build/propuesta.pdf (23 pages, 621114 bytes).
+PDF statistics:
+ 374 PDF objects out of 1000 (max. 8388607)
+ 312 compressed objects within 4 object streams
+ 75 named destinations out of 1000 (max. 500000)
+ 196 words of extra memory for PDF output out of 10000 (max. 10000000)
+

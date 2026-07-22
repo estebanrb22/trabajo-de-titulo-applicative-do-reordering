@@ -1,0 +1,25 @@
+% !TEX root = ../../main.tex
+
+\section{Evaluación de Candidatos}
+
+Cada permutación válida se entrega al algoritmo existente de \texttt{ApplicativeDo}. En otras palabras, la extensión no define un nuevo algoritmo de construcción de planes applicative; reutiliza el mecanismo de \textsf{GHC} sobre distintas secuencias de entrada. El resultado de cada evaluación es un árbol de statements junto con su costo.
+
+En el ejemplo guía, la evaluación produce la siguiente comparación:
+
+\begin{center}
+\begin{tabular}{clcl}
+\hline
+Candidato & Orden & Plan conceptual & Costo \\
+\hline
+0 & \texttt{[1,2,3,4]} & $s_1 ; (s_2 \mid (s_3 ; s_4))$ & 3 \\
+1 & \texttt{[1,3,2,4]} & $(s_1 \mid s_3) ; (s_2 \mid s_4)$ & 2 \\
+2 & \texttt{[1,3,4,2]} & $(s_1 \mid s_3) ; (s_4 \mid s_2)$ & 2 \\
+3 & \texttt{[3,1,2,4]} & $(s_3 \mid s_1) ; (s_2 \mid s_4)$ & 2 \\
+4 & \texttt{[3,1,4,2]} & $(s_3 \mid s_1) ; (s_4 \mid s_2)$ & 2 \\
+\hline
+\end{tabular}
+\end{center}
+
+El candidato original alcanza costo 3, que coincide con \texttt{ApplicativeDo} normal sobre el orden escrito por el programador. Los candidatos restantes alcanzan costo 2 porque exponen dos niveles de paralelismo applicative: primero entre los productores independientes y luego entre los consumidores que ya tienen disponibles sus entradas.
+
+Esta evaluación es el punto donde se integra la contribución con el estado del arte. La extensión amplía el conjunto de órdenes posibles; \texttt{ApplicativeDo} sigue siendo el componente que decide cómo agrupar cada orden y cuánto cuesta el plan resultante.

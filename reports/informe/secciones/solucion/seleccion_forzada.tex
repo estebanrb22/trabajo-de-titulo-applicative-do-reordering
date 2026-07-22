@@ -1,0 +1,15 @@
+% !TEX root = ../../main.tex
+
+\section{Selección Forzada}
+
+Para validar semánticamente la extensión no basta con ejecutar el candidato seleccionado automáticamente. También es necesario compilar y ejecutar cada permutación válida, de modo que todas las variantes generadas puedan compararse contra el resultado esperado. Para ello se agregó una flag experimental:
+
+\begin{verbatim}
+-fado-reorder-candidate-n=<n>
+\end{verbatim}
+
+Cuando la flag recibe un índice válido, el Renamer selecciona el candidato \texttt{n} en vez del candidato de menor costo. Si el índice es negativo, está fuera de rango o no se entregó la flag, se usa la selección automática por costo mínimo.
+
+Esta flag no activa el reordenamiento. La generación de candidatos sigue dependiendo de que el bloque use \texttt{CD.do}, de que el módulo calificador exporte el marcador conmutativo y de que \texttt{ApplicativeDo} esté habilitado. La flag solo cambia cuál de los candidatos ya generados se elige como resultado final del compilador.
+
+El pipeline de validación usa esta capacidad para construir binarios \texttt{permutation\_i}. Luego ejecuta cada binario y compara su salida con la variante óptima. Si todas las permutaciones válidas producen la misma salida observable, la evidencia experimental apoya que el reordenamiento preservó la semántica en ese caso.

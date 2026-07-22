@@ -1,0 +1,20 @@
+% !TEX root = ../../main.tex
+
+\section{Mónadas de Probabilidad}
+
+Una mónada de probabilidad permite interpretar un programa como una distribución de posibles resultados. En lugar de producir un único valor, el programa describe cómo se combinan elecciones probabilísticas y cómo se propagan sus probabilidades. Este enfoque ha sido usado para modelar distribuciones discretas en lenguajes funcionales y para estudiar inferencia probabilística de manera composicional \cite{ErwigKollmansberger2006,ScibiorGG2015}.
+
+Un ejemplo simple es el lanzamiento de una moneda seguido por el lanzamiento de un dado. En una notación monádica, cada statement puede representar una elección probabilística:
+
+\begin{verbatim}
+coinAndDie = do
+  coin <- uniform [Head, Tail]
+  die  <- uniform [1 .. 6]
+  return (coin, die)
+\end{verbatim}
+
+Si las elecciones son independientes, el resultado corresponde a la distribución conjunta sobre todos los pares posibles. En programas más complejos, una elección posterior puede depender del resultado de una elección anterior, lo que introduce dependencias de datos similares a las vistas en la \textit{do-notation} monádica general.
+
+En esta memoria, el corpus probabilístico usa la mónada \texttt{Dist.T Rational} del paquete \texttt{probability}. Esta representación trabaja con probabilidades racionales, lo que facilita comparar salidas de forma exacta durante la validación. Para evitar diferencias superficiales entre representaciones equivalentes de una misma distribución, los programas de prueba normalizan sus resultados mediante \texttt{Dist.norm} antes de imprimirlos y compararlos.
+
+Aunque el ejemplo guía del capítulo Problema usa \texttt{Maybe}, el dominio de interés es probabilístico. \texttt{Maybe} actúa como una mónada pequeña y familiar para explicar el reordenamiento; \texttt{Dist.T Rational} permite evaluar la misma idea en programas que efectivamente representan distribuciones.

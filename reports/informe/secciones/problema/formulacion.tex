@@ -1,0 +1,9 @@
+% !TEX root = ../../main.tex
+
+\section{Formulación}
+
+El problema general abordado por esta memoria puede formularse de la siguiente manera. Dado un bloque \texttt{do} marcado explícitamente como conmutativo, se desea ampliar el espacio de órdenes que \texttt{ApplicativeDo} puede evaluar, sin permitir órdenes que rompan dependencias locales entre statements. Cada orden admisible produce un plan de ejecución candidato, y el compilador debe seleccionar el de menor costo según el modelo adoptado.
+
+El alcance semántico de esta formulación depende de una hipótesis explícita: el programador declara que la mónada del bloque se tratará como conmutativa. El compilador no demuestra esa propiedad. En cambio, usa la marca sintáctica como un contrato de uso: si el bloque está marcado, entonces se permite explorar intercambios que respeten dependencias de variables; si no está marcado, se conserva el comportamiento estándar de \texttt{ApplicativeDo}.
+
+Por lo tanto, la contribución no consiste en reemplazar \texttt{ApplicativeDo}, sino en extender su espacio de búsqueda bajo una condición adicional. En el ejemplo usado en este capítulo, esa extensión transforma la comparación de costos desde \texttt{4} contra \texttt{3} a una comparación que también incluye el plan de costo \texttt{2}, obtenido por una permutación semánticamente válida. La construcción formal de esas permutaciones se presenta en el capítulo de Solución.

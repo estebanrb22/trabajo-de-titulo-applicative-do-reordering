@@ -1,0 +1,23 @@
+% !TEX root = ../main.tex
+
+\chapter{Problema}
+
+El problema se ilustrará con un caso pequeño sobre \texttt{Maybe}. La misma idea se evalúa luego sobre \texttt{Dist.T Rational}, pero \texttt{Maybe} permite aislar el fenómeno de ordenamiento sin introducir detalles propios de distribuciones probabilísticas.
+
+\begin{verbatim}
+mainExample :: Maybe (Int, Int, Int, Int)
+mainExample = CD.do
+  x1 <- Just 1
+  x2 <- Just (x1 + 10)
+  x3 <- Just 100
+  x4 <- Just (x1 + x3)
+  CD.return (x1, x2, x3, x4)
+\end{verbatim}
+
+Para el análisis, se nombran los cuatro statements previos al \texttt{return} como \texttt{s1}, \texttt{s2}, \texttt{s3} y \texttt{s4}. El orden original es \verb|s1 ; s2 ; s3 ; s4|. En ese orden, \texttt{s3} no depende de \texttt{s2}, pero aparece después de él; esa ubicación impide que \texttt{ApplicativeDo} exponga el mejor plan disponible bajo conmutatividad.
+
+\input{secciones/problema/orden_sintactico}
+\input{secciones/problema/ejecucion_secuencial}
+\input{secciones/problema/applicative_do_actual}
+\input{secciones/problema/plan_con_reordenamiento}
+\input{secciones/problema/formulacion}

@@ -1,0 +1,23 @@
+% !TEX root = ../../main.tex
+
+\section{QualifiedDo}
+
+La activación del reordenamiento no se realiza mediante una flag global, sino mediante sintaxis explícita de \texttt{QualifiedDo}. El programador importa el módulo conmutativo experimental y escribe el bloque usando \texttt{CD.do}:
+
+\begin{verbatim}
+{-# LANGUAGE ApplicativeDo #-}
+{-# LANGUAGE QualifiedDo #-}
+
+import qualified Control.Monad.CommutativeDo as CD
+
+example = CD.do
+  x <- Just 1
+  y <- Just 2
+  CD.return (x, y)
+\end{verbatim}
+
+El módulo público \texttt{Control.Monad.CommutativeDo} reexporta las operaciones necesarias para \texttt{QualifiedDo}: bind, secuenciación, \texttt{return}, \texttt{pure}, \texttt{fmap}, aplicación applicative, \texttt{join} y \texttt{fail}. Además, exporta el marcador \texttt{\_\_commutative\_do\_\_}. Durante el Renamer, \textsf{GHC} revisa si el módulo calificador del bloque exporta ese marcador; si lo encuentra, el bloque queda habilitado para la enumeración de permutaciones.
+
+La clase \texttt{CommutativeMonad} cumple un rol declarativo. No constituye una prueba formal de conmutatividad dentro del compilador, sino una afirmación del programador sobre el uso previsto de la mónada. En consecuencia, la extensión asume esa propiedad solo cuando el bloque fue escrito con la notación opt-in.
+
+La flag de selección de candidatos, presentada más adelante, no activa el reordenamiento. Solo permite escoger un candidato ya generado. La activación sigue dependiendo de \texttt{CD.do}, del marcador conmutativo y de que \texttt{ApplicativeDo} esté habilitado.

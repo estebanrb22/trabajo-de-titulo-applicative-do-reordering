@@ -1,11 +1,8 @@
 # Flujo del Renamer para `HsDo` y reordenamiento conmutativo
 
-Este documento describe el flujo actual de `GHC.Rename.Expr` para expresiones
-`HsDo`, incluyendo la extensión experimental de la memoria: generación de
-permutaciones semánticamente válidas para bloques `do` marcados como
-conmutativos mediante `QualifiedDo`.
+Este documento describe `GHC.Rename.Expr` para expresiones `HsDo`, incluyendo la extensión experimental de la memoria: generación de permutaciones semánticamente válidas para bloques `do` marcados como conmutativos mediante `QualifiedDo`.
 
-## Flujo General
+## Flujo general
 
 ```haskell
 rnExpr
@@ -16,11 +13,11 @@ rnExpr
        -> buildStmtsDependencyGraph
        -> enumerateSemanticTopSortsBounded
        -> mkStmtTreeHeuristic / mkStmtTreeOptimal
+       -> selección automática por costo o selección forzada por candidato
        -> stmtTreeToStmts
 ```
 
-El camino sigue siendo parte del Renamer. La transformación final produce
-`ApplicativeStmt` cuando el plan elegido permite usar operaciones applicative.
+El camino forma parte del Renamer. La transformación final produce `ApplicativeStmt` cuando el plan elegido permite usar operaciones applicative.
 
 ## `rnExpr (HsDo ...)`
 
@@ -35,12 +32,11 @@ rnExpr (HsDo _ do_or_lc (L l stmts))
       ; return ( HsDo noExtField do_or_lc (L l pp_stmts), fvs1 `plusFV` fvs2 ) }
 ```
 
-`rnStmtsWithFreeVars` renombra cada statement y conserva sus `FreeVars`. Esa
-información es la base para construir dependencias locales entre statements.
+`rnStmtsWithFreeVars` renombra cada statement y conserva sus `FreeVars`. Esa información es la base para construir dependencias locales entre statements.
 
 ## `postProcessStmtsForApplicativeDo`
 
-El gate principal de `ApplicativeDo` sigue siendo:
+El gate principal de `ApplicativeDo` es:
 
 ```haskell
 postProcessStmtsForApplicativeDo ctxt stmts
@@ -49,22 +45,18 @@ postProcessStmtsForApplicativeDo ctxt stmts
                         | otherwise = False
        ; in_th_bracket <- isBrackLevel <$> getThLevel
        ; if ado_is_on && is_do_expr && not in_th_bracket
-            then do { traceRn "ppsfa" (ppr stmts)
-                    ; rearrangeForApplicativeDo ctxt stmts }
-            else noPostProcessStmts (HsDoStmt ctxt) stmts }
+             then do { traceRn "ppsfa" (ppr stmts)
+                     ; rearrangeForApplicativeDo ctxt stmts }
+             else noPostProcessStmts (HsDoStmt ctxt) stmts }
 ```
 
-Esto significa que el reordenamiento experimental solo puede ejecutarse dentro
-del flujo normal de `ApplicativeDo`. Si `-XApplicativeDo` no está activo, no se
-entra a `rearrangeForApplicativeDo`.
+Esto significa que el reordenamiento experimental solo puede ejecutarse dentro del flujo normal de `ApplicativeDo`. Si `-XApplicativeDo` no está activo, no se entra a `rearrangeForApplicativeDo`.
 
-## Opt-in Conmutativo Con `QualifiedDo`
+El detector conmutativo tiene una rama para `MDoExpr`, pero este gate llama a `rearrangeForApplicativeDo` solo para `DoExpr`. En la práctica, los experimentos conmutativos usan `CD.do`.
 
-La activación del reordenamiento conmutativo ya no depende de una flag general
-`-freorder-commutative-monads-ado`. Esa flag fue eliminada del conjunto de
-`GeneralFlag` y de `fFlagsDeps`.
+## Opt-in conmutativo con `QualifiedDo`
 
-El opt-in ahora es sintáctico y se basa en `QualifiedDo`:
+La activación del reordenamiento conmutativo se hace de forma sintáctica y se basa en `QualifiedDo`:
 
 ```haskell
 commutativeDoMarkerOcc = mkVarOccFS (fsLit "__commutative_do__")
@@ -78,22 +70,48 @@ isCommutativeQualifiedDo _ =
   return False
 ```
 
-Un bloque `M.do` es considerado conmutativo si el módulo calificador `M` exporta
-el marcador `__commutative_do__`. El módulo experimental esperado es
-`Control.Monad.CommutativeDo`, que reexporta ese marcador junto a las operaciones
-necesarias para `QualifiedDo`.
+Un bloque `M.do` es considerado conmutativo si el módulo calificador `M` exporta el marcador `__commutative_do__`. El módulo experimental esperado es `Control.Monad.CommutativeDo`, que reexporta ese marcador junto a las operaciones necesarias para `QualifiedDo`.
+
+El compilador no prueba que la mónada sea conmutativa. La clase `CommutativeMonad` es una afirmación del programador y actúa como mecanismo de opt-in.
+
+## Flag de selección de candidato
+
+La flag relacionada con la selección de candidatos es:
+
+```text
+-fado-reorder-candidate-n=<n>
+```
+
+No activa el reordenamiento. Solo fuerza al Renamer a seleccionar una permutación ya generada, lo que permite validar semánticamente cada candidato.
+
+Implementación en el driver:
+
+```haskell
+-- GHC.Driver.DynFlags
+adoReorderCandidateN :: Maybe Int
+
+-- defaultDynFlags
+adoReorderCandidateN = Nothing
+
+-- GHC.Driver.Session
+make_ord_flag defFlag "fado-reorder-candidate-n"
+  (intSuffix (\n d -> d { adoReorderCandidateN = Just n }))
+```
+
+Si la flag no está presente, el Renamer selecciona automáticamente el candidato de menor costo. Si `n` es negativo o está fuera de rango, se ignora y también se usa la selección automática.
 
 ## `rearrangeForApplicativeDo`
 
-El flujo actual de `rearrangeForApplicativeDo` es:
+El flujo de `rearrangeForApplicativeDo` es:
 
 ```haskell
 rearrangeForApplicativeDo ctxt stmts0 = do
   optimal_ado <- goptM Opt_OptimalApplicativeDo
   commutative_do <- isCommutativeQualifiedDo ctxt
+  reorder_cand_n <- adoReorderCandidateN <$> getDynFlags
 
   traceRn "rearrangeForADo-commutative-do" $
-    vcat [ text "commutative-do    =" <+> ppr commutative_do ]
+    vcat [ text "commutative-do =" <+> ppr commutative_do ]
 
   (all_permutations, validStmtsPerms) <-
     if commutative_do
@@ -111,7 +129,7 @@ rearrangeForApplicativeDo ctxt stmts0 = do
 
   let stmt_trees = map mkStmtTree all_permutations
   let all_permutations_info =
-        zipWith3 mkStmtsPermutationInfo [1 :: Int ..] validStmtsPerms stmt_trees
+        zipWith3 mkStmtsPermutationInfo [0 :: Int ..] validStmtsPerms stmt_trees
 
   when commutative_do $
     traceTopSortCandidates all_permutations_info
@@ -120,16 +138,25 @@ rearrangeForApplicativeDo ctxt stmts0 = do
           Just cs -> minimumBy (comparing candCost) cs
           Nothing -> panic "rearrangeForApplicativeDo: empty stmt_trees"
 
-  let best_tree = candTree best_candidate
+  let selected_candidate = do
+        i <- reorder_cand_n
+        guard (i >= 0)
+        listToMaybe (drop i all_permutations_info)
 
-  traceRnFinalTree best_candidate all_permutations_info
+  let final_candidate = fromMaybe best_candidate selected_candidate
+
+  let final_trace_label = case selected_candidate of
+        Just _ -> "rearrangeForADo candidate selection tree (fado-reorder-candidate-n) ="
+        Nothing -> "rearrangeForADo final tree:"
+
+  traceRnFinalTree final_trace_label final_candidate best_candidate all_permutations_info
 ```
 
-En el caso no conmutativo se preserva el comportamiento base: solo se considera
-la lista original de statements. Para mantener un formato uniforme, se crea una
-permutación artificial con `computeStmtsInfo stmts`.
+En el caso no conmutativo solo se considera la lista original de statements. Para mantener un formato uniforme, se crea un candidato técnico con `computeStmtsInfo stmts`. Los scripts de validación presentan este caso como cero permutaciones de reordenamiento, aunque internamente exista el candidato original.
 
-## Grafo de Precedencia
+Los candidatos están indexados desde `0`. Los statements conservan índices desde `1`, porque `computeStmtsInfo` usa `zipWith mkStmtInfo [1 ..]`.
+
+## Grafo de precedencia
 
 Cada statement se modela como `StmtDepInfo`:
 
@@ -167,19 +194,11 @@ La relación relevante para el Renamer es:
 - `READ_local(stmt) = fvs(stmt) ∩ all_writes`.
 - `RAW(i,j) = WRITE(i) ∩ READ_local(j)`.
 
-El grafo interno solo modela dependencias `RAW`: `buildStmtDepNodes` crea
-aristas `i -> j` cuando `i < j` y `WRITE(i) ∩ READ_local(j)` no es vacio. El
-grafo se implementa con `GHC.Data.Graph.Directed`.
+El grafo interno solo modela dependencias `RAW`: `buildStmtDepNodes` crea aristas `i -> j` cuando `i < j` y `WRITE(i) ∩ READ_local(j)` no es vacío. El grafo se implementa con `GHC.Data.Graph.Directed`.
 
-Las dependencias `WAR` y `WAW` pertenecen al modelo general de asignaciones
-imperativas, pero no aparecen como restricciones reales en este nivel de GHC.
-Despues del renombrado, cada binder local corresponde a un `Name` unico: un
-statement posterior no puede sobrescribir el mismo `Name` definido por uno
-anterior, y una lectura de un statement anterior no puede depender de una
-definicion que todavia no esta en scope. Por eso el criterio interno se reduce a
-preservar relaciones def-use, es decir, dependencias `RAW`.
+Las dependencias `WAR` y `WAW` pertenecen al modelo general de asignaciones imperativas, pero no aparecen como restricciones reales en este nivel de GHC. Después del renombrado, cada binder local corresponde a un `Name` único: no existe sobrescritura de un mismo `Name` renombrado y una lectura solo puede referirse a definiciones en scope. Por eso el criterio interno se reduce a preservar relaciones def-use, es decir, dependencias `RAW`.
 
-## Enumeración de Permutaciones
+## Enumeración de permutaciones
 
 `enumerateSemanticTopSortsBounded` enumera ordenamientos topológicos del grafo:
 
@@ -194,10 +213,9 @@ Cada resultado conserva `StmtDepInfo`, por lo que no se pierde:
 - `FreeVars` originales,
 - reads/writes locales.
 
-Luego `depStmtInfosToStmtSeq` transforma cada permutación de nodos en una lista
-de statements apta para `mkStmtTreeHeuristic` o `mkStmtTreeOptimal`.
+Luego `depStmtInfosToStmtSeq` transforma cada permutación de nodos en una lista de statements apta para `mkStmtTreeHeuristic` o `mkStmtTreeOptimal`.
 
-## Información de Candidatos y Costos
+## Información de candidatos y costos
 
 Para no separar la información de la permutación de su árbol y costo, se usa:
 
@@ -219,15 +237,25 @@ mkStmtsPermutationInfo index perm tree =
     }
 ```
 
-La selección final se hace por costo:
+La selección automática se hace por costo:
 
 ```haskell
 best_candidate = minimumBy (comparing candCost) all_permutations_info
-best_tree = candTree best_candidate
 ```
 
-Si hay empate, `minimumBy` mantiene el primer candidato mínimo encontrado en la
-lista de candidatos.
+Si hay empate, `minimumBy` mantiene el primer candidato mínimo encontrado en la lista de candidatos. La selección forzada por `-fado-reorder-candidate-n=i` tiene prioridad sobre el candidato mínimo solo si `i` es válido.
+
+El costo se calcula con:
+
+```haskell
+stmtTreeCost :: ExprStmtTree -> Cost
+stmtTreeCost (StmtTreeOne _) = 1
+stmtTreeCost (StmtTreeBind l r) = stmtTreeCost l + stmtTreeCost r
+stmtTreeCost (StmtTreeApplicative ts) =
+  case ts of
+    [] -> 0
+    _  -> Partial.maximum (map stmtTreeCost ts)
+```
 
 ## Trazas del Renamer
 
@@ -237,7 +265,7 @@ Todas las trazas usan `traceRn`, por lo que aparecen con `-ddump-rn-trace`.
 
 ```text
 rearrangeForADo-commutative-do
-  commutative-do    = True
+  commutative-do = True
 ```
 
 ### Grafo de dependencias
@@ -256,40 +284,68 @@ rearrangeForADo-dep
 
 ```text
 rearrangeForADo-permutation
-  candidate   =  5
-  index order =  [2, 1, 4, 3]
-  statements  =  [x2 <- Just 5, x1 <- Just 10,
-                  x4 <- Just (x2 + 15), x3 <- safeDiv x1 2]
-  rearrangeForADo-resulting tree =
-    (StmtTreeBind ...)
-  actual cost =  2
-```
-
-### Árbol final seleccionado
-
-`traceRnFinalTree` imprime la metadata del candidato seleccionado y métricas
-globales:
-
-```text
-rearrangeForADo final tree:
-  candidate   =  1
-  index order =  [1, 2, 3, 4]
+  candidate   =  0
+  index-order =  [1, 2, 3, 4]
   statements  =  [x1 <- Just 10, x2 <- Just 5,
                   x3 <- safeDiv x1 2, x4 <- Just (x2 + 15)]
   rearrangeForADo-resulting tree =
     (StmtTreeBind ...)
-  original-cost             =  2
-  minimum-cost              =  2
-  generated permutations    =  6
-  minimum-cost permutations =  6
+  tree-cost =  2
 ```
 
-`original-cost` corresponde al costo del primer candidato de
-`all_permutations_info`, que representa el orden original. `minimum-cost` es el
-costo de `best_candidate`. `minimum-cost permutations` cuenta cuántos candidatos
-tienen ese mismo costo mínimo.
+### Árbol final seleccionado automáticamente
 
-## Generadores de Árboles
+Cuando no se usa `-fado-reorder-candidate-n`, `traceRnFinalTree` usa la etiqueta:
+
+```text
+rearrangeForADo final tree:
+  candidate   =  0
+  index-order =  [1, 2, 3, 4]
+  statements  =  [x1 <- Just 10, x2 <- Just 5,
+                  x3 <- safeDiv x1 2, x4 <- Just (x2 + 15)]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind ...)
+  tree-cost =  2
+```
+
+### Árbol seleccionado por flag
+
+Cuando `-fado-reorder-candidate-n=i` selecciona un candidato válido, la etiqueta cambia a:
+
+```text
+rearrangeForADo candidate selection tree (fado-reorder-candidate-n) =
+  candidate   =  3
+  index-order =  [2, 1, 3, 4]
+  statements  =  [...]
+  rearrangeForADo-resulting tree =
+    (StmtTreeApplicative ...)
+  tree-cost =  2
+```
+
+### Resumen global
+
+El resumen se imprime en la rama general de `rearrangeForApplicativeDo`; los casos especiales de bloque vacío o de un único statement retornan directamente:
+
+```text
+rearrangeForADo-Summary:
+  minimum-cost-perm-index      =  0
+  original-cost                =  4
+  applicative-do-cost          =  2
+  reorder-and-ado-minimum-cost =  2
+  generated-permutations       =  6
+  minimum-cost-permutations    =  6
+```
+
+Significado de los campos:
+
+- `minimum-cost-perm-index`: índice base cero del candidato de menor costo.
+- `original-cost`: costo secuencial base, calculado como la cantidad de statements previos al `LastStmt`.
+- `applicative-do-cost`: costo de aplicar `ApplicativeDo` al orden original.
+- `reorder-and-ado-minimum-cost`: menor costo obtenido entre todas las permutaciones semánticamente válidas.
+- `generated-permutations`: cantidad de candidatos técnicos considerados.
+- `minimum-cost-permutations`: cantidad de candidatos que empatan con el costo mínimo.
+
+## Generadores de árboles
 
 `ExprStmtTree` representa el plan de ejecución:
 
@@ -305,36 +361,40 @@ type ExprStmtTree = StmtTree (ExprLStmt GhcRn, FreeVars)
 Los generadores disponibles son:
 
 - `mkStmtTreeHeuristic`: algoritmo heurístico `O(n^2)`.
-- `mkStmtTreeOptimal`: algoritmo óptimo `O(n^3)`, activado por
-  `-foptimal-applicative-do`.
+- `mkStmtTreeOptimal`: algoritmo óptimo `O(n^3)`, activado por `-foptimal-applicative-do`.
 
-El costo se calcula con:
+## Reconstrucción a statements
+
+Después de elegir `final_candidate`, `stmtTreeToStmts` reconstruye la lista final de statements insertando `ApplicativeStmt` cuando corresponde. Esa parte conserva la semántica existente de `ApplicativeDo`, incluyendo manejo de `pure`, `return`, `join`, patrones estrictos y patrones refutables.
+
+## Módulos de soporte para `QualifiedDo`
+
+El opt-in conmutativo esperado en experimentos es:
 
 ```haskell
-stmtTreeCost :: ExprStmtTree -> Cost
-stmtTreeCost (StmtTreeOne _) = 1
-stmtTreeCost (StmtTreeBind l r) = stmtTreeCost l + stmtTreeCost r
-stmtTreeCost (StmtTreeApplicative ts) =
-  case ts of
-    [] -> 0
-    _  -> Partial.maximum (map stmtTreeCost ts)
+{-# LANGUAGE ApplicativeDo #-}
+{-# LANGUAGE QualifiedDo #-}
+
+import qualified Control.Monad.CommutativeDo as CD
+
+instance CD.CommutativeMonad Maybe
+
+example :: Maybe Int
+example = CD.do
+  x <- Just 1
+  y <- Just 2
+  CD.return (x + y)
 ```
 
-## Reconstrucción a Statements
+Módulos de soporte en GHC:
 
-Después de elegir `best_tree`, `stmtTreeToStmts` reconstruye la lista final de
-statements insertando `ApplicativeStmt` cuando corresponde. Esa parte conserva
-la semántica existente de `ApplicativeDo`, incluyendo manejo de `pure`, `return`,
-`join`, patrones estrictos y patrones refutables.
+- `vendor/ghc/libraries/ghc-internal/src/GHC/Internal/Control/Monad/CommutativeDo.hs`: define `CommutativeMonad`, `__commutative_do__` y las operaciones requeridas por `QualifiedDo`.
+- `vendor/ghc/libraries/base/src/Control/Monad/CommutativeDo.hs`: módulo público que reexporta el módulo interno.
 
-## Archivos Relacionados
+## Archivos relacionados
 
 - `vendor/ghc/compiler/GHC/Rename/Expr.hs`: implementación principal.
-- `vendor/ghc/compiler/GHC/Driver/Flags.hs`: ya no define
-  `Opt_ReorderCommutativeMonadsAdo`.
-- `vendor/ghc/compiler/GHC/Driver/Session.hs`: ya no registra
-  `-freorder-commutative-monads-ado`.
-- `vendor/ghc/libraries/ghc-internal/src/GHC/Internal/Control/Monad/CommutativeDo.hs`:
-  marcador interno `__commutative_do__` y operaciones para `QualifiedDo`.
-- `vendor/ghc/libraries/base/src/Control/Monad/CommutativeDo.hs`: módulo público
-  para usar el opt-in desde experimentos.
+- `vendor/ghc/compiler/GHC/Driver/DynFlags.hs`: define `adoReorderCandidateN :: Maybe Int`.
+- `vendor/ghc/compiler/GHC/Driver/Session.hs`: registra `-fado-reorder-candidate-n`.
+- `vendor/ghc/libraries/ghc-internal/src/GHC/Internal/Control/Monad/CommutativeDo.hs`: marcador interno `__commutative_do__` y operaciones para `QualifiedDo`.
+- `vendor/ghc/libraries/base/src/Control/Monad/CommutativeDo.hs`: módulo público para usar el opt-in desde experimentos.

@@ -1,0 +1,47 @@
+% !TEX root = ../../main.tex
+
+\section{Dependencias Def-Use y Grafo RAW}
+
+El reordenamiento de statements debe preservar las relaciones \textit{def-use}: si un statement usa una variable local, la definición de esa variable debe mantenerse antes. La implementación captura esta restricción mediante un grafo RAW, abreviatura de \textit{Read After Write}. Sus nodos son los statements del bloque, indexados en el orden original desde 1. Sus aristas representan dependencias de lectura después de escritura entre variables locales.
+
+Para cada statement \texttt{s}, la implementación calcula:
+
+\begin{itemize}
+    \item \texttt{WRITE(s)}: conjunto de nombres locales definidos por \texttt{s}.
+    \item \texttt{READ\_local(s)}: variables libres de \texttt{s} restringidas al conjunto de nombres definidos dentro del bloque.
+\end{itemize}
+
+Luego, existe una arista desde \texttt{si} hacia \texttt{sj} si el statement \texttt{sj} lee una variable escrita por \texttt{si}. En notación de conjuntos:
+
+\[
+\texttt{WRITE(si)} \cap \texttt{READ\_local(sj)} \neq \emptyset
+\]
+
+En el ejemplo guía, \texttt{s1} define \texttt{x1}, y \texttt{s2} y \texttt{s4} leen \texttt{x1}; por eso aparecen las aristas \texttt{s1} $\to$ \texttt{s2} y \texttt{s1} $\to$ \texttt{s4}. A su vez, \texttt{s3} define \texttt{x3}, usado por \texttt{s4}; por eso aparece la arista \texttt{s3} $\to$ \texttt{s4}.
+
+\begin{center}
+\begin{tabular}{lll}
+\hline
+Statement & \texttt{WRITE} & \texttt{READ\_local} \\
+\hline
+\texttt{s1} & \texttt{x1} & $\emptyset$ \\
+\texttt{s2} & \texttt{x2} & \texttt{x1} \\
+\texttt{s3} & \texttt{x3} & $\emptyset$ \\
+\texttt{s4} & \texttt{x4} & \texttt{x1}, \texttt{x3} \\
+\hline
+\end{tabular}
+\end{center}
+
+El grafo resultante puede representarse así:
+
+\begin{verbatim}
+s1 -----> s2
+|
++------> s4
+          ^
+s3 -------+
+\end{verbatim}
+
+Este grafo distingue permutaciones válidas de permutaciones inválidas. Por ejemplo, \verb|s1 ; s3 ; s2 ; s4| respeta todas las aristas, mientras que \verb|s3 ; s4 ; s1 ; s2| no es válida, porque ubica \texttt{s4} antes de \texttt{s1}, aun cuando \texttt{s4} necesita el valor \texttt{x1} definido por \texttt{s1}.
+
+El prototipo general del proyecto consideró también dependencias WAR y WAW como antecedente para modelos de asignaciones imperativas. La implementación vigente dentro del Renamer no las usa como restricciones internas reales. Después del renombrado, los binders locales son nombres únicos, por lo que no hay sobrescritura del mismo nombre renombrado dentro del bloque. En este contexto, preservar RAW captura la restricción def-use necesaria para generar órdenes alternativos bien formados.

@@ -1,0 +1,11 @@
+% !TEX root = ../../main.tex
+
+\section{Mónadas Conmutativas}
+
+Una mónada conmutativa es, en términos operacionales, una mónada donde ciertos cómputos independientes pueden intercambiarse sin cambiar el resultado observable. La noción aparece en el estudio categórico y semántico de efectos, y resulta especialmente natural en contextos probabilísticos donde dos elecciones independientes pueden combinarse en cualquier orden y describir la misma distribución conjunta \cite{Kock2012,Jacobs2018}.
+
+La propiedad relevante para esta memoria puede entenderse mediante el siguiente contraste. Si dos statements no comparten variables locales, existe independencia estructural: ninguno necesita el valor definido por el otro. Sin embargo, esa ausencia de dependencia de datos no garantiza por sí sola que sea seguro intercambiarlos. En una mónada como \texttt{IO}, dos acciones independientes desde el punto de vista de variables podrían imprimir mensajes en distinto orden, y ese cambio sería observable.
+
+Por tanto, el grafo de dependencias usado por la extensión solo resuelve una parte del problema: identifica qué intercambios respetan el alcance de variables y las relaciones \textit{def-use}. La validez semántica del reordenamiento completo requiere además una hipótesis sobre la mónada. En el diseño de esta memoria, esa hipótesis se declara explícitamente mediante un mecanismo de opt-in basado en \texttt{QualifiedDo}.
+
+Es importante destacar que \textsf{GHC} no prueba que una mónada sea conmutativa. La clase y el marcador agregados por esta memoria actúan como una afirmación del programador: si un bloque se escribe con la notación conmutativa experimental, el compilador puede explorar reordenamientos que respeten dependencias RAW; si se usa \texttt{do} normal, el comportamiento conservador se mantiene.

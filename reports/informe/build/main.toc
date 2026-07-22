@@ -1,7 +1,54 @@
 \babel@toc {spanish}{}\relax 
 \contentsline {chapter}{\numberline {1}Introducción}{1}{chapter.1}%
-\contentsline {chapter}{\numberline {2}Segundo}{4}{chapter.2}%
-\contentsline {chapter}{\numberline {3}Tercero}{5}{chapter.3}%
-\contentsline {chapter}{\numberline {4}Conclusión}{8}{chapter.4}%
-\contentsline {chapter}{\numberline {}Bibliograf\'ia}{10}{chapter*.8}%
-\contentsline {chapter}{Ap\'{e}ndice \numberline {A}Anexo}{11}{Appendix.1.Alph1}%
+\contentsline {section}{\numberline {1.1}Contexto}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Motivación}{3}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Objetivos}{4}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Contribuciones}{5}{section.1.4}%
+\contentsline {chapter}{\numberline {2}Marco Teórico}{6}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Abstracciones Funcionales de Haskell}{6}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Functores}{7}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Aplicativos}{7}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Mónadas}{9}{subsection.2.1.3}%
+\contentsline {section}{\numberline {2.2}Do-Notation}{11}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Mónadas Conmutativas}{11}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Mónadas de Probabilidad}{12}{section.2.4}%
+\contentsline {section}{\numberline {2.5}ApplicativeDo}{13}{section.2.5}%
+\contentsline {chapter}{\numberline {3}Problema}{16}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Limitación del Orden Sintáctico}{16}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Ejecución Secuencial}{17}{section.3.2}%
+\contentsline {section}{\numberline {3.3}ApplicativeDo Actual}{17}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Plan con Reordenamiento}{18}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Formulación}{18}{section.3.5}%
+\contentsline {chapter}{\numberline {4}Solución}{20}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Visión General}{20}{section.4.1}%
+\contentsline {section}{\numberline {4.2}QualifiedDo}{21}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Información del Renamer}{21}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Dependencias Def-Use y Grafo RAW}{22}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Permutaciones}{23}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Evaluación de Candidatos}{24}{section.4.6}%
+\contentsline {section}{\numberline {4.7}Selección}{24}{section.4.7}%
+\contentsline {section}{\numberline {4.8}Integración en GHC}{25}{section.4.8}%
+\contentsline {section}{\numberline {4.9}Selección Forzada}{25}{section.4.9}%
+\contentsline {chapter}{\numberline {5}Validación}{27}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Metodología}{27}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Artefactos de Validación}{27}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Métricas}{28}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Corpus Sintético Maybe}{29}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Corpus Sintético Probabilístico}{29}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Corpus Real}{30}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Control IO}{31}{section.5.7}%
+\contentsline {section}{\numberline {5.8}Resultados}{31}{section.5.8}%
+\contentsline {section}{\numberline {5.9}Amenazas a la Validez}{32}{section.5.9}%
+\contentsline {chapter}{\numberline {6}Conclusión}{33}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Resumen del Trabajo}{33}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Cumplimiento de Objetivos}{33}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Limitaciones}{34}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Trabajo Futuro}{35}{section.6.4}%
+\contentsline {section}{\numberline {6.5}Cierre}{35}{section.6.5}%
+\contentsline {chapter}{\numberline {}Bibliograf\'ia}{38}{chapter*.8}%
+\contentsline {chapter}{Ap\'{e}ndice \numberline {A}Anexos Técnicos}{39}{Appendix.1.Alph1}%
+\contentsline {section}{\numberline {A.1}Reproducibilidad}{39}{section.1.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Pipeline de Validación}{39}{section.1.Alph1.2}%
+\contentsline {section}{\numberline {A.3}Logs y Trazas}{39}{section.1.Alph1.3}%
+\contentsline {section}{\numberline {A.4}Corpus}{40}{section.1.Alph1.4}%
+\contentsline {section}{\numberline {A.5}Detalles de Implementación}{40}{section.1.Alph1.5}%

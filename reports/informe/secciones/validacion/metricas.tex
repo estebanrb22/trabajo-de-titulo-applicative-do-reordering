@@ -1,0 +1,19 @@
+% !TEX root = ../../main.tex
+
+\section{Métricas}
+
+La comparación de planes usa métricas emitidas por las trazas del Renamer. Las claves principales son:
+
+\begin{verbatim}
+original-cost
+applicative-do-cost
+reorder-and-ado-minimum-cost
+generated-permutations
+minimum-cost-permutations
+\end{verbatim}
+
+La primera métrica corresponde al costo secuencial base del bloque. La segunda mide el costo obtenido por \texttt{ApplicativeDo} sobre el orden original. La tercera mide el menor costo encontrado al evaluar las permutaciones válidas. Las dos últimas indican cuántos candidatos fueron generados y cuántos de ellos empatan en el costo mínimo.
+
+El costo es abstracto, no una medición de tiempo real. En el modelo actual, cada statement elemental tiene costo unitario; una secuencia suma costos; y una composición applicative toma el máximo costo de sus ramas. Por ello, la métrica sirve para comparar la forma del plan de ejecución, no para afirmar una aceleración empírica directa en tiempo de pared.
+
+Además de las métricas de costo, la validación registra el resultado semántico de cada caso. Un caso exitoso termina con \texttt{RESULT: OK}; un control negativo diseñado para mostrar cambio observable puede terminar con \texttt{RESULT: FAIL}, como ocurre con el caso de \texttt{IO}.

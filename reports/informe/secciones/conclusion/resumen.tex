@@ -1,0 +1,9 @@
+% !TEX root = ../../main.tex
+
+\section{Resumen del Trabajo}
+
+Esta memoria presentó una extensión experimental de \texttt{ApplicativeDo} en \textsf{GHC} para explorar reordenamientos de statements en bloques \texttt{do} marcados como conmutativos. El punto de partida fue una limitación del algoritmo existente: \texttt{ApplicativeDo} puede descubrir independencia y construir planes applicative, pero preserva el orden relativo original de los statements. Esta decisión es correcta para mónadas arbitrarias, aunque puede ser conservadora cuando la mónada permite conmutar subcómputos independientes.
+
+La solución implementada agrega un mecanismo explícito de opt-in sintáctico. Los bloques escritos como \texttt{CD.do} se reconocen usando un marcador exportado por el módulo conmutativo experimental. Para esos bloques, el Renamer construye un grafo de precedencia basado en dependencias RAW, enumera ordenamientos topológicos válidos, evalúa cada orden con el algoritmo existente de \texttt{ApplicativeDo} y selecciona el candidato de menor costo.
+
+La validación se apoyó en corpus sintéticos para \texttt{Maybe} y para la mónada probabilística \texttt{Dist.T Rational}, además de un control negativo con \texttt{IO}. El ejemplo guía mostró una mejora estricta de costo: ejecución secuencial de costo 4, \texttt{ApplicativeDo} normal de costo 3 y reordenamiento conmutativo de costo 2.

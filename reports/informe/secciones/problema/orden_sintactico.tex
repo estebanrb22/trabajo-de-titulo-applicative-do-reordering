@@ -1,0 +1,9 @@
+% !TEX root = ../../main.tex
+
+\section{Limitación del Orden Sintáctico}
+
+La implementación estándar de \texttt{ApplicativeDo} transforma bloques \texttt{do} preservando el orden relativo de los statements escritos por el programador. Esta restricción es correcta para mónadas arbitrarias: si un bloque contiene efectos observables, como escrituras por pantalla, lectura de archivos o mutación de estado, intercambiar dos acciones puede cambiar el comportamiento del programa.
+
+El costo de esa seguridad es que el algoritmo solo puede descubrir paralelismo cuando este aparece compatible con el orden sintáctico original. Si dos subcómputos independientes no están ubicados en posiciones convenientes, \texttt{ApplicativeDo} puede generar un plan mejor que la ejecución secuencial, pero no necesariamente el mejor plan disponible bajo una hipótesis más fuerte. En particular, para una mónada conmutativa, ciertos statements independientes pueden cambiar de posición sin alterar la semántica. Esa posibilidad no está explotada por el algoritmo base de Marlow et al., porque su diseño debe seguir siendo válido para cualquier mónada \cite{MarlowPJKM2016}.
+
+La limitación estudiada en esta memoria aparece precisamente en esa diferencia: preservar el orden es necesario en el caso general, pero puede ser demasiado conservador cuando el programa declara explícitamente que el bloque se evalúa en una mónada conmutativa. El problema consiste entonces en determinar qué reordenamientos son semánticamente admisibles y si alguno de ellos permite que \texttt{ApplicativeDo} construya un plan de menor costo.

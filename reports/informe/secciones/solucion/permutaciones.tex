@@ -1,0 +1,25 @@
+% !TEX root = ../../main.tex
+
+\section{Permutaciones}
+
+Una vez construido el grafo RAW, la extensión enumera ordenamientos topológicos del grafo. Cada ordenamiento topológico corresponde a una secuencia de statements que respeta todas las aristas de precedencia. Por lo tanto, cada uno representa una forma alternativa de escribir el bloque sin violar dependencias locales.
+
+Para el ejemplo guía, el grafo tiene cinco ordenamientos válidos:
+
+\begin{center}
+\begin{tabular}{cl}
+\hline
+Candidato & Orden de statements \\
+\hline
+0 & \texttt{[1,2,3,4]} \\
+1 & \texttt{[1,3,2,4]} \\
+2 & \texttt{[1,3,4,2]} \\
+3 & \texttt{[3,1,2,4]} \\
+4 & \texttt{[3,1,4,2]} \\
+\hline
+\end{tabular}
+\end{center}
+
+El candidato 0 corresponde al orden original. Los demás candidatos mueven \texttt{s3} o \texttt{s1} sin violar las aristas RAW. Por ejemplo, \texttt{[1,3,2,4]} es válido porque \texttt{s1} sigue antes de \texttt{s2} y \texttt{s4}, y \texttt{s3} sigue antes de \texttt{s4}.
+
+La enumeración de ordenamientos topológicos puede crecer rápidamente con la cantidad de statements independientes. Por ello, la extensión se presenta como experimental: permite estudiar el espacio de planes que se abre bajo conmutatividad, pero la explosión combinatoria debe considerarse una limitación y una línea de trabajo futuro.

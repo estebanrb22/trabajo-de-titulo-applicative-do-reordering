@@ -1,0 +1,47 @@
+% !TEX root = ../../main.tex
+
+\section{Contexto}
+
+La programación probabilística es un paradigma que permite describir modelos con incertidumbre mediante programas que incorporan elecciones probabilísticas. A diferencia de los programas deterministas tradicionales, un programa probabilístico no representa únicamente un valor de salida, sino una distribución de posibles resultados. Esta característica permite razonar directamente sobre distribuciones de probabilidad, logrando así predecir fenómenos inciertos y realizar inferencia probabilística sobre eventos del mundo real.
+
+Estos programas han demostrado ser fundamentales para diversas áreas de la computación, así como en ciberseguridad, mediante sus algoritmos de generación de números aleatorios, al igual que la criptografía, mediante sus protocolos de seguridad. Asimismo, en campos más recientes, este paradigma resulta clave para el entrenamiento de distintos modelos de Machine Learning y el desarrollo de sistemas de Inteligencia Artificial. 
+
+Cabe destacar que, cuando un programa con elecciones probabilísticas se ejecuta en un lenguaje de programación tradicional, el resultado observado suele corresponder a una sola muestra de la distribución inducida por el programa. Por ejemplo, si se modela el lanzamiento de una moneda, una ejecución concreta retornará únicamente uno de sus posibles resultados, como ``cara'' o ``sello''. Sin embargo, desde una perspectiva semántica, el programa no describe solo ese resultado particular, sino una distribución sobre todos los resultados posibles.
+
+En lenguajes funcionales puros como \textsf{Haskell}, es posible representar este tipo de cómputos mediante mónadas de probabilidad. En particular, para distribuciones discretas y finitas, estas mónadas permiten construir explícitamente la distribución inducida por el programa y razonar sobre todos sus posibles resultados. Este proceso corresponde a una forma de inferencia probabilística.
+
+Gracias a la forma en la cual se implementan las mónadas de probabilidad de \textsf{Haskell}, es posible realizar consultas y operaciones sobre la distribución de salida de un programa. Por ejemplo, si se desea inferir la distribución asociada al lanzamiento de una moneda seguido del lanzamiento de un dado, la \textit{do-notation} de las mónadas de \textsf{Haskell} permite usar la siguiente sintaxis:
+
+\begin{verbatim}
+    flipCoinRollDice = do 
+        c <- uniform [Head, Tail]
+        d <- uniform [1 .. 6]
+        return (c, d)
+\end{verbatim}
+
+En el código anterior, se logra apreciar que la variable \verb|c| codifica cada evento de la primera distribución de probabilidad (moneda) y, por otro lado, la variable \verb|d| hace lo propio de manera análoga con la segunda (dado); al formar la tupla con ambos eventos, se obtiene la distribución correspondiente a la ejecución conjunta de los dos experimentos. Siendo más precisos, esta nueva distribución estaría compuesta por doce tuplas de eventos.
+
+Tal como se aprecia en el ejemplo, la \textit{do-notation} es especialmente conveniente para este tipo de programas: cada statement puede introducir una variable aleatoria o una distribución intermedia. Además, los statements posteriores pueden depender de los valores ya definidos anteriormente, como se observa en el segundo ejemplo:
+
+\begin{verbatim}
+    do
+        d1 <- uniform [1 .. 6]
+        d2 <- uniform [1 .. 6]
+        d3 <- uniform [1 .. d1]
+        d4 <- uniform [1 .. d2]
+        return (d3, d4)
+\end{verbatim}
+
+En el ejemplo mostrado se modela la inferencia del lanzamiento de dos dados de forma simultánea \verb|d3| y \verb|d4|, con la particularidad de que la cantidad de caras de cada dado está determinada por el resultado obtenido en los primeros lanzamientos de \verb|d1| y \verb|d2|. Con esto, en la instrucción \verb|return| se generará una nueva distribución con todas las tuplas posibles al lanzar los dados \verb|d3| y \verb|d4| después del proceso de selección de caras definido por \verb|d1| y \verb|d2|. Por lo que las probabilidades resultantes difieren de las habituales.
+
+En este caso, para obtener la tupla \verb|(6,6)| en la distribución de salida, es necesario que en ambos lanzamientos de \verb|d1| y \verb|d2| se obtenga el número 6. Luego, se determina que los dados \verb|d3| y \verb|d4| tendrán 6 caras cada uno y, finalmente, deberán arrojar el número 6 cada uno por separado. En consecuencia, la tupla \verb|(6,6)| tiene una probabilidad asociada de \verb|1/1296|.
+
+El problema yace en que, el uso de la \textit{do-notation} para representar programas probabilísticos no expone por sí sola todo el paralelismo disponible a lo largo del programa. En \textsf{Haskell}, un bloque \texttt{do} es azúcar sintáctica de una composición mediante el operador \textit{bind} \verb|(>>=)|. Este operador permite que el cómputo posterior dependa del valor producido por el cómputo anterior, lo que resulta fundamental para modelar efectos y contextos como estado, entrada/salida, fallas, no determinismo o distribuciones probabilísticas \cite{Wadler1995}. Sin embargo, esa misma generalidad obliga a interpretar el bloque como una secuencia ordenada de efectos, haciendo que este sea inherentemente secuencial.
+
+Una alternativa para resolver esto sería escribir el programa con otra sintaxis, pero manteniendo la misma semántica, de modo que la ejecución pueda ser paralelizada. Sin embargo, esto conllevaría la pérdida de la \textit{do-notation}, la cual es ampliamente utilizada en \textsf{Haskell}; lo ideal sería que esta pudiera seguir utilizándose. 
+
+Esta tensión entre expresividad y paralelización ya ha sido abordada dentro del compilador estándar de \textsf{Haskell}, \textsf{GHC}, mediante la extensión \texttt{ApplicativeDo}, propuesta por Marlow et al. \cite{MarlowPJKM2016}. Esta extensión permite que el compilador analice un bloque escrito con \textit{do-notation} y, cuando las dependencias entre statements lo permiten, lo transforme automáticamente a una expresión que utiliza operadores aplicativos como \verb|(<$>)| y \verb|(<*>)|. De este modo, el programador conserva la sintaxis monádica usual, mientras que el compilador puede generar un plan de ejecución con mayor estructura paralelizable.
+
+La idea central de \texttt{ApplicativeDo} es distinguir qué partes de un bloque \texttt{do} requieren realmente encadenamiento monádico y cuáles pueden evaluarse de manera aplicativa. A diferencia del operador \textit{bind}, una expresión aplicativa fija de antemano la estructura del cómputo, por lo que no necesita esperar el resultado de un statement para decidir la forma del siguiente. Esto permite que \textsf{GHC} aproveche independencia entre subcómputos sin exigir al programador abandonar la \textit{do-notation}. Sin embargo, el algoritmo estándar de \texttt{ApplicativeDo} está diseñado para trabajar sobre mónadas arbitrarias, por lo que es conservador con la estructura original del programa, manteniendo el orden relativo de los statements escritos originalmente por el programador \cite{GHCApplicativeDo}.
+
+Ese orden es necesario para mónadas arbitrarias, porque los efectos pueden ser observables y el intercambio de statements podría cambiar el resultado final del programa. No obstante, en clases particulares de mónadas, como las mónadas conmutativas, ciertos subcómputos independientes entre sí pueden intercambiarse de lugar, alterando solo el orden sintáctico de la \textit{do-notation} sin modificar la semántica original del programa. Esta memoria estudia precisamente esa oportunidad dentro de \textsf{GHC}: extender experimentalmente el mecanismo de \texttt{ApplicativeDo} para que, bajo una marca explícita de conmutatividad, el compilador pueda explorar reordenamientos semánticamente válidos de statements para luego evaluarlos mediante \texttt{ApplicativeDo}, seleccionando así el candidato de menor costo bajo el modelo adoptado.

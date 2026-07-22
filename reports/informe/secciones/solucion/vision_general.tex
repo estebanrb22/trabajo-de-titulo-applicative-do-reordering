@@ -1,0 +1,22 @@
+% !TEX root = ../../main.tex
+
+\section{Visión General}
+
+La solución extiende experimentalmente el flujo de \texttt{ApplicativeDo} en \textsf{GHC}. La idea central es mantener el algoritmo existente de \texttt{ApplicativeDo}, pero entregarle más de un orden posible de statements cuando el bloque fue marcado explícitamente como conmutativo. Cada orden alternativo debe respetar las dependencias RAW locales; luego, el compilador evalúa el costo del plan applicative resultante y selecciona el candidato más barato.
+
+El pipeline general es el siguiente:
+
+\begin{verbatim}
+CD.do
+  -> Renamer
+  -> detección del marcador conmutativo
+  -> construcción del grafo RAW
+  -> enumeración de ordenamientos topológicos
+  -> evaluación con ApplicativeDo
+  -> selección por costo mínimo
+  -> generación de ApplicativeStmt
+\end{verbatim}
+
+La extensión solo cambia el espacio de búsqueda cuando el bloque usa la notación conmutativa experimental. Si el programa usa \texttt{do} normal, o si el módulo calificador no exporta el marcador esperado, el compilador conserva el comportamiento estándar: se evalúa únicamente el orden sintáctico original.
+
+Esta decisión permite separar dos responsabilidades. Por un lado, el programador afirma que el bloque puede tratarse bajo una hipótesis de conmutatividad. Por otro lado, el compilador garantiza que los reordenamientos considerados no violen dependencias locales de variables y que el plan final siga pasando por el mecanismo normal de \texttt{ApplicativeDo}.

@@ -1,0 +1,22 @@
+% !TEX root = ../../main.tex
+
+\section{Cumplimiento de Objetivos}
+
+La Tabla siguiente resume el cumplimiento de los objetivos definidos en la Introducción.
+
+\begin{center}
+\begin{tabular}{p{0.46\textwidth}p{0.40\textwidth}}
+\hline
+Objetivo & Resultado \\
+\hline
+Caracterizar \texttt{ApplicativeDo} en \textsf{GHC}. & Se identificó el flujo del Renamer para \texttt{HsDo}, el punto donde se procesa \texttt{ApplicativeDo} y la construcción de statements aplicativos. \\
+Diseñar un modelo de dependencias locales. & Se definió un grafo RAW usando variables definidas, variables libres y lecturas locales por statement. \\
+Implementar reordenamiento conmutativo. & Se integró la generación de permutaciones topológicas y la evaluación de candidatos dentro del flujo de \texttt{ApplicativeDo}. \\
+Agregar activación explícita y selección de candidatos. & Se agregó el módulo conmutativo público, el marcador de opt-in y la flag de selección forzada por índice. \\
+Validar sobre corpus sintéticos. & Se implementaron y probaron corpus para \texttt{Maybe} y \texttt{Dist.T Rational}, con logs reproducibles de costos, grafos y salidas. \\
+Definir validación con corpus real. & Se incorporó la sección y el protocolo de selección/adaptación dentro del capítulo Validación, pendiente de completar con programas reales. \\
+\hline
+\end{tabular}
+\end{center}
+
+En conjunto, los objetivos técnicos principales quedaron cubiertos por la modificación de \textsf{GHC}, los módulos agregados, los scripts de validación y la documentación del repositorio. La validación con corpus real queda ubicada dentro del plan experimental del informe, no como una extensión conceptual posterior al trabajo.

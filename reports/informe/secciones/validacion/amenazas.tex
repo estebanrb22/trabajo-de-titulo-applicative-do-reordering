@@ -1,0 +1,15 @@
+% !TEX root = ../../main.tex
+
+\section{Amenazas a la Validez}
+
+La evidencia experimental tiene varias amenazas a la validez que deben considerarse al interpretar los resultados.
+
+En primer lugar, una parte importante del corpus es sintética. Esto permite controlar formas de dependencia, patrones de binders y casos de costo, pero no garantiza por sí solo que las mismas oportunidades de reordenamiento aparezcan con frecuencia en programas reales. Por esa razón, el corpus real queda definido como parte de la validación en progreso.
+
+En segundo lugar, la validación semántica compara salidas observables. Esta estrategia es adecuada para los casos finitos evaluados, pero no constituye una prueba formal de preservación semántica para todo programa posible. En el corpus probabilístico, la normalización con \texttt{Dist.norm} reduce diferencias representacionales, pero también fija una convención de comparación que debe mantenerse explícita.
+
+En tercer lugar, la enumeración de permutaciones puede crecer de forma combinatoria. Los casos pequeños permiten inspección exhaustiva, pero programas con muchos statements independientes podrían generar un espacio de búsqueda grande. Esta limitación afecta tanto el costo de compilación como la viabilidad de validar todos los candidatos.
+
+Finalmente, la conmutatividad no es demostrada por \textsf{GHC}. El mecanismo de \texttt{CD.do} representa una afirmación del programador. Si se marca como conmutativo un bloque cuya mónada no preserva semántica bajo intercambio de efectos independientes, el compilador puede generar un programa observablemente distinto. El control con \texttt{IO} ilustra este riesgo.
+
+También debe destacarse que el modelo de costos es uniforme por statement. Este modelo permite comparar planes de manera simple y reproducible, pero no distingue operaciones baratas de operaciones costosas. Un refinamiento de costos anotados o inferidos queda fuera de la implementación actual.

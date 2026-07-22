@@ -1,0 +1,18 @@
+% !TEX root = ../../main.tex
+
+\section{Metodología}
+
+La validación busca comprobar dos propiedades experimentales. Primero, que las permutaciones generadas por la extensión preserven la salida observable de los programas evaluados. Segundo, que el reordenamiento pueda producir planes con menor costo abstracto que \texttt{ApplicativeDo} aplicado únicamente al orden original.
+
+El pipeline de validación compila varias variantes de cada caso:
+
+\begin{itemize}
+    \item el programa original;
+    \item el programa con \texttt{ApplicativeDo} normal, sin marcador conmutativo;
+    \item el candidato óptimo seleccionado automáticamente por la extensión;
+    \item cada permutación válida, forzada mediante la flag de selección de candidato.
+\end{itemize}
+
+Luego, el pipeline ejecuta cada binario, captura \texttt{stdout}, registra el código de salida y compara los resultados contra la referencia. En los casos sintéticos, una validación exitosa exige que las salidas y códigos de salida coincidan. En los casos probabilísticos, los programas imprimen distribuciones normalizadas para evitar diferencias superficiales de representación.
+
+Existen dos modos de ejecución. Los casos que no dependen de paquetes externos pueden compilarse directamente con el \textsf{GHC} modificado. Los casos probabilísticos se validan mediante Cabal, porque usan el paquete \texttt{probability}. En ambos modos, el resultado se guarda bajo \texttt{tests/}, junto con trazas del Renamer, resúmenes de costo y outputs de ejecución.

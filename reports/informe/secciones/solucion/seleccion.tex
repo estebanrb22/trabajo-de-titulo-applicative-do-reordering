@@ -1,0 +1,17 @@
+% !TEX root = ../../main.tex
+
+\section{Selección}
+
+Después de evaluar todas las permutaciones válidas, el compilador debe seleccionar un único candidato final. La política automática implementada es escoger el candidato de menor costo. Si varios candidatos empatan con el mismo costo mínimo, se conserva el primero en el orden de enumeración.
+
+En el ejemplo guía, el candidato 0 tiene costo 3 y los candidatos 1, 2, 3 y 4 tienen costo 2. Por lo tanto, la selección automática elige el candidato 1:
+
+\begin{verbatim}
+candidate-index = 1
+index-order     = [1,3,2,4]
+minimum-cost    = 2
+\end{verbatim}
+
+Los índices de candidatos parten desde 0, porque se usan para seleccionar una permutación generada dentro del conjunto de candidatos. En cambio, los índices de statements parten desde 1, porque identifican la posición original de cada statement dentro del bloque \texttt{do}.
+
+Esta separación es importante para leer las trazas: un \texttt{candidate-index} identifica una permutación en la lista generada, mientras que un \texttt{index-order} describe el orden de statements originales que conforma esa permutación.

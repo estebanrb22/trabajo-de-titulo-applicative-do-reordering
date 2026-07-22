@@ -1,0 +1,20 @@
+% !TEX root = ../../main.tex
+
+\section{Corpus Sintético Maybe}
+
+El primer corpus sintético usa la mónada \texttt{Maybe}. Su objetivo es validar fenómenos estructurales del Renamer y del grafo de precedencia con programas pequeños, deterministas y fáciles de comparar. La descripción completa de los casos está en el archivo \texttt{cases.md} del corpus \texttt{maybe-monad}.
+
+Las familias implementadas cubren los siguientes aspectos:
+
+\begin{itemize}
+    \item \texttt{dependency-shapes}: formas de grafo como cadenas, grafo vacío, diamante, fanout, fanin y cadenas independientes.
+    \item \texttt{binders}: patrones que definen múltiples variables, patrones de lista, patrones anidados, wildcards, as-patterns y patrones lazy.
+    \item \texttt{let-statements}: interacción entre statements \texttt{let}, binders monádicos y shadowing.
+    \item \texttt{body-stmts}: statements sin binder, tanto independientes como dependientes.
+    \item \texttt{maybe-failure}: comportamiento de \texttt{Nothing}, fallos de patrón y guards.
+    \item \texttt{shadowing}: reutilización del mismo nombre fuente con nombres renombrados distintos.
+    \item \texttt{cost-selection}: casos donde el orden original no es mínimo, todos los costos empatan o existe un mínimo único.
+    \item \texttt{controls}: controles negativos y positivos para verificar que el marcador conmutativo activa la extensión solo cuando corresponde.
+\end{itemize}
+
+Este corpus permite aislar errores en la recolección de binders, el cálculo de variables libres locales, la construcción de aristas RAW y la selección de candidatos. El caso guía del informe pertenece a la familia \texttt{cost-selection}: su resumen reporta costo secuencial 4, costo con \texttt{ApplicativeDo} 3 y costo mínimo con reordenamiento 2.

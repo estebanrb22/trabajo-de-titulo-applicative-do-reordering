@@ -1,0 +1,19 @@
+% !TEX root = ../../main.tex
+
+\section{ApplicativeDo Actual}
+
+Al activar \texttt{ApplicativeDo}, \textsf{GHC} puede reemplazar parte del comportamiento monádico por combinadores aplicativos cuando las dependencias lo permiten. Para el orden original del ejemplo, el algoritmo puede construir el siguiente plan:
+
+\begin{verbatim}
+s1 ; (s2 | (s3 ; s4))
+\end{verbatim}
+
+La notación \verb!|! indica composición applicative, mientras que \verb|;| indica dependencia secuencial. En este plan, \texttt{s1} debe ejecutarse primero porque produce \texttt{x1}, usado por \texttt{s2} y \texttt{s4}. Luego, \texttt{s2} puede ejecutarse en paralelo con la secuencia formada por \texttt{s3} y \texttt{s4}. Como \texttt{s4} necesita \texttt{x3}, \texttt{s4} debe quedar después de \texttt{s3} dentro de esa rama.
+
+El costo del plan es:
+
+\[
+1 + \max(1, 1 + 1) = 3
+\]
+
+Esto muestra que \texttt{ApplicativeDo} ya mejora el baseline secuencial. Sin embargo, el resultado todavía depende del orden textual original. El statement \texttt{s3} es independiente de \texttt{s2}, pero aparece después de él; como el algoritmo estándar no reordena statements, no puede evaluar el plan que resultaría de adelantar \texttt{s3}. Esta es la brecha que aborda la extensión propuesta.

@@ -1,19 +1,102 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
-\bibitem{KAR00}
-Ioannis Karatzas. and Steven~E. Shreve.
-\newblock {\em Brownian Motion and Stochastic Calculus}.
-\newblock Springer, Berlin, 2nd edition, 2000.
+\bibitem{RomeroApplicativeDoRepo}
+Esteban~Romero Berríos.
+\newblock Repositorio experimental para el estudio de applicative-do y reordenamiento de statements en ghc, 2026.
+\newblock GitHub repository.
 
-\bibitem{Pro1990}
-Philip Protter.
-\newblock {\em Stochastic Integration and Differential Equations}.
-\newblock Springer, 1990.
+\bibitem{DavisKeller1982}
+Alan~L. Davis and Robert~M. Keller.
+\newblock Data flow program graphs.
+\newblock {\em Computer}, 15(2):26--41, 1982.
 
-\bibitem{GVK25295551X}
-{Daniel} Revuz and {Marc} Yor.
-\newblock {\em Continuous martingales and Brownian motion}.
-\newblock Number 293 in Grundlehren der mathematischen Wissenschaften.
-  Springer, Berlin [u.a.], 3. ed edition, 1999.
+\bibitem{ErwigKollmansberger2006}
+Martin Erwig and Steve Kollmansberger.
+\newblock Functional pearls: Probabilistic functional programming in haskell.
+\newblock {\em Journal of Functional Programming}, 16(1):21--34, 2006.
+
+\bibitem{FuzzRDUCC2025}
+Kai Feng, Jeremy Singer, and Angelos~K. Marnerides.
+\newblock Fuzzrducc: Fuzzing with reconstructed def-use chain coverage, 2025.
+
+\bibitem{ghc_commit_8ecf6d8}
+{GHC Contributors}.
+\newblock Commit 8ecf6d8f7dfee9e5b1844cd196f83f00f3b6b879, 2015.
+\newblock GitHub commit.
+
+\bibitem{GHCApplicativeDoTestsuite}
+{GHC Contributors}.
+\newblock Testsuite de la extensión applicativedo en ghc, 2026.
+\newblock Directorio \texttt{testsuite/tests/ado} del repositorio oficial de GHC.
+
+\bibitem{GHCApplicativeDo}
+The Glasgow Haskell Compiler Team.
+\newblock {\em GHC User's Guide: Applicative do-notation}, 2026.
+\newblock Documentaci\'on oficial de GHC.
+
+\bibitem{HarroldSoffa1994}
+Mary~Jean Harrold and Mary~Lou Soffa.
+\newblock Efficient computation of interprocedural definition-use chains.
+\newblock {\em ACM Transactions on Programming Languages and Systems}, 16(2):175--204, 1994.
+
+\bibitem{Jacobs2018}
+Bart Jacobs.
+\newblock From probability monads to commutative effectuses.
+\newblock {\em Journal of Logical and Algebraic Methods in Programming}, 94:200--237, 2018.
+
+\bibitem{Kock2012}
+Anders Kock.
+\newblock Commutative monads as a theory of distributions.
+\newblock {\em Theory and Applications of Categories}, 26(4):97--131, 2012.
+
+\bibitem{marlow_ado}
+Simon Marlow.
+\newblock ado, 2015.
+\newblock GitHub repository.
+
+\bibitem{MarlowBCP2014}
+Simon Marlow, Louis Brandy, Jonathan Coens, and Jon Purdy.
+\newblock There is no fork: An abstraction for efficient, concurrent, and concise data access.
+\newblock In {\em Proceedings of the 19th ACM SIGPLAN International Conference on Functional Programming}, pages 325--337. ACM, 2014.
+
+\bibitem{MarlowPJKM2016}
+Simon Marlow, Simon~Peyton Jones, Edward Kmett, and Andrey Mokhov.
+\newblock Desugaring {Haskell}'s do-notation into applicative operations.
+\newblock In {\em Proceedings of the 9th International Symposium on Haskell}, pages 92--104. ACM, 2016.
+
+\bibitem{MarlowNPJ2011}
+Simon Marlow, Ryan Newton, and Simon~Peyton Jones.
+\newblock A monad for deterministic parallelism.
+\newblock In {\em Proceedings of the 4th ACM SIGPLAN Symposium on Haskell}, pages 71--82. ACM, 2011.
+
+\bibitem{McBride2008}
+Conor McBride and Ross Paterson.
+\newblock Applicative programming with effects.
+\newblock {\em Journal of Functional Programming}, 18(1):1--13, 2008.
+
+\bibitem{Mokhov2019}
+Andrey Mokhov, Georgy Lukyanov, Simon Marlow, and Jeremie Dimino.
+\newblock Selective applicative functors.
+\newblock {\em Proceedings of the ACM on Programming Languages}, 3(ICFP):1--29, 2019.
+
+\bibitem{Pombrio2018}
+Justin Pombrio.
+\newblock {\em Resugaring: Lifting Evaluation Sequences through Syntactic Sugar}.
+\newblock PhD thesis, Brown University, 2018.
+
+\bibitem{ScibiorGG2015}
+Adam {\'S}cibior, Zoubin Ghahramani, and Andrew~D. Gordon.
+\newblock Practical probabilistic programming with monads.
+\newblock In {\em Proceedings of the 8th ACM SIGPLAN Symposium on Haskell}, pages 165--176. ACM, 2015.
+
+\bibitem{Wadler1995}
+Philip Wadler.
+\newblock Monads for functional programming.
+\newblock In {\em Advanced Functional Programming}, volume 925 of {\em Lecture Notes in Computer Science}, pages 24--52. Springer, 1995.
+
+\bibitem{Yorgey2009}
+Brent Yorgey.
+\newblock The typeclassopedia.
+\newblock {\em The Monad.Reader}, 13:17--68, 2009.
 
 \end{thebibliography}

@@ -1,0 +1,25 @@
+% !TEX root = ../../main.tex
+
+\section{Control IO}
+
+El control con \texttt{IO} muestra por qué el reordenamiento no puede activarse para mónadas arbitrarias. En \texttt{IO}, dos acciones que no comparten variables pueden tener efectos observables cuyo orden importa. Por ejemplo, dos impresiones independientes pueden producir salidas distintas si se intercambian.
+
+El log de validación del control negativo registra dos permutaciones. La permutación original imprime:
+
+\begin{verbatim}
+A
+B
+3
+\end{verbatim}
+
+Una permutación alternativa imprime:
+
+\begin{verbatim}
+B
+A
+3
+\end{verbatim}
+
+La comparación semántica detecta la diferencia y termina con \texttt{RESULT: FAIL}. Este resultado no invalida la solución; al contrario, confirma la necesidad del mecanismo de opt-in. El compilador no debe asumir conmutatividad por ausencia de dependencias RAW, porque los efectos observables pueden seguir dependiendo del orden.
+
+Por esta razón, la extensión solo explora reordenamientos cuando el bloque fue marcado explícitamente como conmutativo mediante \texttt{CD.do}. Para bloques \texttt{do} normales, \texttt{ApplicativeDo} conserva el comportamiento estándar y no se habilita la enumeración de permutaciones conmutativas.

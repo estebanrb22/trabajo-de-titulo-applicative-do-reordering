@@ -1,0 +1,11 @@
+% !TEX root = ../../main.tex
+
+\section{Limitaciones}
+
+La primera limitación es semántica: \textsf{GHC} no prueba que una mónada sea conmutativa. El mecanismo implementado se basa en una declaración explícita del programador mediante \texttt{CD.do}. Si esa declaración es incorrecta, el compilador puede aceptar reordenamientos que cambien efectos observables, como ilustra el control con \texttt{IO}.
+
+La segunda limitación es combinatoria. Enumerar ordenamientos topológicos puede ser costoso cuando el bloque tiene muchos statements independientes. El prototipo permite estudiar exhaustivamente casos pequeños y medianos, pero requiere estrategias adicionales para escalar a programas de mayor tamaño.
+
+La tercera limitación está en la validación. Comparar salidas observables entrega evidencia práctica para los casos evaluados, pero no equivale a una prueba formal de preservación semántica para todos los programas. En el corpus probabilístico, la normalización de distribuciones reduce diferencias representacionales, pero también fija una convención específica de comparación.
+
+Finalmente, el modelo de costos es uniforme por statement. Esta simplificación permite comparar estructura de planes de manera reproducible, pero no distingue entre statements baratos y costosos. Por lo tanto, el menor costo abstracto no necesariamente equivale al menor tiempo de ejecución real.

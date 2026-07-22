@@ -1,0 +1,16 @@
+% !TEX root = ../../main.tex
+
+\section{Contribuciones}
+
+Las principales contribuciones de esta memoria son:
+
+\begin{itemize}
+    \item Una extensión experimental del Renamer de \textsf{GHC} que intercepta bloques \texttt{do} procesados por \texttt{ApplicativeDo} y, cuando corresponde, genera órdenes alternativos de statements.
+    \item Un mecanismo de activación explícito basado en \texttt{QualifiedDo}: los programas importan el módulo agregado \texttt{Control.Monad.CommutativeDo} como \texttt{CD} y usan bloques \texttt{CD.do}; el módulo exporta un marcador explícito que indica al compilador que el bloque puede tratarse bajo la hipótesis de conmutatividad.
+    \item La construcción de un grafo de precedencia con dependencias \textit{Read-After-Write} a partir de la información disponible en el Renamer de \textsf{GHC}: variables definidas por cada statement y variables libres locales usadas por statements posteriores.
+    \item La enumeración de ordenamientos topológicos válidos para ese grafo, junto con la evaluación de cada permutación mediante el algoritmo existente de \texttt{ApplicativeDo}.
+    \item Un criterio de selección automática por costo mínimo y una flag experimental para forzar candidatos individuales durante la validación semántica.
+    \item Corpus sintéticos de evaluación para \texttt{Maybe} y para \texttt{Dist.T Rational}, además de un pipeline reproducible que registra trazas, planes de ejecución, costos y resultados comparados.
+    \item Un corpus real de programas probabilísticos seleccionado, adaptado y validado para evaluar la extensión fuera de casos sintéticos, considerando criterios de comparación semántica y costos asociados a los planes de ejecución generados.
+    \item Documentación técnica, parches de GHC y scripts de validación disponibles en el repositorio de la memoria \cite{RomeroApplicativeDoRepo}.
+\end{itemize}

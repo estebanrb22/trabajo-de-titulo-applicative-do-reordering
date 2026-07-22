@@ -1,0 +1,19 @@
+% !TEX root = ../../main.tex
+
+\section{Ejecución Secuencial}
+
+El punto de comparación más simple es ejecutar el bloque en el orden monádico original, sin aprovechar \texttt{ApplicativeDo}. En ese escenario, cada statement debe esperar la finalización del anterior, aun cuando no exista una dependencia directa entre ellos.
+
+Con el modelo de costos usado por \texttt{ApplicativeDo}, cada statement elemental tiene costo unitario. Por lo tanto, el plan secuencial del ejemplo es:
+
+\begin{verbatim}
+s1 ; s2 ; s3 ; s4
+\end{verbatim}
+
+Su costo total es la suma de los cuatro statements:
+
+\[
+1 + 1 + 1 + 1 = 4
+\]
+
+Este valor fija el baseline del capítulo. Las transformaciones posteriores se comparan contra este costo para mostrar primero la mejora obtenida por \texttt{ApplicativeDo} y luego la mejora adicional obtenida al permitir reordenamiento conmutativo.

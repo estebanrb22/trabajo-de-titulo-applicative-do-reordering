@@ -1,0 +1,21 @@
+% !TEX root = ../../main.tex
+
+\section{Resultados}
+
+Los resultados completos se obtienen desde los logs de resumen y de validación semántica generados para cada caso. En el estado actual del repositorio, los corpus sintéticos de \texttt{Maybe} y de \texttt{Dist.T Rational} están implementados y testeados; la tabla agregada final debe consolidar esos registros por familia y variante.
+
+Como resultado representativo, el caso guía de \texttt{Maybe} reporta:
+
+\begin{center}
+\begin{tabular}{lccccc}
+\hline
+Caso & Sec. & ADo & Reord. & Perms. & Mínimas \\
+\hline
+Ejemplo guía \texttt{Maybe} & 4 & 3 & 2 & 5 & 4 \\
+\hline
+\end{tabular}
+\end{center}
+
+La tabla muestra la mejora estricta que motiva la memoria: el costo secuencial es 4, \texttt{ApplicativeDo} sobre el orden original reduce el costo a 3, y el reordenamiento conmutativo encuentra un plan de costo 2. Además, el caso genera cinco permutaciones válidas, de las cuales cuatro alcanzan el costo mínimo.
+
+Para el corpus probabilístico, la tabla final debe reportar los mismos campos, junto con el resultado semántico de cada caso. La comparación debe realizarse sobre distribuciones normalizadas con \texttt{Dist.norm}. Para el corpus real, esta sección debe incorporar los resultados una vez que los programas hayan sido seleccionados y ejecutados con el mismo protocolo.

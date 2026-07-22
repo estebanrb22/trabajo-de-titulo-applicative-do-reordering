@@ -1,0 +1,11 @@
+% !TEX root = ../../main.tex
+
+\section{Información del Renamer}
+
+La implementación se ubica en el Renamer, antes del typechecker y del desugarer. Esta etapa resulta conveniente porque los statements del bloque \texttt{do} ya fueron renombrados y el compilador conserva información sobre variables libres. En particular, el flujo de \texttt{HsDo} usa \texttt{rnStmtsWithFreeVars} para renombrar los statements y entregar, junto a cada uno, el conjunto de nombres libres que aparecen en su cuerpo.
+
+La extensión aprovecha dos fuentes de información. La primera son las variables libres de cada statement, que permiten saber qué nombres son leídos. La segunda son los binders definidos por el statement, obtenidos mediante la utilidad \texttt{collectStmtBinders}. Con ambas se calculan lecturas locales y escrituras locales dentro del bloque.
+
+Esta decisión evita introducir un análisis posterior sobre Core o sobre una representación desazucarada. El reordenamiento ocurre antes de que \texttt{ApplicativeDo} convierta el bloque en \texttt{ApplicativeStmt}, de modo que el algoritmo todavía puede trabajar directamente sobre la lista de statements de la \textit{do-notation}.
+
+Además, al trabajar después del renombrado, las variables locales se representan mediante nombres únicos. Esto simplifica el modelo de dependencias usado por la implementación: la restricción central es que toda lectura local debe quedar después de la escritura que introduce ese nombre.

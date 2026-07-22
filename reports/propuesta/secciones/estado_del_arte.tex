@@ -27,7 +27,6 @@ Una vez que la expresión \verb|do| ha sido transformada en un elemento de la si
 
 \FloatBarrier
 
-
 El proceso ya mencionado \textit{rearrangement} se encarga de generar un plan de ejecución óptimo, asociado a la cadena de \textit{statements} \verb|{s1; ...; sn}|, determinando qué segmentos se pueden paralelizar y cuáles no. La función principal de este proceso toma como nombre \verb|rearrange|. Esta última, en primera instancia, realiza un barrido secuencial de \verb|{s1; ...; sn}| para identificar los segmentos paralelizables de manera inmediata, utilizando e invocando la función \verb|segments|.
 
 Continuando con lo anterior, la función \verb|segments| iterará sobre las posibles separaciones entre los \textit{statements}. En otras palabras, dado un conjunto de \verb|n| \textit{statements}, se consideran las \verb|n-1| separaciones posibles. Para cada separación \verb|i|, se verifica si la intersección entre el conjunto de variables definidas en \verb|{s1; ...; si}| y el conjunto de variables libres en \verb|{si+1, ..., sn}| es vacía. De ser así, se puede realizar un corte en \verb|i|, ya que no existen dependencias entre ambos grupos de \textit{statements}. Por el contrario, si la intersección no es vacía, se descarta el corte en \verb|i| debido a las dependencias existentes.

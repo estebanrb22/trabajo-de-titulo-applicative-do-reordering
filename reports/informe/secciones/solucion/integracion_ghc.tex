@@ -1,0 +1,18 @@
+% !TEX root = ../../main.tex
+
+\section{Integración en GHC}
+
+La implementación principal se integra en \textsf{GHC}, no como una herramienta externa de reescritura. El cambio central está en el módulo \texttt{GHC.Rename.Expr}, específicamente en el flujo que procesa expresiones \texttt{HsDo} y llama a \texttt{postProcessStmtsForApplicativeDo}. Allí, después de renombrar los statements, la extensión puede decidir si corresponde ejecutar el reordenamiento conmutativo.
+
+Los componentes principales de la integración son:
+
+\begin{itemize}
+    \item \texttt{GHC.Rename.Expr}: contiene la detección del bloque conmutativo, construcción del grafo, enumeración de permutaciones, evaluación de candidatos y selección final.
+    \item \texttt{GHC.Internal.Control.Monad.CommutativeDo}: define el módulo interno con el marcador conmutativo y las operaciones para \texttt{QualifiedDo}.
+    \item \texttt{Control.Monad.CommutativeDo}: expone el módulo público usado por los experimentos.
+    \item \texttt{GHC.Driver.DynFlags} y \texttt{GHC.Driver.Session}: registran la flag experimental de selección de candidato.
+\end{itemize}
+
+Las rutas completas se mantienen documentadas en el repositorio y en los anexos técnicos; en el cuerpo principal basta con identificar los módulos y su responsabilidad.
+
+El resultado final vuelve al flujo normal de \texttt{ApplicativeDo}. Una vez elegido el árbol de statements, \textsf{GHC} reconstruye los statements finales y produce \texttt{ApplicativeStmt} cuando el plan lo permite. Los detalles más densos de funciones internas y trazas se reservan para los anexos y la documentación técnica del repositorio.

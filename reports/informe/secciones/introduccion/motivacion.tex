@@ -1,0 +1,11 @@
+% !TEX root = ../../main.tex
+
+\section{Motivación}
+
+La motivación principal de esta memoria surge del costo asociado a la inferencia en programas probabilísticos. Cuando una mónada de probabilidad representa explícitamente una distribución discreta, cada combinación de elecciones probabilísticas puede aumentar la cantidad de resultados que deben considerarse. En este escenario, la posibilidad de exponer independencia entre subcómputos no es solo una mejora sintáctica, sino una oportunidad para obtener planes de ejecución más convenientes que usarían de mejor manera los recursos disponibles como el multihilo.
+
+Aunque \texttt{ApplicativeDo} permite que \textsf{GHC} transforme fragmentos de \textit{do-notation} a expresiones aplicativas, su análisis parte del orden escrito por el programador. Esto significa que la independencia entre subcómputos puede existir semánticamente, pero permanecer oculta por la secuencia sintáctica original. En tales casos, el algoritmo estándar puede generar un plan de ejecución correcto, pero no necesariamente el mejor plan disponible si se permitieran reordenamientos seguros.
+
+Una forma manual y directa de resolver este problema sería reescribir el programa para ubicar statements independientes en posiciones más favorables para \texttt{ApplicativeDo}. Sin embargo, esa solución traslada al programador una responsabilidad que podría abordarse en el compilador. Además, obliga a modificar la organización natural del programa, afectando la legibilidad y la mantenibilidad de la \textit{do-notation}, precisamente una de las razones por las que esta sintaxis resulta atractiva en \textsf{Haskell}.
+
+Por ello, resulta relevante estudiar si el criterio conservador de \texttt{ApplicativeDo} puede especializarse bajo una hipótesis semántica adicional. En particular, cuando la mónada utilizada es tratada explícitamente como conmutativa, ciertos statements independientes pueden intercambiarse sin alterar el significado del programa. Esta observación motiva extender experimentalmente el pipeline de \textsf{GHC} para explorar órdenes alternativos, evaluar cada uno mediante el algoritmo existente de \texttt{ApplicativeDo} y seleccionar aquel que ofrezca el menor costo bajo el modelo adoptado.

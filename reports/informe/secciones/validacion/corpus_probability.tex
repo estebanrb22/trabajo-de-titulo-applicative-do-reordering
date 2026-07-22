@@ -1,0 +1,20 @@
+% !TEX root = ../../main.tex
+
+\section{Corpus Sintético Probabilístico}
+
+El segundo corpus sintético usa la mónada probabilística \texttt{Dist.T Rational} del paquete \texttt{probability}. Este corpus conecta la extensión con el dominio principal de la memoria: programas probabilísticos finitos escritos en \textsf{Haskell}. Su descripción completa está en el archivo \texttt{cases.md} del corpus \texttt{probability-monad}.
+
+Los programas probabilísticos imprimen una salida canónica usando \texttt{Dist.norm}. Esta normalización agrupa resultados iguales y suma sus probabilidades, evitando que dos representaciones internas equivalentes se comparen como diferentes por el pipeline. La comparación sigue siendo byte a byte, pero sobre una representación normalizada de la distribución.
+
+El corpus reutiliza varias familias estructurales de \texttt{Maybe}, como formas de dependencia, binders, \texttt{let}, \texttt{BodyStmt}, shadowing, selección por costo y controles. Además, incorpora familias específicas de probabilidades:
+
+\begin{itemize}
+    \item distribuciones independientes con pesos no uniformes;
+    \item resultados duplicados que deben sumarse al normalizar;
+    \item soportes dependientes de valores generados previamente;
+    \item pesos dependientes de binders anteriores;
+    \item distribuciones construidas con \texttt{Dist.choose}, \texttt{Dist.relative} o \texttt{Dist.fromFreqs};
+    \item condicionamiento explícito mediante distribuciones imposibles o filtrado.
+\end{itemize}
+
+Esta separación permite validar dos dimensiones: que el Renamer se comporte igual que en el corpus estructural y que la semántica probabilística observable se conserve después del reordenamiento.
