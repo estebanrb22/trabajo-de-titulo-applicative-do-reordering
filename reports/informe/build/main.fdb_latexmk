@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex build/main"] 1784755801.2355 "build/main.aux" "build/main.bbl" "build/main" 1784755802.20865 0
+["bibtex build/main"] 1784905289.63273 "build/main.aux" "build/main.bbl" "build/main" 1784905290.33031 0
   "./bibliografia.bib" 1784752999.31681 6973 d833f5000706db03e62b22101650aa17 ""
   "/usr/share/texmf-dist/bibtex/bst/base/plain.bst" 1775415801 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "build/main.aux" 1784755802.07357 8970 48fe394708026477b65b692b1c02f3b1 "pdflatex"
+  "build/main.aux" 1784905290.26688 9067 45a4185cbaeb3ad3bc52d9d170a646a2 "pdflatex"
   (generated)
   "build/main.bbl"
   "build/main.blg"
   (rewritten before read)
-["pdflatex"] 1784755801.25598 "main.tex" "main.pdf" "main" 1784755802.20879 0
+["pdflatex"] 1784905289.65608 "main.tex" "main.pdf" "main" 1784905290.33043 0
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1775415801 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/share/texmf-dist/fonts/tfm/jknappen/ec/tcrm1200.tfm" 1775415801 1536 74b7293ec3713bb7fdca8dd1bd1f469c ""
   "/usr/share/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1775415801 1004 54797486969f23fa377b128694d548df ""
@@ -134,12 +134,12 @@
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1775415801 43569 fd570f2fa160877d211e859f687312ba ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1781894314 325717 59a65e600f662ceace641c3ea8b5d4af ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1781895236 2349408 331bf37453d9059f12bbf038a9eacaa1 ""
-  "build/main.aux" 1784755802.07357 8970 48fe394708026477b65b692b1c02f3b1 "pdflatex"
-  "build/main.bbl" 1784755801.24857 3916 091f9ebdadb44982abcb7a3df18e506c "bibtex build/main"
-  "build/main.lof" 1784755802.07664 449 108f6b31d489b7981086fb01a285793c "pdflatex"
-  "build/main.lot" 1784755802.07664 170 ac5b3f75184f0315fba1c6fbf15825fc "pdflatex"
-  "build/main.out" 1784755802.07557 7357 407f780fbec08ac0ad5b5e06571a9ddc "pdflatex"
-  "build/main.toc" 1784755802.07664 4163 7a31a4726ba7952743b35ab332c25810 "pdflatex"
+  "build/main.aux" 1784905290.26688 9067 45a4185cbaeb3ad3bc52d9d170a646a2 "pdflatex"
+  "build/main.bbl" 1784905289.64988 3916 091f9ebdadb44982abcb7a3df18e506c "bibtex build/main"
+  "build/main.lof" 1784905290.26913 449 108f6b31d489b7981086fb01a285793c "pdflatex"
+  "build/main.lot" 1784905290.26913 170 ac5b3f75184f0315fba1c6fbf15825fc "pdflatex"
+  "build/main.out" 1784905290.26788 7357 407f780fbec08ac0ad5b5e06571a9ddc "pdflatex"
+  "build/main.toc" 1784905290.26913 4164 12f311bb000c017eafcadf8f0bcc010e "pdflatex"
   "imagenes/desugar.png" 1782412870 139341 cb12f914f2b4685f86a3c7d1f2e7d3e4 ""
   "imagenes/escudoU2014.pdf" 1632446232 43308 6bdf0b57311ff58ead5d8849e1baa122 ""
   "imagenes/rearrangement.png" 1782412870 151142 4d08408c85a169420c70c6c803b05dc1 ""
@@ -164,7 +164,7 @@
   "secciones/marco_teorico.tex" 1784752999.31681 308 6bda652d46ab327d3a52e0736d3b7ea3 ""
   "secciones/marco_teorico/applicative_do.tex" 1784414489.73292 3076 f77727b0ed2c99aba39302d0c33ae74f ""
   "secciones/marco_teorico/do_notation.tex" 1784143903.01346 1471 61ea5eef2bf4fe55981c360ee29e6efe ""
-  "secciones/marco_teorico/functor_applicative_monad.tex" 1784755800.10557 14267 97432d9c8f248494db1fc806b08111d9 ""
+  "secciones/marco_teorico/functor_applicative_monad.tex" 1784905288.81287 16250 7ed0011b3e59d696c028c96579e88475 ""
   "secciones/marco_teorico/monadas_conmutativas.tex" 1784143903.10146 1843 3410bc2837a35a18d8397c798bfa4fe2 ""
   "secciones/marco_teorico/monadas_probabilidad.tex" 1784143903.05346 1956 54a7c4d5dccef023e092ee658ad759b1 ""
   "secciones/portada.tex" 1782422012.79285 771 9b16b9a2463618ad301aabbf1d921bdc ""

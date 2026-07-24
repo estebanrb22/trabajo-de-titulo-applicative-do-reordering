@@ -75,3 +75,4 @@
 - Se revirtió íntegramente la revisión anterior de `secciones/marco_teorico/functor_applicative_monad.tex` por solicitud del autor, restaurando el contenido previo sin pérdidas.
 - También se retiraron los cambios auxiliares asociados exclusivamente a esa revisión: el marcado `revisionblue`, las referencias `Haskell2010` y `GHCPrelude`, y el traslado de la introducción general al wrapper del capítulo.
 - Se recompiló `main.tex` después de la restauración; el informe se generó correctamente y no quedaron referencias residuales de la revisión revertida.
+- Se corrigió la atribución de citas en la introducción de `secciones/marco_teorico/functor_applicative_monad.tex`: `ApplicativeDo` quedó respaldado por Marlow et al. y la guía de GHC, la conmutatividad por Kock y Jacobs, y la jerarquía funcional por Wadler, McBride y Yorgey.

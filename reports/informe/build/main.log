@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.19)  22 JUL 2026 17:30
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.19)  24 JUL 2026 11:01
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -546,23 +546,23 @@ Cap\'{\i }tulo 1.
 Cap\'{\i }tulo 2.
 (./secciones/marco_teorico/functor_applicative_monad.tex [6
 
-] [7] [8] [9]) (./secciones/marco_teorico/do_notation.tex [10]) (./secciones/marco_teorico/monadas_conmutativas.tex
+] [7] [8] [9] [10]) (./secciones/marco_teorico/do_notation.tex [11]) (./secciones/marco_teorico/monadas_conmutativas.tex
 Overfull \hbox (1.4873pt too wide) in paragraph at lines 5--6
 []\OT1/cmr/m/n/12 Una m^^Sona-da con-mu-ta-ti-va es, en t^^Sermi-nos ope-ra-cio-na-les, una m^^Sona-da don-de cier-tos c^^Sompu-
  []
 
-[11]) (./secciones/marco_teorico/monadas_probabilidad.tex) (./secciones/marco_teorico/applicative_do.tex [12]
-<imagenes/rearrangement.png, id=415, 533.74406pt x 550.30594pt>
+) (./secciones/marco_teorico/monadas_probabilidad.tex [12]) (./secciones/marco_teorico/applicative_do.tex
+<imagenes/rearrangement.png, id=417, 533.74406pt x 550.30594pt>
 File: imagenes/rearrangement.png Graphic file (type png)
 <use imagenes/rearrangement.png>
 Package pdftex.def Info: imagenes/rearrangement.png  used on input line 13.
 (pdftex.def)             Requested size: 401.22942pt x 413.69409pt.
-<imagenes/desugar.png, id=417, 507.39563pt x 544.28343pt>
+<imagenes/desugar.png, id=419, 507.39563pt x 544.28343pt>
 File: imagenes/desugar.png Graphic file (type png)
 <use imagenes/desugar.png>
 Package pdftex.def Info: imagenes/desugar.png  used on input line 22.
 (pdftex.def)             Requested size: 401.22942pt x 430.41107pt.
-)) (./secciones/problema.tex [13] [14 <./imagenes/rearrangement.png (PNG copy)>] [15 <./imagenes/desugar.png (PNG copy)>]
+ [13])) (./secciones/problema.tex [14 <./imagenes/rearrangement.png (PNG copy)>] [15 <./imagenes/desugar.png (PNG copy)>]
 Cap\'{\i }tulo 3.
 (./secciones/problema/orden_sintactico.tex [16
 
@@ -624,10 +624,10 @@ Here is how much of TeX's memory you used:
  40 hyphenation exceptions out of 8191
  90i,9n,93p,957b,825s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on build/main.pdf (49 pages, 518254 bytes).
+Output written on build/main.pdf (49 pages, 519839 bytes).
 PDF statistics:
- 623 PDF objects out of 1000 (max. 8388607)
- 545 compressed objects within 6 object streams
+ 627 PDF objects out of 1000 (max. 8388607)
+ 549 compressed objects within 6 object streams
  135 named destinations out of 1000 (max. 500000)
  440 words of extra memory for PDF output out of 10000 (max. 10000000)
 
