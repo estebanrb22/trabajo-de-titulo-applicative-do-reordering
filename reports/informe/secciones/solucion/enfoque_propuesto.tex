@@ -1,0 +1,47 @@
+% !TEX root = ../../main.tex
+
+\section{Enfoque Propuesto}
+\label{sec:solucion-enfoque}
+
+La brecha formulada en la Sección~\ref{sec:problema-formulacion} motiva ampliar los órdenes que \texttt{ApplicativeDo} recibe como entrada, sin reemplazar su algoritmo ni modificar el tratamiento de mónadas arbitrarias. La extensión desarrollada incorpora esta exploración únicamente cuando el programa declara un bloque con \textit{do-notation} puede tratarse bajo la hipótesis de conmutatividad, explorada en la Sección~\ref{sec:monadas-conmutativas}.
+
+Esta declaración debe ser explícita y local al bloque. Un bloque \texttt{do} ordinario continúa usando solo el orden escrito por el programador, mientras que un bloque marcado mediante la notación conmutativa queda habilitado para explorar órdenes alternativos. De este modo, la generación de estos reordenamientos se puede activar o desactivar desde el programa sin cambiar globalmente el tratamiento de otros bloques ni exigir que el compilador intente demostrar una propiedad semántica de la mónada.
+
+Sobre un bloque \texttt{do} habilitado, la solución identifica primero las dependencias locales entre sus statements. Estas dependencias determinan qué precedencias deben conservarse y, por tanto, qué reordenamientos mantienen la semántica del programa. A partir de ellas se generan todos los reordenamientos que preservan dichas precedencias. Dentro del alcance experimental de esta memoria, la hipótesis declarada de conmutatividad permite considerar equivalentes los intercambios entre cómputos; la ausencia de una dependencia local, por sí sola, no sería suficiente para autorizar el intercambio sobre una mónada arbitraria.
+
+Cada reordenamiento se entrega como input al algoritmo existente de \texttt{ApplicativeDo}. Como se explicó en la Sección~\ref{sec:applicative-do-rearrange}, este algoritmo conserva el orden de statements recibido, representando estos mediante una combinación de secuencias monádicas y agrupaciones aplicativas. La extensión desarrollada compara los árboles resultantes del proceso de \textit{rearrange} mediante el modelo de costo de la Expresión~\ref{expr:modelo-costos-estructural} y selecciona el primer candidato que posea el menor costo entre los arboloes generados. Luego, el \textit{pipeline} del algoritmo de \texttt{ApplicativeDo} continúa en la etapa de \textit{desaugaring} recibiendo el arbol generado por el reordenamiento óptimo con costo menor. Por consiguiente, la contribución amplía el espacio de búsqueda, mientras que \texttt{ApplicativeDo} sigue siendo responsable de construir el plan para cada orden. La Figura~\ref{fig:solucion-pipeline-conceptual} resume este proceso:
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[
+    node distance=1.05cm and 1.15cm,
+    solution step/.style={
+        draw=codeframe,
+        fill=codebg,
+        rounded corners=2pt,
+        minimum width=3.25cm,
+        minimum height=1.05cm,
+        text width=2.9cm,
+        align=center,
+        font=\small
+    },
+    solution arrow/.style={precedence edge,draw=codekeyword,line width=0.7pt}
+]
+    \node[solution step] (marked) {Bloque declarado como conmutativo};
+    \node[solution step,right=of marked] (deps) {Extracción de dependencias locales};
+    \node[solution step,right=of deps] (orders) {Generación de reordenamientos válidos};
+    \node[solution step,below=of orders] (ado) {Evaluación mediante \texttt{ApplicativeDo}};
+    \node[solution step,left=of ado] (cost) {Cálculo y comparación de costos};
+    \node[solution step,left=of cost] (selected) {Selección del candidato de menor costo};
+
+    \draw[solution arrow] (marked) -- (deps);
+    \draw[solution arrow] (deps) -- (orders);
+    \draw[solution arrow] (orders) -- (ado);
+    \draw[solution arrow] (ado) -- (cost);
+    \draw[solution arrow] (cost) -- (selected);
+\end{tikzpicture}
+\caption{Pipeline conceptual de la extensión propuesta.}
+\label{fig:solucion-pipeline-conceptual}
+\end{figure}
+
+El enfoque separa así dos responsabilidades. El programador afirma que el orden de efectos independientes puede intercambiarse en el bloque \texttt{do} marcado. El compilador, por su parte, restringe la exploración a reordenamientos que conservan las relaciones locales de definición y uso de variables, evalúa todos los planes generados por la etapa de \textit{rearrange} y selecciona el menos costoso, manteniendo sin modificaciones la compilación de los bloques \texttt{do} que no son declarados como conmutativos.

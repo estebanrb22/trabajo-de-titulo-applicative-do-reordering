@@ -1,25 +1,33 @@
 % !TEX root = ../../main.tex
 
 \section{Do-Notation}
+\label{sec:do-notation}
 
-La \textit{do-notation} es una sintaxis de \textsf{Haskell} para escribir cómputos monádicos de forma secuencial. Un bloque \texttt{do} contiene statements que pueden vincular resultados intermedios y usarlos en los statements posteriores. Por ejemplo:
+La \textit{do-notation} es una sintaxis de \textsf{Haskell} para escribir cómputos monádicos de forma secuencial. Un bloque \texttt{do} contiene statements que pueden vincular resultados intermedios y utilizarlos en los statements posteriores. Esta notación no define una forma nueva de composición, sino que proporciona una escritura más directa para expresiones construidas mediante las operaciones monádicas \verb|(>>=)|, \verb|(>>)| y \texttt{fail}, además de contemplar una regla propia para declaraciones \texttt{let} \cite[sección~3.14]{Haskell2010}.
 
-\begin{verbatim}
-example :: Maybe Int
-example = do
-  x <- Just 1
-  y <- Just (x + 1)
-  return (x + y)
-\end{verbatim}
+Para observar la motivación de esta sintaxis, se retomará la suma de dos valores de tipo \texttt{Maybe} presentada mediante el operador \textit{bind} en el Código~\ref{lst:monad-maybe-sum}. Aunque la expresión es compacta, la acumulación de operadores, funciones anónimas y paréntesis dificulta distinguir su estructura a simple vista.
 
-Intuitivamente, este bloque se traduce a una composición con \verb|(>>=)|, donde el cuerpo posterior queda dentro de una función que recibe el valor producido por el statement anterior:
+El Código~\ref{lst:monad-maybe-sum-multiline} distribuye la misma expresión en varias líneas, sin cambiar el orden ni la agrupación de sus operaciones, para mostrar con mayor claridad el flujo de definición y composición de los cómputos:
 
-\begin{verbatim}
-Just 1 >>= \x ->
-Just (x + 1) >>= \y ->
-return (x + y)
-\end{verbatim}
+\begin{lstlisting}[style=haskell,caption={Forma multilínea de la suma monádica sobre \texttt{Maybe}.},label={lst:monad-maybe-sum-multiline}]
+Just 3 >>= (\x ->
+    Just 2 >>= (\y ->
+        return ((+) x y)))
+\end{lstlisting}
 
-La consecuencia es que el orden de los statements no es solo una decisión estética. En el ejemplo, \texttt{y} depende de \texttt{x}, porque la expresión \texttt{Just (x + 1)} usa una variable definida antes. Si se intentara mover el segundo statement antes del primero, el programa dejaría de estar bien formado: \texttt{x} todavía no estaría en alcance.
+La indentación permite reconocer que la composición con \texttt{Just 2} se encuentra dentro de la función que introduce \texttt{x}, mientras que \texttt{return} cierra la composición utilizando los identificadores \texttt{x} e \texttt{y}. Este cambio es únicamente visual: la expresión conserva la semántica del Código~\ref{lst:monad-maybe-sum} y produce \texttt{Just 5}.
 
-Esta observación introduce la noción de dependencia \textit{def-use}: un statement que usa una variable local debe mantenerse después del statement que la define. La extensión propuesta en esta memoria conserva esta restricción. Su aporte consiste en explorar cambios de orden solamente cuando no violan esas dependencias locales y cuando el bloque fue marcado bajo una hipótesis de conmutatividad.
+La \textit{do-notation} permite expresar este mismo flujo sin escribir de forma explícita las funciones anónimas ni las aplicaciones sucesivas de \verb|(>>=)|. En un statement de la forma \verb|p <- e|, la expresión \texttt{e} representa el cómputo y el patrón \texttt{p} vincula su resultado para que pueda utilizarse en los statements posteriores. El Código~\ref{lst:do-notation-maybe-sum} presenta la escritura equivalente:
+
+\noindent\begin{minipage}{\textwidth}
+\begin{lstlisting}[style=haskell,caption={Suma monádica sobre \texttt{Maybe} escrita mediante \textit{do-notation}.},label={lst:do-notation-maybe-sum}]
+do
+    x <- Just 3
+    y <- Just 2
+    return ((+) x y)
+\end{lstlisting}
+\end{minipage}
+
+En el Código~\ref{lst:do-notation-maybe-sum}, el primer statement corresponde al cómputo entregado al \verb|(>>=)| exterior y vincula su resultado con \texttt{x}; el segundo corresponde al \verb|(>>=)| interior y vincula su resultado con \texttt{y}; el último construye el resultado del bloque. Al aplicar las reglas convencionales de traducción de la \textit{do-notation}, este bloque recupera la composición anidada del Código~\ref{lst:monad-maybe-sum-multiline} y, en última instancia, la expresión compacta del Código~\ref{lst:monad-maybe-sum} \cite[sección~3.14]{Haskell2010}.
+
+Aunque el bloque se escribe como una secuencia, en este ejemplo la expresión \texttt{Just 2} no utiliza el valor de \texttt{x}; por ello, entre los dos primeros statements no existe una dependencia de datos local. Ambos resultados sí son utilizados por el statement final. Esta distinción entre orden sintáctico y dependencias de datos será relevante más adelante: la notación hace más legible la composición, pero no autoriza por sí sola a intercambiar cómputos, ya que en una mónada general el orden de sus efectos puede ser observable. Las condiciones que permiten transformar o reordenar partes de esta secuencia se estudiarán al introducir las mónadas conmutativas y \texttt{ApplicativeDo}.

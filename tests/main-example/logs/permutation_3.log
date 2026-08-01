@@ -1,0 +1,33 @@
+-- Reordered do-notation
+CD.do
+  difficulty <- Dist.uniform [Easy, Hard]
+  preparation <- Dist.uniform [Low, High]
+  quiz <- quizGiven preparation
+  finalExam <- examGiven preparation difficulty
+  CD.return (preparation, quiz, difficulty, finalExam)
+
+-- Renamer trace
+rearrangeForADo candidate selection tree (fado-reorder-candidate-n) =
+  candidate   =  3
+  index-order =  [3, 1, 2, 4]
+  statements  =  [difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+                  preparation_a1Yf <- Dist.uniform [Low, High],
+                  quiz_a1Yg <- quizGiven preparation_a1Yf,
+                  finalExam_a1Yi <- examGiven preparation_a1Yf difficulty_a1Yh]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+                        {Dist.uniform, Easy, Hard}))
+          (StmtTreeOne (preparation_a1Yf <- Dist.uniform [Low, High],
+                        {Dist.uniform, Low, High})))
+       (StmtTreeApplicative
+          (StmtTreeOne (quiz_a1Yg <- quizGiven preparation_a1Yf,
+                        {preparation_a1Yf, quizGiven}))
+          (StmtTreeOne (finalExam_a1Yi <- examGiven
+                                            preparation_a1Yf difficulty_a1Yh,
+                        {preparation_a1Yf, difficulty_a1Yh, examGiven}))))
+  tree-cost = 2
+
+-- Execution plan
+(difficulty | preparation) ; (quiz | finalExam)

@@ -1,0 +1,54 @@
+== Semantic validation reorder (Cabal) ==
+project-dir = /workspaces/tt-repo/experiments/main-example
+input-file = /workspaces/tt-repo/experiments/main-example/main.hs
+cabal-file = /workspaces/tt-repo/experiments/main-example/main-example.cabal
+target = exe:main-example
+output-dir = /workspaces/tt-repo/tests/main-example
+cabal-build-root = /workspaces/tt-repo/tests/main-example/cabal-build
+
+[COMPILE] original -> /workspaces/tt-repo/tests/main-example/bin/original
+[COMPILE] original_ado -> /workspaces/tt-repo/tests/main-example/bin/original_ado
+[COMPILE] optimal-reorder -> /workspaces/tt-repo/tests/main-example/bin/optimal-reorder
+generated permutations = 5
+
+[COMPILE] permutation_0 -> /workspaces/tt-repo/tests/main-example/bin/permutation_0
+[COMPILE] permutation_1 -> /workspaces/tt-repo/tests/main-example/bin/permutation_1
+[COMPILE] permutation_2 -> /workspaces/tt-repo/tests/main-example/bin/permutation_2
+[COMPILE] permutation_3 -> /workspaces/tt-repo/tests/main-example/bin/permutation_3
+[COMPILE] permutation_4 -> /workspaces/tt-repo/tests/main-example/bin/permutation_4
+
+[RUN] original -> /workspaces/tt-repo/tests/main-example/results/original.run.log
+[OUTPUT] fromFreqs [((Low,Fail,Hard,Fail),9 % 64),((High,Pass,Easy,Pass),9 % 64),((Low,Fail,Easy,Fail),3 % 32),((Low,Fail,Easy,Pass),3 % 32),((High,Pass,Hard,Fail),3 % 32),((High,Pass,Hard,Pass),3 % 32),((Low,Fail,Hard,Pass),3 % 64),((Low,Pass,Hard,Fail),3 % 64),((High,Fail,Easy,Pass),3 % 64),((High,Pass,Easy,Fail),3 % 64),((Low,Pass,Easy,Fail),1 % 32),((Low,Pass,Easy,Pass),1 % 32),((High,Fail,Hard,Fail),1 % 32),((High,Fail,Hard,Pass),1 % 32),((Low,Pass,Hard,Pass),1 % 64),((High,Fail,Easy,Fail),1 % 64)]
+[EXIT CODE] original = 0
+[RUN] original_ado -> /workspaces/tt-repo/tests/main-example/results/original_ado.run.log
+[OUTPUT] fromFreqs [((Low,Fail,Hard,Fail),9 % 64),((High,Pass,Easy,Pass),9 % 64),((Low,Fail,Easy,Fail),3 % 32),((Low,Fail,Easy,Pass),3 % 32),((High,Pass,Hard,Fail),3 % 32),((High,Pass,Hard,Pass),3 % 32),((Low,Fail,Hard,Pass),3 % 64),((Low,Pass,Hard,Fail),3 % 64),((High,Fail,Easy,Pass),3 % 64),((High,Pass,Easy,Fail),3 % 64),((Low,Pass,Easy,Fail),1 % 32),((Low,Pass,Easy,Pass),1 % 32),((High,Fail,Hard,Fail),1 % 32),((High,Fail,Hard,Pass),1 % 32),((Low,Pass,Hard,Pass),1 % 64),((High,Fail,Easy,Fail),1 % 64)]
+[EXIT CODE] original_ado = 0
+[RUN] optimal-reorder -> /workspaces/tt-repo/tests/main-example/results/optimal-reorder.run.log
+[OUTPUT] fromFreqs [((Low,Fail,Hard,Fail),9 % 64),((High,Pass,Easy,Pass),9 % 64),((Low,Fail,Easy,Fail),3 % 32),((Low,Fail,Easy,Pass),3 % 32),((High,Pass,Hard,Fail),3 % 32),((High,Pass,Hard,Pass),3 % 32),((Low,Fail,Hard,Pass),3 % 64),((Low,Pass,Hard,Fail),3 % 64),((High,Fail,Easy,Pass),3 % 64),((High,Pass,Easy,Fail),3 % 64),((Low,Pass,Easy,Fail),1 % 32),((Low,Pass,Easy,Pass),1 % 32),((High,Fail,Hard,Fail),1 % 32),((High,Fail,Hard,Pass),1 % 32),((Low,Pass,Hard,Pass),1 % 64),((High,Fail,Easy,Fail),1 % 64)]
+[EXIT CODE] optimal-reorder = 0
+[RUN] permutation_0 -> /workspaces/tt-repo/tests/main-example/results/permutation_0.run.log
+[OUTPUT] fromFreqs [((Low,Fail,Hard,Fail),9 % 64),((High,Pass,Easy,Pass),9 % 64),((Low,Fail,Easy,Fail),3 % 32),((Low,Fail,Easy,Pass),3 % 32),((High,Pass,Hard,Fail),3 % 32),((High,Pass,Hard,Pass),3 % 32),((Low,Fail,Hard,Pass),3 % 64),((Low,Pass,Hard,Fail),3 % 64),((High,Fail,Easy,Pass),3 % 64),((High,Pass,Easy,Fail),3 % 64),((Low,Pass,Easy,Fail),1 % 32),((Low,Pass,Easy,Pass),1 % 32),((High,Fail,Hard,Fail),1 % 32),((High,Fail,Hard,Pass),1 % 32),((Low,Pass,Hard,Pass),1 % 64),((High,Fail,Easy,Fail),1 % 64)]
+[EXIT CODE] permutation_0 = 0
+[RUN] permutation_1 -> /workspaces/tt-repo/tests/main-example/results/permutation_1.run.log
+[OUTPUT] fromFreqs [((Low,Fail,Hard,Fail),9 % 64),((High,Pass,Easy,Pass),9 % 64),((Low,Fail,Easy,Fail),3 % 32),((Low,Fail,Easy,Pass),3 % 32),((High,Pass,Hard,Fail),3 % 32),((High,Pass,Hard,Pass),3 % 32),((Low,Fail,Hard,Pass),3 % 64),((Low,Pass,Hard,Fail),3 % 64),((High,Fail,Easy,Pass),3 % 64),((High,Pass,Easy,Fail),3 % 64),((Low,Pass,Easy,Fail),1 % 32),((Low,Pass,Easy,Pass),1 % 32),((High,Fail,Hard,Fail),1 % 32),((High,Fail,Hard,Pass),1 % 32),((Low,Pass,Hard,Pass),1 % 64),((High,Fail,Easy,Fail),1 % 64)]
+[EXIT CODE] permutation_1 = 0
+[RUN] permutation_2 -> /workspaces/tt-repo/tests/main-example/results/permutation_2.run.log
+[OUTPUT] fromFreqs [((Low,Fail,Hard,Fail),9 % 64),((High,Pass,Easy,Pass),9 % 64),((Low,Fail,Easy,Fail),3 % 32),((Low,Fail,Easy,Pass),3 % 32),((High,Pass,Hard,Fail),3 % 32),((High,Pass,Hard,Pass),3 % 32),((Low,Fail,Hard,Pass),3 % 64),((Low,Pass,Hard,Fail),3 % 64),((High,Fail,Easy,Pass),3 % 64),((High,Pass,Easy,Fail),3 % 64),((Low,Pass,Easy,Fail),1 % 32),((Low,Pass,Easy,Pass),1 % 32),((High,Fail,Hard,Fail),1 % 32),((High,Fail,Hard,Pass),1 % 32),((Low,Pass,Hard,Pass),1 % 64),((High,Fail,Easy,Fail),1 % 64)]
+[EXIT CODE] permutation_2 = 0
+[RUN] permutation_3 -> /workspaces/tt-repo/tests/main-example/results/permutation_3.run.log
+[OUTPUT] fromFreqs [((Low,Fail,Hard,Fail),9 % 64),((High,Pass,Easy,Pass),9 % 64),((Low,Fail,Easy,Fail),3 % 32),((Low,Fail,Easy,Pass),3 % 32),((High,Pass,Hard,Fail),3 % 32),((High,Pass,Hard,Pass),3 % 32),((Low,Fail,Hard,Pass),3 % 64),((Low,Pass,Hard,Fail),3 % 64),((High,Fail,Easy,Pass),3 % 64),((High,Pass,Easy,Fail),3 % 64),((Low,Pass,Easy,Fail),1 % 32),((Low,Pass,Easy,Pass),1 % 32),((High,Fail,Hard,Fail),1 % 32),((High,Fail,Hard,Pass),1 % 32),((Low,Pass,Hard,Pass),1 % 64),((High,Fail,Easy,Fail),1 % 64)]
+[EXIT CODE] permutation_3 = 0
+[RUN] permutation_4 -> /workspaces/tt-repo/tests/main-example/results/permutation_4.run.log
+[OUTPUT] fromFreqs [((Low,Fail,Hard,Fail),9 % 64),((High,Pass,Easy,Pass),9 % 64),((Low,Fail,Easy,Fail),3 % 32),((Low,Fail,Easy,Pass),3 % 32),((High,Pass,Hard,Fail),3 % 32),((High,Pass,Hard,Pass),3 % 32),((Low,Fail,Hard,Pass),3 % 64),((Low,Pass,Hard,Fail),3 % 64),((High,Fail,Easy,Pass),3 % 64),((High,Pass,Easy,Fail),3 % 64),((Low,Pass,Easy,Fail),1 % 32),((Low,Pass,Easy,Pass),1 % 32),((High,Fail,Hard,Fail),1 % 32),((High,Fail,Hard,Pass),1 % 32),((Low,Pass,Hard,Pass),1 % 64),((High,Fail,Easy,Fail),1 % 64)]
+[EXIT CODE] permutation_4 = 0
+
+== Semantic comparison ==
+[OK] original_ado   : identical output
+[OK] optimal-reorder: identical output
+[OK] permutation_0  : identical output
+[OK] permutation_1  : identical output
+[OK] permutation_2  : identical output
+[OK] permutation_3  : identical output
+[OK] permutation_4  : identical output
+
+RESULT: OK

@@ -4,4 +4,4 @@
 
 Esta sección de anexo debe reunir ejemplos de logs representativos. Existe porque las trazas completas del Renamer son demasiado densas para el cuerpo principal, pero son importantes para reproducibilidad y depuración. Lo ideal es incluir fragmentos de \texttt{summary.log}, \texttt{optimal-reorder.log} y \texttt{semantic-validation.log}.
 
-Para completarla, se deben seleccionar logs del ejemplo guía y de un caso probabilístico representativo. También conviene explicar cómo leer \texttt{index-order}, \texttt{tree-cost} y el plan de ejecución con \texttt{|} y \texttt{;}.
+Para completarla, la fuente principal debe ser \texttt{tests/main-example}: \texttt{summary.log} resume los costos, \texttt{graph.log} presenta las dependencias, \texttt{logs/original\_ado.log} muestra el plan sin reordenamiento, \texttt{logs/optimal-reorder.log} registra el candidato elegido y \texttt{semantic-validation.log} confirma la preservación de la salida. También conviene incluir un caso estructural de \texttt{Maybe} y el control negativo con \texttt{IO} para mostrar comportamientos complementarios.

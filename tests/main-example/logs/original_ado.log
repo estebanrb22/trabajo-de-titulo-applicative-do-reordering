@@ -1,0 +1,26 @@
+-- do-notation
+do
+  preparation <- Dist.uniform [Low, High]
+  quiz <- quizGiven preparation
+  difficulty <- Dist.uniform [Easy, Hard]
+  finalExam <- examGiven preparation difficulty
+  return (preparation, quiz, difficulty, finalExam)
+
+-- Renamer trace
+rearrangeForADo final tree:
+  (StmtTreeBind
+     (StmtTreeOne (preparation_a1Xg <- Dist.uniform [Low, High],
+                   {Dist.uniform, Low, High}))
+     (StmtTreeApplicative
+        (StmtTreeOne (quiz_a1Xh <- quizGiven preparation_a1Xg,
+                      {preparation_a1Xg, quizGiven}))
+        (StmtTreeBind
+           (StmtTreeOne (difficulty_a1Xi <- Dist.uniform [Easy, Hard],
+                         {Dist.uniform, Easy, Hard}))
+           (StmtTreeOne (finalExam_a1Xj <- examGiven
+                                             preparation_a1Xg difficulty_a1Xi,
+                         {preparation_a1Xg, difficulty_a1Xi, examGiven})))))
+  tree-cost = 3
+
+-- Execution plan
+preparation ; (quiz | (difficulty ; finalExam))

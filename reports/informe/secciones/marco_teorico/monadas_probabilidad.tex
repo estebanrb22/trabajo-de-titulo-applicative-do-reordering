@@ -2,19 +2,69 @@
 
 \section{Mónadas de Probabilidad}
 
-Una mónada de probabilidad permite interpretar un programa como una distribución de posibles resultados. En lugar de producir un único valor, el programa describe cómo se combinan elecciones probabilísticas y cómo se propagan sus probabilidades. Este enfoque ha sido usado para modelar distribuciones discretas en lenguajes funcionales y para estudiar inferencia probabilística de manera composicional \cite{ErwigKollmansberger2006,ScibiorGG2015}.
+Una mónada de probabilidad permite representar un cómputo como una distribución sobre sus posibles resultados. En vez de producir un único valor, cada operación puede introducir alternativas y asignar una probabilidad a cada una de ellas; la composición monádica combina posteriormente estas alternativas y propaga sus probabilidades. Para distribuciones discretas finitas, este enfoque permite enumerar de forma exacta el soporte inducido por un programa y ha sido utilizado para expresar modelos probabilísticos de manera composicional en lenguajes funcionales \cite{ErwigKollmansberger2006,ScibiorGG2015}.
 
-Un ejemplo simple es el lanzamiento de una moneda seguido por el lanzamiento de un dado. En una notación monádica, cada statement puede representar una elección probabilística:
+El ejemplo de la moneda y el dado presentado en la Introducción constituye el caso más simple de esta interpretación. Sus dos elecciones uniformes generan los doce pares posibles y cada par recibe probabilidad $1/12$. Más que repetir ese ejemplo, esta sección se concentra en la representación concreta de las distribuciones y en operaciones que permiten construir modelos con elecciones uniformes, pesos no uniformes y dependencias entre variables.
 
-\begin{verbatim}
-coinAndDie = do
-  coin <- uniform [Head, Tail]
-  die  <- uniform [1 .. 6]
-  return (coin, die)
-\end{verbatim}
+La implementación utilizada en esta memoria pertenece al paquete externo \texttt{probability}, publicado en Hackage. Por lo tanto, no forma parte de los módulos estándar de \textsf{Haskell} ni del paquete \texttt{base}. Su módulo público principal es \texttt{Numeric.Probability.Distribution}, importado habitualmente con el calificador \texttt{Dist}; este módulo proporciona el tipo \texttt{T}, sus instancias de \texttt{Functor}, \texttt{Applicative} y \texttt{Monad}, y constructores de distribuciones como \texttt{certainly}, \texttt{choose}, \texttt{uniform} y \texttt{fromFreqs} \cite{HackageProbabilityDistribution}.
 
-Si las elecciones son independientes, el resultado corresponde a la distribución conjunta sobre todos los pares posibles. En programas más complejos, una elección posterior puede depender del resultado de una elección anterior, lo que introduce dependencias de datos similares a las vistas en la \textit{do-notation} monádica general.
+La definición esencial del tipo \texttt{T} se muestra en el Código~\ref{lst:probability-distribution-representation}. Una distribución se almacena internamente como una lista de pares: el primer componente de cada par es un resultado posible y el segundo es su probabilidad asociada \cite{HackageProbabilityDistribution}.
 
-En esta memoria, el corpus probabilístico usa la mónada \texttt{Dist.T Rational} del paquete \texttt{probability}. Esta representación trabaja con probabilidades racionales, lo que facilita comparar salidas de forma exacta durante la validación. Para evitar diferencias superficiales entre representaciones equivalentes de una misma distribución, los programas de prueba normalizan sus resultados mediante \texttt{Dist.norm} antes de imprimirlos y compararlos.
+\begin{lstlisting}[style=haskell,caption={Representación interna de una distribución dentro del paquete \texttt{probability}.},label={lst:probability-distribution-representation}]
+newtype T prob a = Cons
+    { decons :: [(a, prob)] }
+\end{lstlisting}
 
-Aunque el ejemplo guía del capítulo Problema usa \texttt{Maybe}, el dominio de interés es probabilístico. \texttt{Maybe} actúa como una mónada pequeña y familiar para explicar el reordenamiento; \texttt{Dist.T Rational} permite evaluar la misma idea en programas que efectivamente representan distribuciones.
+El parámetro \texttt{a} corresponde al tipo de los resultados y \texttt{prob} al tipo usado para sus probabilidades. En particular, \texttt{Dist.T Rational a} representa resultados de tipo \texttt{a} con pesos racionales. El uso de \texttt{Rational} permite conservar exactamente fracciones como $1/3$ o $3/10$, sin introducir los errores de redondeo propios de una representación de punto flotante. Por ejemplo, el constructor \texttt{Dist.Cons} puede almacenar los resultados \texttt{x} e \texttt{y} en una lista con los pesos $1/4$ y $3/4$, respectivamente.
+
+Esta lista registra ramas de cómputo y no necesariamente constituye una representación canónica de la distribución. Un mismo resultado puede aparecer varias veces si fue alcanzado mediante caminos distintos. Además, el orden de los pares refleja el orden en que esas ramas fueron generadas. La semántica probabilística se obtiene al considerar, para cada resultado, la suma de los pesos de todas las apariciones que lo producen.
+
+Las operaciones del módulo construyen estas listas de manera controlada. Una elección determinista puede escribirse como \texttt{Dist.certainly x} y produce el único par $(\mathtt{x},1)$. La expresión \texttt{Dist.choose p x y} produce dos ramas: \texttt{x} con probabilidad $p$ e \texttt{y} con probabilidad $1-p$. Por su parte, \texttt{Dist.uniform} asigna peso $1/n$ a cada elemento de una lista de largo $n$, mientras que \texttt{Dist.fromFreqs} recibe pares de valores y frecuencias, y divide cada frecuencia por la suma total para obtener probabilidades. Así, las frecuencias $5$, $3$ y $2$ se transforman respectivamente en las probabilidades $1/2$, $3/10$ y $1/5$ \cite{HackageProbabilityDistribution}.
+
+La instancia de \texttt{Monad} determina cómo se propagan estos pesos. Si una distribución contiene una rama $(x,p)$ y el cómputo posterior aplicado a \texttt{x} contiene una rama $(y,q)$, el operador \verb|(>>=)| incorpora el resultado \texttt{y} con peso $p q$. En consecuencia, la composición enumera las combinaciones posibles y multiplica las probabilidades a lo largo de cada camino. Cuando varios caminos terminan en el mismo valor, sus pesos permanecen inicialmente en pares separados.
+
+El Código~\ref{lst:weighted-probability-example} combina las tres formas de construcción anteriores. Primero define una distribución ponderada para el clima. Luego usa \texttt{Dist.choose} para seleccionar una actividad según el clima obtenido y, finalmente, elige uniformemente su duración. La distribución retornada omite el clima, que actúa como una variable intermedia del modelo.
+
+\noindent\begin{minipage}{\textwidth}
+\begin{lstlisting}[style=haskell,caption={Modelo probabilístico con frecuencias, elecciones condicionadas y una distribución uniforme.},label={lst:weighted-probability-example}]
+import qualified Numeric.Probability.Distribution as Dist
+
+data Weather = Sunny | Cloudy | Rainy
+    deriving (Eq, Ord, Show)
+
+data Activity = Outdoor | Indoor
+    deriving (Eq, Ord, Show)
+
+weekendPlan :: Dist.T Rational (Activity, Int)
+weekendPlan = do
+    weather <- Dist.fromFreqs
+        [(Sunny, 5), (Cloudy, 3), (Rainy, 2)]
+    activity <- case weather of
+        Sunny  -> Dist.choose (4 / 5) Outdoor Indoor
+        Cloudy -> Dist.choose (1 / 2) Outdoor Indoor
+        Rainy  -> Dist.choose (1 / 10) Outdoor Indoor
+    hours <- Dist.uniform [1, 2, 3]
+    return (activity, hours)
+
+normalizedWeekendPlan = Dist.norm weekendPlan
+\end{lstlisting}
+\end{minipage}
+
+Antes de normalizar, este programa genera dieciocho ramas: tres posibilidades para el clima, dos para la actividad y tres para la duración. Sin embargo, como el clima no forma parte del resultado, solo existen seis pares distintos de actividad y duración. Por ejemplo, el resultado \texttt{(Outdoor, 1)} puede alcanzarse desde cualquiera de los tres climas. La suma exacta de sus ramas es
+
+\begin{ReportExpression}{Cálculo de la probabilidad del resultado \texttt{(Outdoor, 1)}.}{expr:probabilidad-outdoor-una-hora}
+\[
+\frac{1}{3}\left(
+    \frac{1}{2}\frac{4}{5}
+    + \frac{3}{10}\frac{1}{2}
+    + \frac{1}{5}\frac{1}{10}
+\right)
+= \frac{19}{100}.
+\]
+\end{ReportExpression}
+
+La función \texttt{Dist.norm} agrupa los resultados iguales y suma sus probabilidades, produciendo en este caso una lista canónica de seis resultados. En este módulo, esta operación de normalización corresponde específicamente al agrupamiento de resultados repetidos; no vuelve a dividir pesos arbitrarios para hacer que sumen uno. Esa segunda operación sí ocurre al construir una distribución mediante \texttt{Dist.fromFreqs} \cite{HackageProbabilityDistribution}.
+
+La distinción entre distribución y lista interna es relevante para la conmutatividad. Al intercambiar dos cómputos probabilísticos independientes, el producto de sus probabilidades se conserva, aunque el recorrido de las ramas puede producir los pares en un orden distinto. Por ello, la equivalencia considerada en esta memoria se establece sobre las distribuciones normalizadas y no sobre el orden literal expuesto por \texttt{decons}. Bajo esta interpretación, la mónada de distribuciones discretas finitas constituye el caso conmutativo descrito en la sección anterior \cite[sección~3.1]{Jacobs2018}.
+
+El mismo tipo \texttt{Dist.T Rational} se utiliza en el modelo académico del Código~\ref{lst:main-example}. Allí, \texttt{Dist.uniform} representa la preparación y la dificultad, mientras que \texttt{Dist.choose} expresa las probabilidades condicionadas de aprobar. Tanto ese ejemplo como el corpus probabilístico aplican \texttt{Dist.norm} antes de observar el resultado. De esta forma, la validación compara probabilidades racionales exactas y evita confundir diferencias en el orden interno o en la multiplicidad de las ramas con diferencias semánticas entre distribuciones.

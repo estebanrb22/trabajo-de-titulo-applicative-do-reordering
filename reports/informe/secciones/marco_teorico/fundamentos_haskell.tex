@@ -1,0 +1,22 @@
+% !TEX root = ../../main.tex
+
+\section{Fundamentos de Haskell}
+\label{sec:fundamentos-haskell}
+
+\textsf{Haskell} es un lenguaje de programación funcional puro, de propósito general y con tipado estático. En este lenguaje, las funciones desempeñan un papel central y son tratadas como valores de primera clase: pueden recibirse como argumentos, retornarse como resultados y almacenarse en estructuras de datos. Esta característica permite que los programas no solo operen con valores como números o listas, sino también con las funciones que transforman dichos valores \cite[capítulo~1 y sección~6.1.6]{Haskell2010}.
+
+La pureza implica que la evaluación de una función depende de sus argumentos y no produce efectos secundarios implícitos. Los efectos se representan de manera explícita mediante tipos y abstracciones que determinan cómo se componen los cómputos. Esta separación será relevante al introducir mónadas y analizar el orden de los efectos expresados mediante bloques \texttt{do} \cite[capítulo~7]{Haskell2010} \cite{Wadler1995}.
+
+Además, las funciones de \textsf{Haskell} se encuentran currificadas. Esto significa que una función que conceptualmente recibe varios argumentos se representa como una sucesión de funciones que reciben un argumento a la vez. Por esta razón, las flechas de una firma de tipos se asocian hacia la derecha; por ejemplo, el tipo \verb|a -> b -> c| se interpreta como \verb|a -> (b -> c)|. Una función de este tipo recibe un valor de tipo \verb|a| y retorna una nueva función de tipo \verb|b -> c| \cite[secciones~3.3 y~4.1.2]{Haskell2010}.
+
+Este comportamiento puede observarse en el operador binario \verb|(+)|, cuya firma de tipos se muestra en el Código~\ref{lst:sum-type-signature} \cite[sección~6.4 y figura~6.2]{Haskell2010}.
+
+\begin{lstlisting}[style=haskell,caption={Firma de tipos del operador de suma \texttt{(+)}.},label={lst:sum-type-signature}]
+(+) :: Num a => a -> a -> a
+\end{lstlisting}
+
+En esta firma, \verb|a| es una variable de tipo y la restricción \verb|Num a| establece que debe elegirse un tipo perteneciente a la clase \texttt{Num}. Si se aplica \verb|(+)| únicamente al valor \verb|5|, se fija su primer argumento y se obtiene una nueva función que todavía espera el argumento restante. Esta operación se denomina \textit{aplicación parcial}. En este caso, la expresión \verb|(+) 5| produce la función unaria \verb|(5+)| de tipo \verb|Num a => a -> a| \cite[secciones~3.5, 4.1.3 y~6.4]{Haskell2010}.
+
+Los tipos también pueden estar parametrizados. Por ejemplo, \texttt{Maybe} es un constructor de tipos que recibe un tipo \verb|a| y produce el tipo \texttt{Maybe a}. Sus constructores de datos representan dos posibilidades: \texttt{Just} contiene un valor de tipo \verb|a| y \texttt{Nothing} representa su ausencia. Esta distinción entre un constructor de tipos y los tipos concretos que produce permite definir comportamientos comunes para toda la familia \texttt{Maybe} \cite[secciones~4.1.2 y~6.1.8; capítulo~21]{Haskell2010}.
+
+Una clase de tipos especifica un conjunto de operaciones que distintos tipos o constructores de tipos pueden implementar. Cada implementación concreta se declara mediante una instancia \cite[secciones~4.1 y~4.3]{Haskell2010}. La restricción \verb|Num a| del ejemplo anterior indica precisamente que debe existir una instancia de \texttt{Num} para el tipo elegido. De manera análoga, \texttt{Functor}, \texttt{Applicative} y \texttt{Monad} son clases de tipos con operaciones e instancias propias. \texttt{Maybe} posee instancias para las tres y, por ello, se utilizará como ejemplo común para mostrar cómo un mismo contexto puede transformar valores, combinar cómputos y expresar dependencias entre sus resultados \cite{Yorgey2009,GHCInternalBase}.

@@ -2,7 +2,8 @@
 
 \bibitem{RomeroApplicativeDoRepo}
 Esteban~Romero Berríos.
-\newblock Repositorio experimental para el estudio de applicative-do y reordenamiento de statements en ghc, 2026.
+\newblock Repositorio experimental para el estudio de applicative-do y
+  reordenamiento de statements en ghc, 2026.
 \newblock GitHub repository.
 
 \bibitem{DavisKeller1982}
@@ -15,9 +16,21 @@ Martin Erwig and Steve Kollmansberger.
 \newblock Functional pearls: Probabilistic functional programming in haskell.
 \newblock {\em Journal of Functional Programming}, 16(1):21--34, 2006.
 
+\bibitem{HackageProbabilityDistribution}
+Martin Erwig and Steve Kollmansberger.
+\newblock {\em {Numeric.Probability.Distribution}: Deterministic and
+  Probabilistic Values}.
+\newblock Hackage, 2026.
+\newblock Documentaci\'on del paquete \texttt{probability}, versi\'on 0.2.9.1.
+
 \bibitem{FuzzRDUCC2025}
 Kai Feng, Jeremy Singer, and Angelos~K. Marnerides.
 \newblock Fuzzrducc: Fuzzing with reconstructed def-use chain coverage, 2025.
+
+\bibitem{Ghahramani2015}
+Zoubin Ghahramani.
+\newblock Probabilistic machine learning and artificial intelligence.
+\newblock {\em Nature}, 521(7553):452--459, 2015.
 
 \bibitem{ghc_commit_8ecf6d8}
 {GHC Contributors}.
@@ -27,27 +40,52 @@ Kai Feng, Jeremy Singer, and Angelos~K. Marnerides.
 \bibitem{GHCApplicativeDoTestsuite}
 {GHC Contributors}.
 \newblock Testsuite de la extensión applicativedo en ghc, 2026.
-\newblock Directorio \texttt{testsuite/tests/ado} del repositorio oficial de GHC.
+\newblock Directorio \texttt{testsuite/tests/ado} del repositorio oficial de
+  GHC.
 
 \bibitem{GHCApplicativeDo}
 The Glasgow Haskell Compiler Team.
 \newblock {\em GHC User's Guide: Applicative do-notation}, 2026.
 \newblock Documentaci\'on oficial de GHC.
 
+\bibitem{GHCQualifiedDo}
+The Glasgow Haskell Compiler Team.
+\newblock {\em GHC User's Guide: Qualified do-notation}, 2026.
+\newblock Documentaci\'on oficial de GHC.
+
+\bibitem{GordonHNR2014}
+Andrew~D. Gordon, Thomas~A. Henzinger, Aditya~V. Nori, and Sriram~K. Rajamani.
+\newblock Probabilistic programming.
+\newblock In {\em Future of Software Engineering Proceedings}, pages 167--181.
+  ACM, 2014.
+
 \bibitem{HarroldSoffa1994}
 Mary~Jean Harrold and Mary~Lou Soffa.
 \newblock Efficient computation of interprocedural definition-use chains.
-\newblock {\em ACM Transactions on Programming Languages and Systems}, 16(2):175--204, 1994.
+\newblock {\em ACM Transactions on Programming Languages and Systems},
+  16(2):175--204, 1994.
 
 \bibitem{Jacobs2018}
 Bart Jacobs.
 \newblock From probability monads to commutative effectuses.
-\newblock {\em Journal of Logical and Algebraic Methods in Programming}, 94:200--237, 2018.
+\newblock {\em Journal of Logical and Algebraic Methods in Programming},
+  94:200--237, 2018.
+
+\bibitem{Kahn1962}
+Arthur~B. Kahn.
+\newblock Topological sorting of large networks.
+\newblock {\em Communications of the ACM}, 5(11):558--562, 1962.
 
 \bibitem{Kock2012}
 Anders Kock.
 \newblock Commutative monads as a theory of distributions.
 \newblock {\em Theory and Applications of Categories}, 26(4):97--131, 2012.
+
+\bibitem{Haskell2010}
+Simon Marlow.
+\newblock {\em Haskell 2010 Language Report}.
+\newblock Haskell Community, 2010.
+\newblock Informe oficial de la especificaci\'on del lenguaje.
 
 \bibitem{marlow_ado}
 Simon Marlow.
@@ -56,18 +94,22 @@ Simon Marlow.
 
 \bibitem{MarlowBCP2014}
 Simon Marlow, Louis Brandy, Jonathan Coens, and Jon Purdy.
-\newblock There is no fork: An abstraction for efficient, concurrent, and concise data access.
-\newblock In {\em Proceedings of the 19th ACM SIGPLAN International Conference on Functional Programming}, pages 325--337. ACM, 2014.
+\newblock There is no fork: An abstraction for efficient, concurrent, and
+  concise data access.
+\newblock In {\em Proceedings of the 19th ACM SIGPLAN International Conference
+  on Functional Programming}, pages 325--337. ACM, 2014.
 
 \bibitem{MarlowPJKM2016}
 Simon Marlow, Simon~Peyton Jones, Edward Kmett, and Andrey Mokhov.
 \newblock Desugaring {Haskell}'s do-notation into applicative operations.
-\newblock In {\em Proceedings of the 9th International Symposium on Haskell}, pages 92--104. ACM, 2016.
+\newblock In {\em Proceedings of the 9th International Symposium on Haskell},
+  pages 92--104. ACM, 2016.
 
 \bibitem{MarlowNPJ2011}
 Simon Marlow, Ryan Newton, and Simon~Peyton Jones.
 \newblock A monad for deterministic parallelism.
-\newblock In {\em Proceedings of the 4th ACM SIGPLAN Symposium on Haskell}, pages 71--82. ACM, 2011.
+\newblock In {\em Proceedings of the 4th ACM SIGPLAN Symposium on Haskell},
+  pages 71--82. ACM, 2011.
 
 \bibitem{McBride2008}
 Conor McBride and Ross Paterson.
@@ -77,22 +119,33 @@ Conor McBride and Ross Paterson.
 \bibitem{Mokhov2019}
 Andrey Mokhov, Georgy Lukyanov, Simon Marlow, and Jeremie Dimino.
 \newblock Selective applicative functors.
-\newblock {\em Proceedings of the ACM on Programming Languages}, 3(ICFP):1--29, 2019.
+\newblock {\em Proceedings of the ACM on Programming Languages}, 3(ICFP):1--29,
+  2019.
 
 \bibitem{Pombrio2018}
 Justin Pombrio.
-\newblock {\em Resugaring: Lifting Evaluation Sequences through Syntactic Sugar}.
+\newblock {\em Resugaring: Lifting Evaluation Sequences through Syntactic
+  Sugar}.
 \newblock PhD thesis, Brown University, 2018.
 
 \bibitem{ScibiorGG2015}
 Adam {\'S}cibior, Zoubin Ghahramani, and Andrew~D. Gordon.
 \newblock Practical probabilistic programming with monads.
-\newblock In {\em Proceedings of the 8th ACM SIGPLAN Symposium on Haskell}, pages 165--176. ACM, 2015.
+\newblock In {\em Proceedings of the 8th ACM SIGPLAN Symposium on Haskell},
+  pages 165--176. ACM, 2015.
+
+\bibitem{GHCInternalBase}
+{The Glasgow Haskell Compiler Team}.
+\newblock {GHC.Internal.Base}: Basic definitions.
+\newblock C\'odigo fuente oficial de GHC, 2026.
+\newblock Commit \texttt{0b36e96},
+  \url{https://gitlab.haskell.org/ghc/ghc/-/blob/0b36e96cb93db71f201aaa055c4a90b75a8110ef/libraries/ghc-internal/src/GHC/Internal/Base.hs}.
 
 \bibitem{Wadler1995}
 Philip Wadler.
 \newblock Monads for functional programming.
-\newblock In {\em Advanced Functional Programming}, volume 925 of {\em Lecture Notes in Computer Science}, pages 24--52. Springer, 1995.
+\newblock In {\em Advanced Functional Programming}, volume 925 of {\em Lecture
+  Notes in Computer Science}, pages 24--52. Springer, 1995.
 
 \bibitem{Yorgey2009}
 Brent Yorgey.

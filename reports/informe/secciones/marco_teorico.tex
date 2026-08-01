@@ -2,6 +2,15 @@
 
 \chapter{Marco Teórico}
 
+Este capítulo presenta los fundamentos conceptuales necesarios para comprender tanto el problema abordado en esta memoria como la solución desarrollada. En primer lugar, se introducen las características de \textsf{Haskell} necesarias para interpretar los ejemplos y las firmas de tipos utilizadas a lo largo del informe. Sobre esta base, se estudian sus principales abstracciones funcionales: functores, aplicativos y mónadas. Estas clases forman una jerarquía que permite estructurar cómputos dentro de un contexto y se distinguen por el grado de dependencia que pueden expresar entre las distintas partes de un programa.
+
+A continuación, se profundiza en la \textit{do-notation}, explicando su relación con la composición monádica y cómo sus statements de enlace se traducen, en su forma convencional, mediante el operador \textit{bind} \verb|(>>=)|. Esto es fundamental para entender por qué \texttt{ApplicativeDo} puede reemplazar parte de una expresión monádica por una expresión aplicativa \cite{MarlowPJKM2016,GHCApplicativeDo}.
+
+Sobre esta base, se introduce la noción de mónada conmutativa, cuya propiedad relevante permite intercambiar ciertos cómputos independientes sin modificar la semántica del programa \cite{Kock2012,Jacobs2018}. Posteriormente, se presentan las mónadas de probabilidad como un caso canónico de esta propiedad y como el principal dominio de aplicación de la memoria.
+
+Finalmente, se estudia la extensión \texttt{ApplicativeDo}, describiendo la transformación que realiza sobre bloques \texttt{do}, la forma en que identifica dependencias entre statements y la generación de expresiones aplicativas que pueden exponer una mayor estructura paralelizable. Este recorrido permite establecer los conceptos necesarios para analizar posteriormente las limitaciones del mecanismo actual y la extensión experimental propuesta.
+
+\input{secciones/marco_teorico/fundamentos_haskell}
 \input{secciones/marco_teorico/functor_applicative_monad}
 \input{secciones/marco_teorico/do_notation}
 \input{secciones/marco_teorico/monadas_conmutativas}

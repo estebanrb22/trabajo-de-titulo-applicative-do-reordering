@@ -1,0 +1,114 @@
+% !TEX root = ../../main.tex
+
+\section{Problema y Enfoque de Solución}
+\label{sec:problema-enfoque-solucion}
+
+Considérese un modelo probabilístico sencillo sobre el desempeño de un estudiante. El modelo representa el nivel de preparación del estudiante, el resultado de un quiz, la dificultad de un examen final y el resultado de ese examen. La preparación y la dificultad se modelan como elecciones equiprobables e independientes. En cambio, los resultados de las evaluaciones se modelan mediante distribuciones condicionadas: la probabilidad de aprobar el quiz es $1/4$ para una preparación baja y $3/4$ para una preparación alta; la probabilidad de aprobar el examen final se resume en la Tabla~\ref{tab:main-example-probabilities}.
+
+\begin{table}[ht]
+\centering
+\TableSetup
+\TableFrame{%
+\begin{tabular}{ccc}
+\rowcolor{tableHeaderBg}
+\TableHead{Preparación} & \TableHead{Dificultad} & \TableHead{Probabilidad de aprobar} \\
+\texttt{Low}  & \texttt{Easy} & $1/2$ \\
+\texttt{Low}  & \texttt{Hard} & $1/4$ \\
+\texttt{High} & \texttt{Easy} & $3/4$ \\
+\texttt{High} & \texttt{Hard} & $1/2$ \\
+\end{tabular}%
+}
+\caption{Probabilidad de aprobar el examen final según preparación y dificultad.}
+\label{tab:main-example-probabilities}
+\end{table}
+
+Las distribuciones condicionales se implementan mediante las funciones \texttt{quizGiven} y \texttt{examGiven}. El cómputo conjunto se escribe con la \textit{do-notation} de la siguiente forma:
+
+\begin{lstlisting}[style=haskell,caption={Modelo probabilístico del desempeño de un estudiante.},label={lst:main-example}]
+studentResults = do
+    preparation <- Dist.uniform [Low, High]
+    quiz <- quizGiven preparation
+    difficulty <- Dist.uniform [Easy, Hard]
+    finalExam <- examGiven preparation difficulty
+    return (preparation, quiz, difficulty, finalExam)
+\end{lstlisting}
+
+Para analizar el bloque, se numeran los cuatro statements previos al \texttt{return} como \texttt{s1}, \texttt{s2}, \texttt{s3} y \texttt{s4}. El statement \texttt{s2} usa la preparación definida por \texttt{s1}; el statement \texttt{s4} usa tanto la preparación de \texttt{s1} como la dificultad definida por \texttt{s3}. No existe, en cambio, una dependencia entre el resultado del quiz en \texttt{s2} y la dificultad en \texttt{s3}. Las precedencias necesarias son, por tanto, \texttt{s1} $\to$ \texttt{s2}, \texttt{s1} $\to$ \texttt{s4} y \texttt{s3} $\to$ \texttt{s4}.
+
+\begin{figure}[ht]
+\centering
+\begin{PrecedenceGraph}
+    \PrecedenceNode{s1}{preparation}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{quiz}{$s_2$}
+    \PrecedenceNode[right=of s2]{s3}{difficulty}{$s_3$}
+    \PrecedenceNode[right=of s3]{s4}{finalExam}{$s_4$}
+
+    \PrecedenceEdge{s1}{s2}
+    \PrecedenceEdge{s3}{s4}
+    \PrecedenceEdge[bend left=\GraphLongEdgeBend]{s1.north}{s4.north}
+\end{PrecedenceGraph}
+\caption{Grafo de precedencia del Código~\ref{lst:main-example} dispuesto según el orden original \texttt{[1,2,3,4]}.}
+\label{fig:main-example-precedence-graph}
+\end{figure}
+
+En el anterior grafo de precedencia, la posición horizontal de los nodos representa el orden de los statements: un nodo ubicado a la izquierda aparece antes que uno ubicado a la derecha. Una disposición respeta las dependencias del programa solo si todas las aristas avanzan de izquierda a derecha, pues cada arista exige que el statement que produce un valor aparezca antes del statement que lo usa. Por consiguiente, una arista dirigida hacia la izquierda indicaría que ese orden invierte y rompe la dependencia.
+
+El grafo no impone un orden relativo entre \texttt{s2} y \texttt{s3}, de modo que pueden intercambiarse para obtener el orden \texttt{[1,3,2,4]}. Este orden conserva \texttt{s1} antes de \texttt{s2} y \texttt{s4}, y \texttt{s3} antes de \texttt{s4}; por ello, las tres aristas siguen avanzando hacia la derecha, como muestra la Figura~\ref{fig:main-example-reordered-precedence-graph}. El respeto de estas precedencias establece la validez de un reordenamiento de statements, mientras que la hipótesis de conmutatividad permite afirmar que es semánticamente equivalente al orden original.
+
+\begin{figure}[ht]
+\centering
+\begin{PrecedenceGraph}
+    \PrecedenceNode{s1}{preparation}{$s_1$}
+    \PrecedenceNode[right=of s1]{s3}{difficulty}{$s_3$}
+    \PrecedenceNode[right=of s3]{s2}{quiz}{$s_2$}
+    \PrecedenceNode[right=of s2]{s4}{finalExam}{$s_4$}
+
+    \PrecedenceEdge[bend left=15]{s1.north}{s2.north}
+    \PrecedenceEdge[bend right=15]{s3.south}{s4.south}
+    \PrecedenceEdge[bend left=30]{s1.north}{s4.north}
+\end{PrecedenceGraph}
+\caption{Mismo grafo de precedencia de la Figura~\ref{fig:main-example-precedence-graph} dispuesto según el reordenamiento de statements \texttt{[1,3,2,4]}.}
+\label{fig:main-example-reordered-precedence-graph}
+\end{figure}
+
+Una vez fijado un orden válido de los statements, todavía debe determinarse cómo se combinan sus cómputos. En esta memoria se denomina \textit{plan de ejecución} a una representación abstracta de esa composición: el plan indica qué partes permanecen secuenciadas y cuáles pueden agruparse aplicativamente cuando las dependencias lo permiten. No describe una planificación concreta de hilos ni tiempos reales de ejecución, sino la estructura del cómputo sobre la que se comparan las distintas alternativas.
+
+Para escribir los planes de ejecución del programa del Código~\ref{lst:main-example} se utilizan dos operadores conceptuales. El símbolo $;$ indica composición secuencial: el plan de la derecha comienza cuando finaliza el de la izquierda. El símbolo $\mid$ agrupa aplicativamente planes independientes y expresa paralelismo potencial, no necesariamente una ejecución multihilo.
+
+\begin{samepage}
+Sobre esta notación se adopta el siguiente modelo de costos estructural simplificado. Sea $C$ la función que asigna un costo a cada plan de ejecución. Si $s_i$ es un statement elemental y $P$, $Q$ y $P_i$ representan planes o subplanes, entonces:
+
+\begin{ReportExpression}{Modelo de costos estructural simplificado.}{expr:modelo-costos-estructural}
+\[
+\begin{aligned}
+C(s_i) &= 1,
+&\qquad C(P\,;\,Q) &= C(P)+C(Q),
+&\qquad C(P_1\mid\cdots\mid P_k) &= \max_{1\leq i\leq k} C(P_i).
+\end{aligned}
+\]
+\end{ReportExpression}
+\end{samepage}
+
+En este modelo, los costos se acumulan en una secuencia, mientras que el máximo de una agrupación aplicativa representa su camino crítico. Por lo tanto, el costo compara la estructura de los planes. La Tabla~\ref{tab:main-example-plans} presenta los planes obtenidos para el programa del Código~\ref{lst:main-example} en tres casos: ejecución secuencial, \texttt{ApplicativeDo} sobre el orden original y \texttt{ApplicativeDo} sobre el reordenamiento mostrado en la Figura~\ref{fig:main-example-reordered-precedence-graph}.
+
+\begin{table}[!ht]
+\centering
+\TableSetup
+\TableFrame{%
+\begin{tabular}{lcc}
+\rowcolor{tableHeaderBg}
+\TableHead{Variante} & \TableHead{Plan de ejecución} & \TableHead{Costo} \\
+Secuencial & $s_1 ; s_2 ; s_3 ; s_4$ & 4 \\
+\texttt{ApplicativeDo} & $s_1 ; (s_2 \mid (s_3 ; s_4))$ & 3 \\
+Reordenamiento & $(s_1 \mid s_3) ; (s_2 \mid s_4)$ & 2 \\
+\end{tabular}%
+}
+\caption{Comparación de planes y costos estructurales para el ejemplo académico.}
+\label{tab:main-example-plans}
+\end{table}
+
+La comparación evidencia el problema abordado por esta memoria. La ejecución secuencial tiene costo 4 y \texttt{ApplicativeDo} reduce ese valor a 3 al introducir una agrupación aplicativa, pero conserva el orden relativo escrito por el programador. Por esta razón, no puede construir el plan de costo 2, que requiere intercambiar \texttt{s2} y \texttt{s3}. Esta restricción es necesaria para mónadas arbitrarias, cuyos efectos observables pueden depender del orden, pero puede ser demasiado conservadora bajo la hipótesis de conmutatividad considerada en esta memoria.
+
+La solución desarrollada en esta memoria no reemplaza \texttt{ApplicativeDo}, sino que amplía su espacio de búsqueda en bloques tratados bajo una hipótesis explícita de conmutatividad. A partir de las dependencias del bloque, genera órdenes alternativos de statements que conservan sus precedencias y que, bajo dicha hipótesis, se consideran semánticamente equivalentes al orden original. Cada orden se evalúa mediante el algoritmo existente de \texttt{ApplicativeDo} y, finalmente, se selecciona el plan de ejecución de menor costo según el modelo estructural presentado.
+
+Al aplicar esta solución al modelo académico del Código~\ref{lst:main-example}, se generaron cinco órdenes válidos. El orden \texttt{[1,3,2,4]} correspondió al primer candidato de costo mínimo y produjo el plan de costo 2 presentado en la Tabla~\ref{tab:main-example-plans}. Para validar experimentalmente la preservación del resultado, se ejecutaron el programa original, la variante estándar de \texttt{ApplicativeDo}, la selección óptima y cada uno de los cinco candidatos forzados individualmente. Todas las variantes produjeron exactamente la misma distribución normalizada, lo que entrega evidencia de preservación semántica para este ejemplo. Los capítulos siguientes desarrollan la formulación del problema, la implementación de este proceso y su evaluación experimental.

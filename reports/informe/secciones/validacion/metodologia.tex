@@ -13,6 +13,15 @@ El pipeline de validación compila varias variantes de cada caso:
     \item cada permutación válida, forzada mediante la flag de selección de candidato.
 \end{itemize}
 
-Luego, el pipeline ejecuta cada binario, captura \texttt{stdout}, registra el código de salida y compara los resultados contra la referencia. En los casos sintéticos, una validación exitosa exige que las salidas y códigos de salida coincidan. En los casos probabilísticos, los programas imprimen distribuciones normalizadas para evitar diferencias superficiales de representación.
+Luego, el pipeline ejecuta cada binario, captura \texttt{stdout}, registra el código de salida y compara los resultados contra la referencia. En los dos corpus sintéticos, una validación exitosa exige que las salidas y códigos de salida coincidan. En el corpus sintético probabilístico, los programas imprimen distribuciones normalizadas para evitar diferencias superficiales de representación. El caso con \texttt{IO} se mantiene separado como control negativo: su divergencia observable es el resultado esperado y muestra por qué el reordenamiento requiere una declaración explícita de conmutatividad.
 
 Existen dos modos de ejecución. Los casos que no dependen de paquetes externos pueden compilarse directamente con el \textsf{GHC} modificado. Los casos probabilísticos se validan mediante Cabal, porque usan el paquete \texttt{probability}. En ambos modos, el resultado se guarda bajo \texttt{tests/}, junto con trazas del Renamer, resúmenes de costo y outputs de ejecución.
+
+El ejemplo guía sigue este segundo modo. Su programa y sus resultados se encuentran, respectivamente, en:
+
+\begin{verbatim}
+experiments/main-example/main.hs
+tests/main-example
+\end{verbatim}
+
+Este caso se usa transversalmente para explicar el problema y la solución, pero no se contabiliza como un tercer corpus: la evaluación agregada continúa organizada en un corpus estructural con \texttt{Maybe} y otro probabilístico con \texttt{Dist.T Rational}.

@@ -1,0 +1,231 @@
+% !TEX root = ../../main.tex
+
+\section{Implementación en GHC}
+\label{sec:solucion-implementacion}
+
+El diseño anterior se implementó directamente en \textsf{GHC}, dentro del procesamiento de expresiones del Renamer. Esta ubicación permite reutilizar la representación del compilador, la información de nombres libres y el algoritmo existente de \texttt{ApplicativeDo}, sin introducir una herramienta externa de reescritura ni operar sobre una representación que ya haya perdido la estructura de la \textit{do-notation}.
+
+\subsection{Ubicación en el Pipeline del Compilador}
+\label{sec:solucion-pipeline-ghc}
+
+Las opciones de línea de comandos y los pragmas del módulo configuran, entre otros aspectos, las extensiones de lenguaje que utilizarán las etapas posteriores. A partir de esa configuración, el Parser construye el árbol de sintaxis; el Renamer resuelve los identificadores y sus alcances; el Typechecker verifica e incorpora información de tipos; y el Desugarer traduce la representación tipada hacia Core. Para una expresión, la progresión de fases puede resumirse como:
+
+\begin{ReportExpression}{Fases relevantes del AST de una expresión en GHC.}{expr:fases-ast-ghc}
+\[
+\begin{aligned}
+\text{código fuente}
+&\xrightarrow{\mathrm{Parser}}
+\texttt{HsExpr GhcPs}
+\xrightarrow{\mathrm{Renamer}}
+\texttt{HsExpr GhcRn}\\
+&\xrightarrow{\mathrm{Typechecker}}
+\texttt{HsExpr GhcTc}
+\xrightarrow{\mathrm{Desugarer}}
+\texttt{Core}.
+\end{aligned}
+\]
+\end{ReportExpression}
+
+El AST de \textsf{GHC} está parametrizado por la fase de compilación. Los parámetros \texttt{GhcPs}, \texttt{GhcRn} y \texttt{GhcTc} distinguen, respectivamente, los nodos parseados, renombrados y verificados por tipos. Una expresión de \textit{do-notation} se representa mediante el constructor \texttt{HsDo}, que contiene el tipo de bloque y su lista de statements. El Renamer especializa el procesamiento según el constructor de cada expresión y transforma un nodo \texttt{HsDo} parseado en su versión renombrada mediante el caso resumido en el Código~\ref{lst:rnexpr-hsdo}.
+
+\begin{lstlisting}[style=haskell,caption={Flujo de renombrado de una expresión \texttt{HsDo} en \texttt{GHC.Rename.Expr}.},label={lst:rnexpr-hsdo}]
+rnExpr (HsDo _ do_or_lc (L l stmts))
+ = do { ((stmts1, _), fvs1) <-
+          rnStmtsWithFreeVars (HsDoStmt do_or_lc) rnExpr stmts
+            (\ _ -> return ((), emptyFVs))
+      ; (pp_stmts, fvs2) <-
+          postProcessStmtsForApplicativeDo do_or_lc stmts1
+      ; return (HsDo noExtField do_or_lc (L l pp_stmts),
+                fvs1 `plusFV` fvs2) }
+\end{lstlisting}
+
+La función \texttt{rnStmtsWithFreeVars} retorna cada statement renombrado junto con las variables libres de su cuerpo. \path{postProcessStmtsForApplicativeDo} comprueba luego que \texttt{ApplicativeDo} esté habilitado, que el contexto corresponda a \texttt{DoExpr} y que el código no se encuentre dentro de un bracket de Template Haskell. \path{rearrangeForApplicativeDo} se invoca solo después de estas comprobaciones. La extensión se incorporó en esta última función, antes de que \texttt{stmtTreeToStmts} reconstruya la lista con nodos \texttt{ApplicativeStmt}.
+
+La elección del Renamer permite, por tanto, trabajar sobre statements que ya poseen identidades únicas y todavía conservan su estructura fuente. Un análisis posterior sobre Core habría requerido reconstruir información de la \textit{do-notation}; uno anterior al renombrado no dispondría de las identidades necesarias para distinguir correctamente binders con la misma escritura textual.
+
+\subsection{Activación Declarativa mediante QualifiedDo}
+\label{sec:solucion-qualified-do}
+
+\texttt{QualifiedDo} permite escribir un bloque como \texttt{M.do} y resolver desde el módulo calificador \texttt{M} las operaciones utilizadas por la notación, en vez de usar necesariamente las operaciones habituales de \texttt{Prelude} \cite{GHCQualifiedDo}. La implementación aprovecha esta sintaxis existente para realizar un \textit{opt-in} visible en cada bloque. El Código~\ref{lst:commutative-qualified-do} muestra su forma general.
+
+\begin{lstlisting}[style=haskell,caption={Bloque activado mediante \texttt{Control.Monad.CommutativeDo}.},label={lst:commutative-qualified-do}]
+{-# LANGUAGE ApplicativeDo #-}
+{-# LANGUAGE QualifiedDo #-}
+
+import qualified Control.Monad.CommutativeDo as CD
+
+pair :: CD.CommutativeMonad m => m a -> m b -> m (a, b)
+pair ma mb = CD.do
+  a <- ma
+  b <- mb
+  CD.return (a, b)
+\end{lstlisting}
+
+Para soportar esta notación se agregaron dos módulos. \path{GHC.Internal.Control.Monad.CommutativeDo}, dentro de \texttt{ghc-internal}, define la clase marcador \texttt{CommutativeMonad}, el valor \texttt{\_\_commutative\_do\_\_} y las operaciones básicas de \texttt{QualifiedDo}, como \verb|(>>=)|, \verb|(>>)| y \texttt{fail}. También exporta \texttt{return}, \texttt{pure}, \texttt{fmap}, \verb|(<*>)| y \texttt{join}, necesarias cuando el procesamiento de \texttt{ApplicativeDo} transforma el bloque. El módulo público \path{Control.Monad.CommutativeDo}, dentro de \texttt{base}, reexporta esa interfaz para los programas de usuario.
+
+La clase vacía \texttt{CommutativeMonad} representa una afirmación del programador, no una demostración realizada por \textsf{GHC}. Las funciones exportadas por el módulo \texttt{CD} incorporan esa restricción de clase y su uso será verificado durante el typechecking. De manera independiente, durante el renombrado \texttt{isCommutativeQualifiedDo} consulta únicamente si el módulo que califica el bloque exporta un nombre \texttt{\_\_commutative\_do\_\_}. La presencia del marcador habilita la generación de órdenes alternativos; su ausencia conserva el orden original como único candidato. Por ello, el mecanismo completo sigue siendo una declaración de confianza y no una prueba interna de conmutatividad.
+
+La activación efectiva requiere además que \texttt{ApplicativeDo} esté habilitado y que el bloque alcance el procesamiento descrito en la subsección anterior. Aunque el detector contempla también la forma interna de \texttt{MDoExpr}, el gate actual de \texttt{postProcessStmtsForApplicativeDo} aplica la transformación solo sobre \texttt{DoExpr}; por ello, los experimentos utilizan \texttt{CD.do}. La flag de selección presentada al final de esta sección no participa en la activación.
+
+\subsection{Representación de Statements y Construcción del Grafo}
+\label{sec:solucion-implementacion-grafo}
+
+La información requerida por el grafo se reúne en \texttt{StmtDepInfo}. Como muestra el Código~\ref{lst:stmt-dep-info}, cada valor conserva el índice estable del statement, el nodo renombrado, sus variables libres originales y los conjuntos locales de lectura y escritura.
+
+\begin{lstlisting}[style=haskell,caption={Información de dependencias almacenada para cada statement.},label={lst:stmt-dep-info}]
+data StmtDepInfo = StmtDepInfo
+  { sdiIndex       :: !Int
+  , sdiStmt        :: !(ExprLStmt GhcRn)
+  , sdiFvsOriginal :: !FreeVars
+  , sdiReadsLocal  :: !FreeVars
+  , sdiWritesLocal :: !FreeVars
+  }
+
+type StmtDepNode = DG.Node Int StmtDepInfo
+type StmtDepGraph = DG.Graph StmtDepNode
+\end{lstlisting}
+
+El tipo \texttt{ExprLStmt GhcRn} corresponde a un statement de expresión localizado y renombrado. \texttt{sdiFvsOriginal} conserva todos los nombres libres entregados por el Renamer, incluidas referencias locales y nombres globales como funciones o constructores. \texttt{sdiReadsLocal} restringe ese conjunto a nombres definidos en el mismo bloque, mientras que \texttt{sdiWritesLocal} contiene los binders introducidos por el statement. Ambos campos usan \texttt{FreeVars}, representación basada en conjuntos de \texttt{Name}s.
+
+El Código~\ref{lst:compute-stmts-info} implementa las definiciones de la Expresión~\ref{expr:lecturas-escrituras-locales}. La utilidad existente \texttt{collectStmtBinders} recorre las distintas formas de statement y, con \texttt{CollNoDictBinders}, recolecta únicamente binders de términos.
+
+\noindent\begin{minipage}{\textwidth}
+\begin{lstlisting}[style=haskell,caption={Cálculo de lecturas y escrituras locales en el Renamer.},label={lst:compute-stmts-info}]
+computeStmtsInfo stmts = zipWith mkStmtInfo [1 ..] stmts
+  where
+    all_writes =
+      mkNameSet
+        (concatMap
+          (collectStmtBinders CollNoDictBinders . unLoc . fst)
+          stmts)
+
+    mkStmtInfo i (stmt, fvs) = StmtDepInfo
+      { sdiIndex       = i
+      , sdiStmt        = stmt
+      , sdiFvsOriginal = fvs
+      , sdiReadsLocal  = fvs `intersectNameSet` all_writes
+      , sdiWritesLocal =
+          mkNameSet
+            (collectStmtBinders CollNoDictBinders (unLoc stmt))
+      }
+\end{lstlisting}
+\end{minipage}
+
+La detección RAW se reduce a una intersección de conjuntos. \texttt{hasDependency} convierte el conjunto resultante en el predicado usado para insertar aristas:
+
+\begin{lstlisting}[style=haskell,caption={Detección de una dependencia RAW entre dos statements.},label={lst:dep-raw}]
+depRAW :: StmtDepInfo -> StmtDepInfo -> FreeVars
+depRAW si sj =
+  sdiWritesLocal si `intersectNameSet` sdiReadsLocal sj
+
+hasDependency :: StmtDepInfo -> StmtDepInfo -> Bool
+hasDependency si sj = not (isEmptyNameSet (depRAW si sj))
+\end{lstlisting}
+
+En vez de implementar desde cero una estructura de grafo, la solución utiliza \path{GHC.Data.Graph.Directed}. Cada \texttt{DG.DigraphNode} almacena un \texttt{StmtDepInfo}, usa el índice como clave y registra como destinos los statements posteriores que dependen de uno de sus binders. La comprensión del Código~\ref{lst:build-stmt-dep-nodes} corresponde directamente al doble recorrido del Código~\ref{lst:algoritmo-construccion-grafo}.
+
+\noindent\begin{minipage}{\textwidth}
+\begin{lstlisting}[style=haskell,caption={Construcción de nodos y aristas mediante \texttt{GHC.Data.Graph.Directed}.},label={lst:build-stmt-dep-nodes}]
+buildStmtDepNodes infos = map mkNode infos
+  where
+    mkNode si = DG.DigraphNode
+      { DG.node_payload = si
+      , DG.node_key = sdiIndex si
+      , DG.node_dependencies =
+          [ sdiIndex sj
+          | sj <- infos
+          , sdiIndex si < sdiIndex sj
+          , hasDependency si sj
+          ]
+      }
+
+buildStmtsDependencyGraph stmts =
+  DG.graphFromEdgedVerticesOrd
+    $ buildStmtDepNodes
+    $ computeStmtsInfo stmts
+\end{lstlisting}
+\end{minipage}
+
+\subsection{Generación de Permutaciones}
+\label{sec:solucion-implementacion-permutaciones}
+
+La función \path{enumerateSemanticTopSortsBounded} recibe el \texttt{StmtDepGraph} y materializa los órdenes descritos en el Código~\ref{lst:algoritmo-enumeracion-topologica}. Para ello construye un \texttt{IntMap} con los grados de entrada, obtiene los sucesores desde el grafo original y los predecesores desde su transposición. En cada llamada recursiva recorre las claves aún no emitidas, conserva aquellas cuyo grado es cero y crea una rama por elección.
+
+La implementación no elimina físicamente los nodos. Al emitir un índice, decrementa en una copia del mapa el grado de entrada de sus sucesores y acumula el nodo seleccionado. Al completar la cantidad original de vértices, invierte el acumulador y extrae el \texttt{StmtDepInfo} almacenado en cada nodo. El recorrido estable de las claves hace que la primera rama reproduzca el orden original, que aparece como candidato cero.
+
+Cada resultado se transforma nuevamente en la secuencia de statements \texttt{ExprLStmt GhcRn} anotados con sus \texttt{FreeVars}, que es la entrada esperada por \texttt{ApplicativeDo}. Las variables libres originales se conservaron precisamente para no recalcular ni perder esta anotación al cambiar el orden de los statements.
+
+\subsection{Integración con ApplicativeDo}
+\label{sec:solucion-integracion-applicative-do}
+
+Después de separar el \texttt{LastStmt}, \texttt{rearrangeForApplicativeDo} construye el grafo y enumera las permutaciones solo si \texttt{isCommutativeQualifiedDo} retorna verdadero. En caso contrario crea una lista unitaria con el orden original. La opción \texttt{Opt\_OptimalApplicativeDo} determina luego si se utiliza \texttt{mkStmtTreeHeuristic} o \texttt{mkStmtTreeOptimal}; la función elegida se aplica a cada secuencia.
+
+La representación interna de los planes es el tipo \texttt{StmtTree} del Código~\ref{lst:stmt-tree-cost}. Sus tres constructores corresponden a los tres casos del modelo estructural: un statement elemental, una composición secuencial mediante \textit{bind} y una agrupación de ramas aplicativas. La función \texttt{stmtTreeCost} implementa directamente las reglas de la Expresión~\ref{expr:modelo-costos-estructural}.
+
+\noindent\begin{minipage}{\textwidth}
+\begin{lstlisting}[style=haskell,caption={Representación de planes y cálculo de su costo estructural.},label={lst:stmt-tree-cost}]
+data StmtTree a
+  = StmtTreeOne a
+  | StmtTreeBind (StmtTree a) (StmtTree a)
+  | StmtTreeApplicative [StmtTree a]
+
+stmtTreeCost :: ExprStmtTree -> Cost
+stmtTreeCost (StmtTreeOne _) = 1
+stmtTreeCost (StmtTreeBind l r) =
+  stmtTreeCost l + stmtTreeCost r
+stmtTreeCost (StmtTreeApplicative ts) =
+  case ts of
+    [] -> 0
+    _  -> Partial.maximum (map stmtTreeCost ts)
+\end{lstlisting}
+\end{minipage}
+
+\texttt{StmtsPermutationInfo} asocia cada árbol con la permutación que lo originó. El índice de candidato parte desde cero, mientras que los índices de \texttt{StmtDepInfo} parten desde uno y conservan las posiciones del programa fuente.
+
+\noindent\begin{minipage}{\textwidth}
+\begin{lstlisting}[style=haskell,caption={Información conservada para evaluar y seleccionar candidatos.},label={lst:stmts-permutation-info}]
+data StmtsPermutationInfo = StmtsPermutationInfo
+  { candIndex :: !Int
+  , candPerm  :: [StmtDepInfo]
+  , candTree  :: ExprStmtTree
+  , candCost  :: !Cost
+  }
+
+let stmt_trees = map mkStmtTree all_permutations
+let all_permutations_info =
+      zipWith3 mkStmtsPermutationInfo
+        [0 :: Int ..] validStmtsPerms stmt_trees
+let best_candidate = case nonEmpty all_permutations_info of
+      Just cs -> minimumBy (comparing candCost) cs
+      Nothing -> panic "rearrangeForApplicativeDo: empty stmt_trees"
+\end{lstlisting}
+\end{minipage}
+
+Conceptualmente, el último bloque aplica un \texttt{map} para evaluar las permutaciones, combina orden y árbol mediante \texttt{zipWith3}, y usa \texttt{minimumBy} para seleccionar el primer mínimo. Un \texttt{filter} separado se utiliza en las trazas para contar cuántos candidatos empatan con el mínimo, pero no interviene en la selección automática.
+
+Una vez elegido el candidato, \texttt{stmtTreeToStmts} reconstruye los statements finales, agrega nuevamente el statement terminal y genera \texttt{ApplicativeStmt} donde el árbol contiene agrupaciones aplicativas. Desde ese punto, el programa continúa por el typechecking y el desazucarado normales de \textsf{GHC}.
+
+\subsection{Selección Forzada para Validación}
+\label{sec:solucion-seleccion-forzada}
+
+La política de costo mínimo permite evaluar el resultado optimizado, pero no basta para comprobar individualmente todas las permutaciones producidas. Con ese propósito se agregó la flag experimental
+
+\begin{center}
+\texttt{-fado-reorder-candidate-n=<n>}.
+\end{center}
+
+\path{GHC.Driver.DynFlags} almacena su valor como \texttt{Maybe Int} y \path{GHC.Driver.Session} registra la opción de línea de comandos. \texttt{rearrangeForApplicativeDo} calcula primero el mejor candidato y luego intenta obtener el elemento indicado por la flag:
+
+\noindent\begin{minipage}{\textwidth}
+\begin{lstlisting}[style=haskell,caption={Selección opcional de un candidato por índice.},label={lst:seleccion-forzada-candidato}]
+let selected_candidate = do
+      i <- reorder_cand_n
+      guard (i >= 0)
+      listToMaybe (drop i all_permutations_info)
+
+let final_candidate =
+      fromMaybe best_candidate selected_candidate
+\end{lstlisting}
+\end{minipage}
+
+Un índice válido selecciona el candidato base cero solicitado. Si la flag no está presente, el índice es negativo o queda fuera del rango generado, se conserva \texttt{best\_candidate}. Esta opción no habilita la conmutatividad, no crea candidatos adicionales y no altera sus costos; solo reemplaza la decisión final una vez completado el mismo pipeline. El capítulo siguiente utiliza este mecanismo para compilar y ejecutar cada permutación por separado durante la validación semántica.

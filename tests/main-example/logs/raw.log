@@ -1,0 +1,158 @@
+ppsfa
+  [(preparation_a1Yf <- Dist.uniform [Low, High],
+    {Dist.uniform, Low, High}),
+   (quiz_a1Yg <- quizGiven preparation_a1Yf,
+    {preparation_a1Yf, quizGiven}),
+   (difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+    {Dist.uniform, Easy, Hard}),
+   (finalExam_a1Yi <- examGiven preparation_a1Yf difficulty_a1Yh,
+    {preparation_a1Yf, difficulty_a1Yh, examGiven}),
+   (CD.return
+      (preparation_a1Yf, quiz_a1Yg, difficulty_a1Yh, finalExam_a1Yi),
+    {preparation_a1Yf, quiz_a1Yg, difficulty_a1Yh, finalExam_a1Yi,
+     CD.return})]
+addUsedGRE CD.__commutative_do__
+rearrangeForADo-commutative-do commutative-do = True
+rearrangeForADo-StmtsDependencyGraph
+rearrangeForADo-dep
+  pair           = 1  ->  2
+  RAW            = {preparation_a1Yf}
+rearrangeForADo-dep
+  pair           = 1  ->  4
+  RAW            = {preparation_a1Yf}
+rearrangeForADo-dep
+  pair           = 3  ->  4
+  RAW            = {difficulty_a1Yh}
+rearrangeForADo-permutation
+  candidate   =  0
+  index-order =  [1, 2, 3, 4]
+  statements  =  [preparation_a1Yf <- Dist.uniform [Low, High],
+                  quiz_a1Yg <- quizGiven preparation_a1Yf,
+                  difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+                  finalExam_a1Yi <- examGiven preparation_a1Yf difficulty_a1Yh]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeOne (preparation_a1Yf <- Dist.uniform [Low, High],
+                     {Dist.uniform, Low, High}))
+       (StmtTreeApplicative
+          (StmtTreeOne (quiz_a1Yg <- quizGiven preparation_a1Yf,
+                        {preparation_a1Yf, quizGiven}))
+          (StmtTreeBind
+             (StmtTreeOne (difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+                           {Dist.uniform, Easy, Hard}))
+             (StmtTreeOne (finalExam_a1Yi <- examGiven
+                                               preparation_a1Yf difficulty_a1Yh,
+                           {preparation_a1Yf, difficulty_a1Yh, examGiven})))))
+  tree-cost = 3
+rearrangeForADo-permutation
+  candidate   =  1
+  index-order =  [1, 3, 2, 4]
+  statements  =  [preparation_a1Yf <- Dist.uniform [Low, High],
+                  difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+                  quiz_a1Yg <- quizGiven preparation_a1Yf,
+                  finalExam_a1Yi <- examGiven preparation_a1Yf difficulty_a1Yh]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (preparation_a1Yf <- Dist.uniform [Low, High],
+                        {Dist.uniform, Low, High}))
+          (StmtTreeOne (difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+                        {Dist.uniform, Easy, Hard})))
+       (StmtTreeApplicative
+          (StmtTreeOne (quiz_a1Yg <- quizGiven preparation_a1Yf,
+                        {preparation_a1Yf, quizGiven}))
+          (StmtTreeOne (finalExam_a1Yi <- examGiven
+                                            preparation_a1Yf difficulty_a1Yh,
+                        {preparation_a1Yf, difficulty_a1Yh, examGiven}))))
+  tree-cost = 2
+rearrangeForADo-permutation
+  candidate   =  2
+  index-order =  [1, 3, 4, 2]
+  statements  =  [preparation_a1Yf <- Dist.uniform [Low, High],
+                  difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+                  finalExam_a1Yi <- examGiven preparation_a1Yf difficulty_a1Yh,
+                  quiz_a1Yg <- quizGiven preparation_a1Yf]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (preparation_a1Yf <- Dist.uniform [Low, High],
+                        {Dist.uniform, Low, High}))
+          (StmtTreeOne (difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+                        {Dist.uniform, Easy, Hard})))
+       (StmtTreeApplicative
+          (StmtTreeOne (finalExam_a1Yi <- examGiven
+                                            preparation_a1Yf difficulty_a1Yh,
+                        {preparation_a1Yf, difficulty_a1Yh, examGiven}))
+          (StmtTreeOne (quiz_a1Yg <- quizGiven preparation_a1Yf,
+                        {preparation_a1Yf, quizGiven}))))
+  tree-cost = 2
+rearrangeForADo-permutation
+  candidate   =  3
+  index-order =  [3, 1, 2, 4]
+  statements  =  [difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+                  preparation_a1Yf <- Dist.uniform [Low, High],
+                  quiz_a1Yg <- quizGiven preparation_a1Yf,
+                  finalExam_a1Yi <- examGiven preparation_a1Yf difficulty_a1Yh]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+                        {Dist.uniform, Easy, Hard}))
+          (StmtTreeOne (preparation_a1Yf <- Dist.uniform [Low, High],
+                        {Dist.uniform, Low, High})))
+       (StmtTreeApplicative
+          (StmtTreeOne (quiz_a1Yg <- quizGiven preparation_a1Yf,
+                        {preparation_a1Yf, quizGiven}))
+          (StmtTreeOne (finalExam_a1Yi <- examGiven
+                                            preparation_a1Yf difficulty_a1Yh,
+                        {preparation_a1Yf, difficulty_a1Yh, examGiven}))))
+  tree-cost = 2
+rearrangeForADo-permutation
+  candidate   =  4
+  index-order =  [3, 1, 4, 2]
+  statements  =  [difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+                  preparation_a1Yf <- Dist.uniform [Low, High],
+                  finalExam_a1Yi <- examGiven preparation_a1Yf difficulty_a1Yh,
+                  quiz_a1Yg <- quizGiven preparation_a1Yf]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+                        {Dist.uniform, Easy, Hard}))
+          (StmtTreeOne (preparation_a1Yf <- Dist.uniform [Low, High],
+                        {Dist.uniform, Low, High})))
+       (StmtTreeApplicative
+          (StmtTreeOne (finalExam_a1Yi <- examGiven
+                                            preparation_a1Yf difficulty_a1Yh,
+                        {preparation_a1Yf, difficulty_a1Yh, examGiven}))
+          (StmtTreeOne (quiz_a1Yg <- quizGiven preparation_a1Yf,
+                        {preparation_a1Yf, quizGiven}))))
+  tree-cost = 2
+rearrangeForADo final tree:
+  candidate   =  1
+  index-order =  [1, 3, 2, 4]
+  statements  =  [preparation_a1Yf <- Dist.uniform [Low, High],
+                  difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+                  quiz_a1Yg <- quizGiven preparation_a1Yf,
+                  finalExam_a1Yi <- examGiven preparation_a1Yf difficulty_a1Yh]
+  rearrangeForADo-resulting tree =
+    (StmtTreeBind
+       (StmtTreeApplicative
+          (StmtTreeOne (preparation_a1Yf <- Dist.uniform [Low, High],
+                        {Dist.uniform, Low, High}))
+          (StmtTreeOne (difficulty_a1Yh <- Dist.uniform [Easy, Hard],
+                        {Dist.uniform, Easy, Hard})))
+       (StmtTreeApplicative
+          (StmtTreeOne (quiz_a1Yg <- quizGiven preparation_a1Yf,
+                        {preparation_a1Yf, quizGiven}))
+          (StmtTreeOne (finalExam_a1Yi <- examGiven
+                                            preparation_a1Yf difficulty_a1Yh,
+                        {preparation_a1Yf, difficulty_a1Yh, examGiven}))))
+  tree-cost = 2
+rearrangeForADo-Summary:
+  minimum-cost-perm-index      = 1
+  original-cost                = 4
+  applicative-do-cost          = 3
+  reorder-and-ado-minimum-cost = 2
+  generated-permutations       = 5
+  minimum-cost-permutations    = 4

@@ -2,7 +2,7 @@
 
 \section{Artefactos de Validación}
 
-La validación deja artefactos reproducibles para inspeccionar el comportamiento del compilador y respaldar los resultados. Los experimentos viven bajo \texttt{experiments/}, mientras que los resultados se guardan bajo \texttt{tests/} siguiendo una estructura paralela por mónada, familia, caso y variante.
+La validación deja artefactos reproducibles para inspeccionar el comportamiento del compilador y respaldar los resultados. Los experimentos viven bajo \texttt{experiments/}, mientras que los resultados se guardan bajo \texttt{tests/}. Los dos corpus siguen una estructura paralela por mónada, familia, caso y variante. El ejemplo guía usa las rutas directas \path{experiments/main-example} y \path{tests/main-example}.
 
 Los archivos más relevantes son:
 
@@ -14,7 +14,7 @@ Artefacto & Función \\
 \texttt{summary.log} & Resume costos y cantidad de permutaciones. \\
 \texttt{semantic-validation.log} & Registra compilaciones, ejecuciones y comparación final. \\
 \texttt{logs/raw.log} & Guarda la traza cruda del Renamer. \\
-\texttt{logs/graph.log} & Presenta el grafo RAW en forma legible. \\
+\texttt{graph.log} & Presenta el grafo RAW en forma legible. \\
 \texttt{logs/optimal-reorder.log} & Muestra el candidato elegido automáticamente. \\
 \texttt{logs/original\_ado.log} & Muestra \texttt{ApplicativeDo} normal, sin reordenamiento. \\
 \texttt{logs/permutation\_i.log} & Muestra el candidato \texttt{i} forzado por flag. \\

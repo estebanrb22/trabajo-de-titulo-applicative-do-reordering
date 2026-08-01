@@ -1,0 +1,275 @@
+% !TEX root = ../../main.tex
+
+\section{Diseño Algorítmico}
+\label{sec:solucion-diseno}
+
+La solución propuesta transforma una secuencia de statements dentro de un bloque \texttt{do} en un conjunto de reordenamientos candidatos evaluables mediante dos etapas. Primero representa las restricciones \textit{Read-after-Write} del bloque mediante un grafo de precedencia, tal como se mostró con el ejemplo del alumno y los resultados de sus evaluaciones en la Figura~\ref{fig:main-example-precedence-graph}. Luego enumera los ordenamientos topológicos de ese grafo, es decir, aquellos que mantienen válidas las dependencias entre statements. Finalmente, aplica la generación del plan de \texttt{ApplicativeDo} a cada reordenamiento y compara sus representaciones internas siendo estos arboles paramétricos. Esta sección define dichas etapas sin depender todavía de los tipos concretos utilizados por \textsf{GHC}.
+
+\subsection{Modelo de Dependencias}
+\label{sec:solucion-modelo-dependencias}
+
+Antes de construir el grafo de precedencia es necesario determinar qué relaciones entre statements obligan a conservar su orden relativo. Considérense dos statements $s_i$ y $s_j$ tales que $i<j$. En un modelo general de asignaciones, cada uno posee un conjunto $R$ de variables leídas y un conjunto $W$ de variables escritas. A partir de estos conjuntos se distinguen tres clases de dependencia: \textit{Read-after-Write} (RAW), \textit{Write-after-Read} (WAR) y \textit{Write-after-Write} (WAW):
+
+\begin{ReportExpression}{Dependencias de escritura y lectura de variables entre dos statements $s_i$ y $s_j$.}{expr:dependencias-raw-war-waw}
+\[
+\begin{aligned}
+\operatorname{RAW}(i,j) &\iff W_i\cap R_j\neq\emptyset,\\
+\operatorname{WAR}(i,j) &\iff R_i\cap W_j\neq\emptyset,\\
+\operatorname{WAW}(i,j) &\iff W_i\cap W_j\neq\emptyset.
+\end{aligned}
+\]
+\end{ReportExpression}
+
+Una dependencia RAW establece una relación productor--consumidor: $s_j$ lee una variable cuyo valor fue escrito por $s_i$. Una dependencia WAR aparece cuando $s_i$ debe leer una variable antes de que $s_j$ la sobrescriba; invertir ambos statements haría que la lectura observara el nuevo valor. Finalmente, una dependencia WAW relaciona dos escrituras sobre una misma variable y obliga a conservar cuál de ellas determina su valor posterior. Estas dos últimas relaciones presuponen que distintas escrituras pueden actuar sobre una misma identidad mutable, como ocurre en un modelo imperativo de asignaciones. Alterar cualquiera de estas precedencias puede modificar los valores observados o el estado final del programa \cite{DavisKeller1982,HarroldSoffa1994}.
+
+La \textit{do-notation} de \textsf{Haskell} presenta un comportamiento diferente. En un statement de la forma \verb|p <- e|, el patrón \verb|p| introduce una nueva vinculación léxica, denominada \textit{binder}; no actualiza destructivamente una variable definida con anterioridad. Si un statement posterior reutiliza el mismo identificador textual, introduce otro binder que oculta al primero en su nuevo alcance. Este comportamiento concuerda con la pureza descrita en la Sección~\ref{sec:fundamentos-haskell} y con las reglas de alcance de la \textit{do-notation} \cite[sección~3.14]{Haskell2010}.
+
+El Renamer de \textsf{GHC} hace explícita esta diferencia al resolver los identificadores del programa. Cada binder recibe un \texttt{Name} único y cada uso queda asociado con la identidad que se encuentra en alcance en ese punto. Por ello, dos definiciones escritas como \texttt{x} en el programa fuente no representan dos escrituras internas sobre el mismo nombre.
+
+El Código~\ref{lst:original-vs-renaming} ilustra este comportamiento con un bloque \textsf{do} de tipo \texttt{Maybe Int}. En el programa fuente, \texttt{y} lee la primera vinculación de \texttt{x} antes de que un statement posterior vuelva a utilizar ese identificador. La columna derecha presenta esquemáticamente las identidades diferenciadas durante el renombrado:
+
+\noindent\begin{minipage}{\textwidth}
+\begin{lstlisting}[style=haskell,caption={Representación esquemática de los binders antes y después del renombrado.},label={lst:original-vs-renaming}]
+do                                      do
+  x <- Just 2                             x_a1T2 <- Just 2
+  y <- Just ((2*) x)                      y_a1T3 <- Just ((2*) x_a1T2)
+  x <- Just 3              ==>            x_a1T4 <- Just 3
+  return (x + y)                          return (x_a1T4 + y_a1T3)
+\end{lstlisting}
+\end{minipage}
+
+La primera y la tercera definición escriben, respectivamente, los nombres \texttt{x\_a1T2} y \texttt{x\_a1T4}. Como son identidades diferentes, sus conjuntos de escritura no se intersectan y, por tanto, no existe una dependencia WAW. De manera análoga, el segundo statement lee \texttt{x\_a1T2}, mientras que el tercero escribe \texttt{x\_a1T4}; la intersección entre esa lectura y la escritura posterior también es vacía, por lo que no existe una dependencia WAR. La relación local efectiva entre los statements reordenables es RAW: la definición de \texttt{x\_a1T2} debe permanecer antes del statement que define \texttt{y\_a1T3}. En consecuencia, el grafo de precedencia utilizado por la solución puede especializarse solo con dependencias RAW entre nombres renombrados.
+
+El conjunto de variables libres que entrega el Renamer para un statement contiene todos los \texttt{Name}s utilizados que no son introducidos por ese mismo statement. Esto incluye tanto referencias a binders definidos por statements anteriores como nombres globales, entre ellos funciones, operadores y constructores de datos. Por ejemplo, en el segundo statement del Código~\ref{lst:original-vs-renaming} aparecen como nombres libres \texttt{x\_a1T2}, el constructor \texttt{Just} y el operador \verb|(*)|, pero solo el primero corresponde a un valor producido dentro del bloque \textsf{do}. Para distinguir las lecturas locales de las referencias externas se definen los siguientes conjuntos para cada statement $s_i$:
+
+\begin{ReportExpression}{Escrituras y lecturas locales de un statement renombrado.}{expr:lecturas-escrituras-locales}
+\[
+\begin{aligned}
+\operatorname{WRITE}(s_i) &= \operatorname{binders}(s_i),\\
+\operatorname{ALL\_WRITES} &= \bigcup_{k=1}^{n}\operatorname{WRITE}(s_k),\\
+\operatorname{READ}_{\mathrm{local}}(s_i)
+  &= \operatorname{FV}(s_i)\cap\operatorname{ALL\_WRITES}.
+\end{aligned}
+\]
+\end{ReportExpression}
+
+El conjunto $\operatorname{WRITE}(s_i)$ contiene los \texttt{Name}s de los binders introducidos por $s_i$, mientras que $\operatorname{ALL\_WRITES}$ reúne todos los nombres producidos por los statements del bloque \textsf{do}. Por su parte, $\operatorname{FV}(s_i)$ conserva el conjunto completo de nombres libres informado por el Renamer. Al intersectarlo con $\operatorname{ALL\_WRITES}$, $\operatorname{READ}_{\mathrm{local}}(s_i)$ retiene únicamente los nombres cuyo valor se origina por un binder de un statement anterior. En el ejemplo del Código~\ref{lst:original-vs-renaming}, \texttt{x\_a1T2} permanece como lectura local del segundo statement, mientras que \texttt{Just} y \verb|(*)| son descartados porque no pertenecen a $\operatorname{ALL\_WRITES}$, sino que a $\operatorname{FV}(s_2)$.
+
+Con esta información, la restricción relevante entre dos statements $s_i$ y $s_j$ queda dada por
+
+\begin{ReportExpression}{Dependencia RAW local utilizada por la extensión.}{expr:dependencia-raw-local}
+\[
+i\longrightarrow j
+\quad\iff\quad
+i<j
+\quad\land\quad
+\operatorname{WRITE}(s_i)
+\cap
+\operatorname{READ}_{\mathrm{local}}(s_j)
+\neq\emptyset.
+\]
+\end{ReportExpression}
+
+La condición $i<j$ orienta la dependencia según el orden del programa original. La intersección no vacía indica que existe al menos un \texttt{Name} definido por $s_i$ y utilizado localmente por $s_j$; dicho nombre actúa como testigo de una relación productor--consumidor que debe preservarse. Debido a que la comparación se realiza sobre nombres renombrados, la arista no puede surgir solo por la reutilización de un mismo identificador textual.
+
+Estas definiciones reducen las restricciones semánticas del bloque a un conjunto de relaciones RAW locales entre statements. A partir de ellas, la etapa siguiente construye el grafo de precedencia cuyos vértices representan statements y cuyas aristas representan las dependencias que todo reordenamiento válido debe conservar.
+
+\subsection{Construcción del Grafo de Precedencia}
+\label{sec:solucion-construccion-grafo}
+
+Sea $G=(V,E)$ el grafo de precedencia del bloque y sea $n$ la cantidad de statements que participan en el reordenamiento. Cada vértice de $V=\{1,\ldots,n\}$ representa uno de estos statements según su posición original, y cada arista $(i,j)\in E$ representa la dependencia RAW local de la Expresión~\ref{expr:dependencia-raw-local}. El statement terminal que entrega el resultado del bloque permanece fijo y no participa en las permutaciones, de la misma manera que la expresión final se mantiene fuera de la entrada de \textit{rearrange} en la presentación de Marlow et al.
+
+El Código~\ref{lst:algoritmo-construccion-grafo} presenta el algoritmo abstracto de construcción. Primero calcula la información local de cada statement y luego compara todos los pares que respetan el orden original.
+
+\begin{lstlisting}[style=haskell,caption={Pseudocódigo para construir el grafo de precedencia RAW.},label={lst:algoritmo-construccion-grafo}]
+buildPrecedenceGraph(statements):
+    n := length(statements)
+    allWrites := union(write(s) for s in statements)
+    graph := graph with vertices {1, ..., n}
+
+    for each statement s_i:
+        writesLocal[i] := write(s_i)
+        readsLocal[i]  := intersection(freeVars(s_i), allWrites)
+
+    for i := 1 to n:
+        for j := i + 1 to n:
+            if intersection(writesLocal[i], readsLocal[j]) != empty:
+                add edge i -> j to graph
+
+    return graph
+\end{lstlisting}
+
+La condición $i<j$ cumple dos funciones. Primero, expresa que el grafo conserva una precedencia presente en el programa original. Segundo, garantiza su aciclicidad: los índices aumentan estrictamente a lo largo de toda arista, por lo que ningún camino puede regresar a su nodo inicial. El algoritmo realiza
+
+\[
+\sum_{i=1}^{n-1}(n-i)=\frac{n(n-1)}{2}
+\]
+
+comparaciones entre pares. Por tanto, la cantidad de pruebas de dependencia es $O(n^2)$, sin incluir el costo interno de construir e intersectar los conjuntos de nombres. Para el ejemplo probabilístico del Código~\ref{lst:main-example}, la aplicación de este algoritmo produce las aristas $1\to2$, $1\to4$ y $3\to4$. El grafo ya fue presentado en la Figura~\ref{fig:main-example-precedence-graph}.
+
+\subsection{Enumeración de Reordenamientos Válidos}
+\label{sec:solucion-enumeracion}
+
+Un reordenamiento de statements respeta las restricciones RAW del grafo si, para cada arista $i\to j$, el statement $s_i$ aparece antes que $s_j$. Una secuencia que contiene todos los vértices y satisface esta condición se denomina ordenamiento topológico. Esta subsección presenta primero el algoritmo de Kahn para obtener uno de estos órdenes y luego desarrolla la variante ramificada utilizada para enumerarlos todos.
+
+\subsubsection{Algoritmo de Kahn}
+
+El algoritmo de Kahn obtiene un ordenamiento topológico de un grafo dirigido acíclico a partir del grado de entrada de sus vértices \cite{Kahn1962}. El grado de entrada de un vértice corresponde a la cantidad de aristas que llegan hasta él. Por tanto, un vértice con grado de entrada cero no posee predecesores pendientes y puede ocupar la siguiente posición del ordenamiento.
+
+El procedimiento calcula primero los grados de entrada y agrega a una cola todos los vértices cuyo valor es cero. El uso de esta cola determina una estrategia de procesamiento en amplitud, análoga a BFS. Luego extrae el primer vértice de la cola, lo incorpora al orden parcial y elimina conceptualmente sus aristas salientes. Cada eliminación reduce en uno el grado de entrada del sucesor correspondiente; si alguno alcanza cero, se agrega al final de la cola. El proceso continúa hasta vaciarla. En un DAG se emiten todos los vértices, mientras que una cola vacía antes de completar el orden indica la existencia de un ciclo. Como cada vértice se incorpora una vez y cada arista se examina al eliminarla, el costo del algoritmo es $O(|V|+|E|)$.
+
+En el grafo del ejemplo probabilístico, presentado en la Figura~\ref{fig:main-example-precedence-graph}, los grados de entrada iniciales de $s_1$, $s_2$, $s_3$ y $s_4$ son, respectivamente, $0$, $1$, $0$ y $2$. Al insertar los vértices iniciales según el índice del statement, la cola comienza como \texttt{[s1,s3]}. La Tabla~\ref{tab:kahn-main-example} resume la ejecución completa.
+
+\begin{table}[ht]
+\centering
+\TableSetup
+\TableFrame{%
+\begin{tabular}{cccc}
+\rowcolor{tableHeaderBg}
+\TableHead{Paso} & \TableHead{Vértice emitido} & \TableHead{Cola actualizada} & \TableHead{Orden parcial} \\
+0 & $-$   & \texttt{[s1,s3]} & \texttt{[]} \\
+1 & $s_1$ & \texttt{[s3,s2]} & \texttt{[1]} \\
+2 & $s_3$ & \texttt{[s2,s4]} & \texttt{[1,3]} \\
+3 & $s_2$ & \texttt{[s4]}    & \texttt{[1,3,2]} \\
+4 & $s_4$ & \texttt{[]}      & \texttt{[1,3,2,4]} \\
+\end{tabular}%
+}
+\caption{Aplicación del algoritmo de Kahn al grafo del ejemplo probabilístico.}
+\label{tab:kahn-main-example}
+\end{table}
+
+Cuando se emite $s_1$, el grado de $s_2$ se vuelve cero, pero este vértice se agrega detrás de $s_3$, que ya se encontraba en la cola. De esta manera se obtiene el orden $[1,3,2,4]$. Esta secuencia coincide con la disposición del mismo grafo de precedencia mostrada en la Figura~\ref{fig:main-example-reordered-precedence-graph}, donde todas las aristas conservan su orientación hacia statements posteriores.
+
+\subsubsection{Enumeración Exhaustiva}
+
+El algoritmo clásico de Kahn selecciona la cabeza de la cola y produce un único ordenamiento. La solución propuesta debe obtener todas las alternativas, por lo que reemplaza esa elección única por una ramificación sobre cada vértice no emitido cuyo grado de entrada sea cero. Cada rama emite uno de ellos, actualiza los grados de sus sucesores y repite el procedimiento sobre el estado resultante. Conceptualmente, esto equivale a ejecutar el mismo criterio sobre el grafo reducido después de retirar el vértice seleccionado.
+
+El Código~\ref{lst:algoritmo-enumeracion-topologica} presenta este procedimiento. El conjunto \texttt{emitted} identifica los vértices ya retirados y \texttt{indegree} conserva los grados correspondientes al grafo reducido. La lista \texttt{order} acumula el prefijo del reordenamiento construido por cada rama.
+
+\begin{lstlisting}[style=haskell,caption={Pseudocódigo para enumerar los ordenamientos topológicos del grafo.},label={lst:algoritmo-enumeracion-topologica}]
+enumerateTopologicalOrders(graph, indegree, emitted, order):
+    if length(order) == numberOfVertices(graph):
+        emit order
+        return
+
+    choices := every non-emitted vertex v with indegree[v] == 0
+
+    for each v in choices:
+        nextIndegree := copy(indegree)
+        for each successor w of v:
+            nextIndegree[w] := nextIndegree[w] - 1
+
+        enumerateTopologicalOrders(
+            graph,
+            nextIndegree,
+            union(emitted, {v}),
+            order ++ [v])
+\end{lstlisting}
+
+Cada rama agrega únicamente un vértice cuyos predecesores ya fueron emitidos. Por inducción sobre la longitud de la lista acumulada, toda secuencia producida respeta las aristas. A la inversa, toda primera posición de un ordenamiento topológico debe tener grado de entrada cero; como el algoritmo ramifica sobre todas esas posibilidades y repite el argumento sobre el grafo restante, también alcanza cada orden válido.
+
+La enumeración está necesariamente condicionada por la cantidad de resultados. Si $P$ es el número de ordenamientos topológicos, el algoritmo debe producir $P$ listas de longitud $n$; la implementación concreta las conserva para evaluarlas posteriormente. En el caso extremo con un grafo de precedencia sin aristas, todos los statements son independientes respecto a la dependencia RAW y la cantidad de listas o reordenamientos es $n!$. Por ende en el peor de los casos cuando se quieren obtener todos los posibles reordenamientos de una secuencia de statements completamente independeniente entre ellos, el orden del algoritmo termina siendo $n!$.  
+
+La Figura~\ref{fig:arbol-enumeracion-main-example} desarrolla la enumeración para el ejemplo probabilístico cuyo grafo se muestra en la Figura~\ref{fig:main-example-precedence-graph}. Se recorren las alternativas disponibles por índice creciente para reproducir el orden estable de los candidatos. Cada estado muestra el prefijo emitido $\pi$ y el subgrafo $G[R]$ inducido por el conjunto $R$ de vértices restantes. Una arista del árbol representa la emisión del statement indicado y la llamada recursiva resultante.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[
+    enumeration state/.style={
+        draw=graphNodeBorder,
+        fill=graphNodeBg,
+        text=graphNodeFg,
+        rounded corners=2pt,
+        line width=0.6pt,
+        minimum width=2.45cm,
+        minimum height=0.9cm,
+        align=center,
+        font=\scriptsize
+    },
+    enumeration leaf/.style={
+        enumeration state,
+        fill=codekeyword!16!codebg
+    },
+    enumeration edge/.style={
+        -latex,
+        draw=graphEdge,
+        line width=0.7pt
+    },
+    branch label/.style={
+        fill=white,
+        inner sep=1pt,
+        font=\scriptsize
+    }
+]
+    \node[enumeration state] (root) at (0,8) {$\pi=[]$\\$G[\{1,2,3,4\}]$};
+
+    \node[enumeration state] (p1) at (-3.75,6) {$\pi=[1]$\\$G[\{2,3,4\}]$};
+    \node[enumeration state] (p3) at (4.5,6) {$\pi=[3]$\\$G[\{1,2,4\}]$};
+
+    \node[enumeration state] (p12) at (-6,4) {$\pi=[1,2]$\\$G[\{3,4\}]$};
+    \node[enumeration state] (p13) at (-1.5,4) {$\pi=[1,3]$\\$G[\{2,4\}]$};
+    \node[enumeration state] (p31) at (4.5,4) {$\pi=[3,1]$\\$G[\{2,4\}]$};
+
+    \node[enumeration state] (p123) at (-6,2) {$\pi=[1,2,3]$\\$G[\{4\}]$};
+    \node[enumeration state] (p132) at (-3,2) {$\pi=[1,3,2]$\\$G[\{4\}]$};
+    \node[enumeration state] (p134) at (0,2) {$\pi=[1,3,4]$\\$G[\{2\}]$};
+    \node[enumeration state] (p312) at (3,2) {$\pi=[3,1,2]$\\$G[\{4\}]$};
+    \node[enumeration state] (p314) at (6,2) {$\pi=[3,1,4]$\\$G[\{2\}]$};
+
+    \node[enumeration leaf] (c0) at (-6,0) {$C_0$\\$\pi=[1,2,3,4]$\\$G[\varnothing]$};
+    \node[enumeration leaf] (c1) at (-3,0) {$C_1$\\$\pi=[1,3,2,4]$\\$G[\varnothing]$};
+    \node[enumeration leaf] (c2) at (0,0) {$C_2$\\$\pi=[1,3,4,2]$\\$G[\varnothing]$};
+    \node[enumeration leaf] (c3) at (3,0) {$C_3$\\$\pi=[3,1,2,4]$\\$G[\varnothing]$};
+    \node[enumeration leaf] (c4) at (6,0) {$C_4$\\$\pi=[3,1,4,2]$\\$G[\varnothing]$};
+
+    \draw[enumeration edge] (root) -- node[branch label] {$s_1$} (p1);
+    \draw[enumeration edge] (root) -- node[branch label] {$s_3$} (p3);
+
+    \draw[enumeration edge] (p1) -- node[branch label] {$s_2$} (p12);
+    \draw[enumeration edge] (p1) -- node[branch label] {$s_3$} (p13);
+    \draw[enumeration edge] (p3) -- node[branch label] {$s_1$} (p31);
+
+    \draw[enumeration edge] (p12) -- node[branch label] {$s_3$} (p123);
+    \draw[enumeration edge] (p13) -- node[branch label] {$s_2$} (p132);
+    \draw[enumeration edge] (p13) -- node[branch label] {$s_4$} (p134);
+    \draw[enumeration edge] (p31) -- node[branch label] {$s_2$} (p312);
+    \draw[enumeration edge] (p31) -- node[branch label] {$s_4$} (p314);
+
+    \draw[enumeration edge] (p123) -- node[branch label] {$s_4$} (c0);
+    \draw[enumeration edge] (p132) -- node[branch label] {$s_4$} (c1);
+    \draw[enumeration edge] (p134) -- node[branch label] {$s_2$} (c2);
+    \draw[enumeration edge] (p312) -- node[branch label] {$s_4$} (c3);
+    \draw[enumeration edge] (p314) -- node[branch label] {$s_2$} (c4);
+\end{tikzpicture}
+\caption{Árbol de llamadas para enumerar los reordenamientos topológicos del ejemplo probabilístico. La raíz representa la invocación inicial y los otros 15 estados corresponden a llamadas recursivas; las cinco hojas resaltadas son los candidatos obtenidos.}
+\label{fig:arbol-enumeracion-main-example}
+\end{figure}
+
+Cada camino desde la raíz hasta una hoja contiene los cuatro statements en un orden que respeta las dependencias. La Tabla~\ref{tab:solucion-candidatos-ejemplo} reúne los cinco reordenamientos. El candidato cero reproduce el orden original; los demás intercalan los statements independientes sin invertir ninguna de las tres aristas del grafo.
+
+\begin{table}[ht]
+\centering
+\TableSetup
+\TableFrame{%
+\begin{tabular}{cc}
+\rowcolor{tableHeaderBg}
+\TableHead{Candidato} & \TableHead{Reordenamiento} \\
+0 & \texttt{[1,2,3,4]} \\
+1 & \texttt{[1,3,2,4]} \\
+2 & \texttt{[1,3,4,2]} \\
+3 & \texttt{[3,1,2,4]} \\
+4 & \texttt{[3,1,4,2]} \\
+\end{tabular}%
+}
+\caption{Reordenamientos topológicos válidos para el ejemplo probabilístico.}
+\label{tab:solucion-candidatos-ejemplo}
+\end{table}
+
+\subsection{Evaluación y Selección de Candidatos}
+\label{sec:solucion-evaluacion-seleccion}
+
+La tercera etapa aplica el mismo algoritmo de \texttt{ApplicativeDo} a cada orden de la Tabla~\ref{tab:solucion-candidatos-ejemplo}. La extensión no introduce una estrategia alternativa para agrupar statements: cada permutación se convierte en una nueva secuencia de entrada para \textit{rearrange}, que decide dónde utilizar composición monádica y dónde construir agrupaciones aplicativas. El desazucarado posterior tampoco cambia y continúa según los casos descritos en la Sección~\ref{sec:applicative-do-desugaring}.
+
+El resultado de evaluar un orden se modela como un candidato compuesto por su índice, la permutación, el árbol de statements y el costo de ese árbol. Si el bloque genera $P$ permutaciones y el algoritmo de \texttt{ApplicativeDo} elegido cuesta $A(n)$ para una entrada de $n$ statements, esta fase requiere $P$ evaluaciones y tiene un costo global proporcional a $P\,A(n)$. La implementación de \textsf{GHC} dispone de una variante heurística $O(n^2)$ y una variante óptima basada en programación dinámica $O(n^3)$ para construir cada árbol.
+
+La política automática escoge el primer candidato que alcanza el menor costo entre los árboles producidos por la variante seleccionada de \texttt{ApplicativeDo}. Este criterio entrega un desempate determinista sin introducir una preferencia semántica adicional entre órdenes equivalentes dentro del modelo. Cuando \texttt{OptimalApplicativeDo} está habilitado, cada árbol es además el óptimo encontrado por programación dinámica para su orden; en caso contrario se utiliza la construcción heurística. En el ejemplo, el candidato cero conserva el costo 3 de \texttt{ApplicativeDo} sobre el orden original, mientras que los candidatos uno a cuatro alcanzan costo 2. Por ello se selecciona el candidato uno, cuyo plan $(s_1\mid s_3);(s_2\mid s_4)$ ya fue comparado con los planes anteriores en la Tabla~\ref{tab:main-example-plans}.

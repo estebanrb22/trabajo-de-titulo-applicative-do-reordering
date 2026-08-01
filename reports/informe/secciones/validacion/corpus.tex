@@ -1,0 +1,66 @@
+% !TEX root = ../../main.tex
+
+\section{Corpus}
+
+\subsection{Corpus Sintético Maybe}
+
+El primer corpus sintético usa la mónada \texttt{Maybe}. Su objetivo es validar fenómenos estructurales del Renamer y del grafo de precedencia con programas pequeños, deterministas y fáciles de comparar. La descripción completa de los casos está en el archivo \texttt{cases.md} del corpus \texttt{maybe-monad}.
+
+Las familias implementadas cubren los siguientes aspectos:
+
+\begin{itemize}
+    \item \texttt{dependency-shapes}: formas de grafo como cadenas, grafo vacío, diamante, fanout, fanin y cadenas independientes.
+    \item \texttt{binders}: patrones que definen múltiples variables, patrones de lista, patrones anidados, wildcards, as-patterns y patrones lazy.
+    \item \texttt{let-statements}: interacción entre statements \texttt{let}, binders monádicos y shadowing.
+    \item \texttt{body-stmts}: statements sin binder, tanto independientes como dependientes.
+    \item \texttt{maybe-failure}: comportamiento de \texttt{Nothing}, fallos de patrón y guards.
+    \item \texttt{shadowing}: reutilización del mismo nombre fuente con nombres renombrados distintos.
+    \item \texttt{cost-selection}: casos donde el orden original no es mínimo, todos los costos empatan o existe un mínimo único.
+    \item \texttt{controls}: controles negativos y positivos para verificar que el marcador conmutativo activa la extensión solo cuando corresponde.
+\end{itemize}
+
+Este corpus permite aislar errores en la recolección de binders, el cálculo de variables libres locales, la construcción de aristas RAW y la selección de candidatos. En particular, la familia \texttt{cost-selection} comprueba distintos comportamientos de la política de selección, aunque el caso guía transversal del informe se mantiene separado bajo \texttt{experiments/main-example}.
+
+\subsection{Corpus Sintético Probabilístico}
+
+El segundo corpus sintético usa la mónada probabilística \texttt{Dist.T Rational} del paquete \texttt{probability}. Este corpus conecta la extensión con el dominio principal de la memoria: programas probabilísticos finitos escritos en \textsf{Haskell}. Su descripción completa está en el archivo \texttt{cases.md} del corpus \texttt{probability-monad}.
+
+Los programas probabilísticos imprimen una salida canónica usando \texttt{Dist.norm}. Esta normalización agrupa resultados iguales y suma sus probabilidades, evitando que dos representaciones internas equivalentes se comparen como diferentes por el pipeline. La comparación sigue siendo byte a byte, pero sobre una representación normalizada de la distribución.
+
+El corpus reutiliza varias familias estructurales de \texttt{Maybe}, como formas de dependencia, binders, \texttt{let}, \texttt{BodyStmt}, shadowing, selección por costo y controles. Además, incorpora familias específicas de probabilidades:
+
+\begin{itemize}
+    \item distribuciones independientes con pesos no uniformes;
+    \item resultados duplicados que deben sumarse al normalizar;
+    \item soportes dependientes de valores generados previamente;
+    \item pesos dependientes de binders anteriores;
+    \item distribuciones construidas con \texttt{Dist.choose}, \texttt{Dist.relative} o \texttt{Dist.fromFreqs};
+    \item condicionamiento explícito mediante distribuciones imposibles o filtrado.
+\end{itemize}
+
+Esta separación permite validar dos dimensiones: que el Renamer se comporte igual que en el corpus estructural y que la semántica probabilística observable se conserve después del reordenamiento.
+
+
+\subsection{Control IO}
+
+El control con \texttt{IO} muestra por qué el reordenamiento no puede activarse para mónadas arbitrarias. En \texttt{IO}, dos acciones que no comparten variables pueden tener efectos observables cuyo orden importa. Por ejemplo, dos impresiones independientes pueden producir salidas distintas si se intercambian.
+
+El log de validación del control negativo registra dos permutaciones. La permutación original imprime:
+
+\begin{verbatim}
+A
+B
+3
+\end{verbatim}
+
+Una permutación alternativa imprime:
+
+\begin{verbatim}
+B
+A
+3
+\end{verbatim}
+
+La comparación semántica detecta la diferencia y termina con \texttt{RESULT: FAIL}. Este resultado no invalida la solución; al contrario, confirma la necesidad del mecanismo de opt-in. El compilador no debe asumir conmutatividad por ausencia de dependencias RAW, porque los efectos observables pueden seguir dependiendo del orden.
+
+Por esta razón, la extensión solo explora reordenamientos cuando el bloque fue marcado explícitamente como conmutativo mediante \texttt{CD.do}. Para bloques \texttt{do} normales, \texttt{ApplicativeDo} conserva el comportamiento estándar y no se habilita la enumeración de permutaciones conmutativas.

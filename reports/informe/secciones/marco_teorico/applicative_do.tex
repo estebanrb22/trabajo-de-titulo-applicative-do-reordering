@@ -2,30 +2,163 @@
 
 \section{ApplicativeDo}
 
-\texttt{ApplicativeDo} es una extensión de \textsf{GHC} basada en el trabajo de Marlow, Peyton Jones, Kmett y Mokhov \cite{MarlowPJKM2016}. Su objetivo es permitir que programas escritos con \textit{do-notation} usen combinadores aplicativos cuando las dependencias lo permiten. De esta forma, el programador conserva la sintaxis monádica habitual, mientras el compilador puede generar una estructura de ejecución más estática.
+\texttt{ApplicativeDo} es una extensión de \textsf{GHC} basada en el trabajo de Marlow, Peyton Jones, Kmett y Mokhov \cite{MarlowPJKM2016}. Su objetivo es permitir que programas escritos con \textit{do-notation} usen combinadores aplicativos cuando las dependencias lo permiten. De esta forma, el programador conserva la sintaxis monádica habitual, mientras el compilador puede generar una estructura de ejecución más paralelizable.
 
-El proceso conceptual descrito por Marlow et al. tiene dos etapas. Primero, la etapa de \textit{rearrangement} analiza la lista de statements de un bloque \texttt{do} y construye un plan que combina secuencias monádicas con grupos applicative. Luego, la etapa de \textit{desugaring} traduce ese plan a expresiones con operaciones como \texttt{fmap}, \texttt{pure}, \verb|(<*>)|, \texttt{join} y \verb|(>>=)|.
+La transformación propuesta recibe un bloque \texttt{do}, analiza las dependencias entre sus statements y produce una expresión equivalente que utiliza operaciones aplicativas donde existe independencia, sin dejar de utilizar operaciones monádicas donde un cómputo depende del resultado de otro. Para ello, el algoritmo se organiza conceptualmente como un \textit{pipeline} de dos etapas: \textit{rearrange} construye un plan que combina secuencias y agrupaciones aplicativas, mientras que \textit{desugaring} traduce ese plan a combinadores explícitos \cite[pp.~95--96]{MarlowPJKM2016}.
 
-La Figura~\ref{fig:rearrangement-marlow} resume la etapa de \textit{rearrangement}. Esta etapa busca cortes válidos en la secuencia de statements, de modo que partes independientes puedan agruparse applicativamente. La validez de un corte depende de que las variables definidas en una parte no sean requeridas por la otra de forma incompatible con el alcance del programa.
+Esta separación también forma parte del diseño de la implementación. La primera etapa conserva la estructura de los statements y registra cómo deben agruparse; la segunda consume esa información para producir las operaciones que implementan el plan. A continuación se profundizará en el diseño conceptual de las etapas ya mencionadas \textit{rearrange} y \textit{desugaring}, aplicando luego el algoritmo de \texttt{ApplicativeDo} al programa probabilístico del Código~\ref{lst:main-example}.
+
+\subsection{Etapa de Rearrange}
+\label{sec:applicative-do-rearrange}
+
+Para presentar el algoritmo, considérese una expresión de \textit{do-notation} cuyos statements de enlace tienen la forma \verb|p_i <- e_i|. Cada statement se denota mediante $s_i$, donde $i$ indica su posición dentro del bloque. El algoritmo representa entonces la expresión mediante la forma abstracta \verb|do l e|, en la que $l=\{s_1;\ldots;s_n\}$ es la secuencia de statements y $e$ es la expresión final que produce el resultado. Esta última corresponde al argumento de un \texttt{return} o \texttt{pure} terminal y no participa en los cálculos de \textit{rearrange}.
+
+La Figura~\ref{fig:rearrangement-marlow} presenta las funciones que componen esta etapa. La función principal, \texttt{rearrange}, recibe la secuencia $l$ y construye otra secuencia $l'$ que puede contener la forma paralela $(l_1\mid\cdots\mid l_k)$. Esta forma no pertenece a la sintaxis escrita por el programador, sino a una sintaxis abstracta intermedia que expresa que las secuencias $l_1,\ldots,l_k$ son independientes y pueden combinarse mediante operaciones aplicativas.
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.85\textwidth]{imagenes/rearrangement.png}
-  \caption{Etapa de \textit{rearrangement} propuesta por Marlow et al.}
+  \includegraphics[width=0.6\textwidth]{imagenes/rearrangement.png}
+  \caption{Etapa de \textit{rearrange} propuesta por Marlow et al. \cite[p.~95]{MarlowPJKM2016}.}
   \label{fig:rearrangement-marlow}
 \end{figure}
 
-La Figura~\ref{fig:desugaring-marlow} muestra la segunda etapa. Una vez construido el plan, el compilador reemplaza la notación de alto nivel por combinadores explícitos. Así, un bloque que originalmente parece puramente monádico puede terminar expresado parcialmente en términos aplicativos.
+Si la entrada contiene un único statement, \texttt{rearrange} lo retorna sin modificaciones. Para una secuencia de mayor tamaño, primero invoca a \texttt{segments}, que examina las $n-1$ separaciones posibles entre statements consecutivos. Una separación ubicada después de $s_i$ divide la entrada en el prefijo $\{s_1;\ldots;s_i\}$ y el sufijo $\{s_{i+1};\ldots;s_n\}$. El corte es válido cuando se cumple:
+
+\begin{ReportExpression}{Condición de independencia entre el prefijo y el sufijo de una secuencia.}{expr:condicion-independencia-corte}
+\[
+\operatorname{bv}(\{s_1;\ldots;s_i\})
+\cap
+\operatorname{fv}(\{s_{i+1};\ldots;s_n\})
+=\emptyset,
+\]
+\end{ReportExpression}
+
+En la notación $\operatorname{bv}$ representa las variables vinculadas por una secuencia y $\operatorname{fv}$ sus variables libres. Si la intersección es vacía, ninguna variable producida por el prefijo es requerida por el sufijo y, por tanto, no existe una dependencia que atraviese esa separación. Al considerar todos los cortes válidos, \texttt{segments} divide la entrada en los grupos $g_1,\ldots,g_k$ que ya pueden formar las ramas de una agrupación aplicativa.
+
+La condición anterior expresa una relación \textit{def-use}. Esta relación establece que el uso de una variable debe encontrarse después de su definición y dentro del alcance introducido por ella. Si una variable definida en $\{s_1;\ldots;s_i\}$ aparece libre en $\{s_{i+1};\ldots;s_n\}$, ambos fragmentos no pueden tratarse como ramas independientes: el segundo necesita un resultado producido por el primero. En cambio, una intersección vacía indica que el corte no separa ninguna definición de sus usos. Como la secuencia original ya está bien formada, una variable definida en el sufijo tampoco puede ser utilizada por un statement anterior del prefijo.
+
+Cuando \texttt{segments} obtiene más de un grupo, \texttt{rearrange} construye la forma $(\texttt{split}\ g_1\mid\cdots\mid\texttt{split}\ g_k)$. Cada grupo se procesa mediante \texttt{split} para descubrir posibles agrupaciones anidadas. Si, por el contrario, toda la entrada constituye un único segmento, no existe un corte exterior que permita combinar dos partes aplicativamente y \texttt{rearrange} delega directamente la secuencia completa a \texttt{split}.
+
+La función \texttt{split} considera nuevamente las separaciones $i\in\{1,\ldots,n-1\}$, pero con un propósito distinto. Para cada $i$, aplica \texttt{rearrange} recursivamente al prefijo y al sufijo, y luego compone ambos resultados de manera secuencial. De todas estas alternativas selecciona una de costo mínimo según el modelo estructural presentado en la Expresión~\ref{expr:modelo-costos-estructural}. De esta manera, \texttt{segments} prioriza la independencia exterior que puede expresarse directamente mediante una agrupación aplicativa, mientras \texttt{split} determina dónde conservar una composición monádica cuando una dependencia impide realizar esa agrupación.
+
+El resultado de la etapa \textit{rearrange} es la expresión abstracta \verb|do l' e|. Aunque $l'$ puede tener una estructura de árbol con secuencias y agrupaciones aplicativas, el algoritmo no permuta statements: si se eliminan las formas paralelas y se concatenan sus ramas de izquierda a derecha, se recupera la secuencia original $\{s_1;\ldots;s_n\}$ \cite[p.~95]{MarlowPJKM2016}.
+
+\subsection{Etapa de Desugaring}
+\label{sec:applicative-do-desugaring}
+
+La segunda etapa recibe el plan $l'$ construido por \textit{rearrange} junto con la expresión final $e$. Su función principal puede representarse mediante la firma:
+
+\begin{ReportExpression}{Firma abstracta de la función \texttt{desugar}.}{expr:firma-desugar}
+\verb|desugar :: Stmts -> Expr -> Expr|
+\end{ReportExpression}
+
+El segundo argumento actúa como la continuación del plan: es la expresión que debe evaluarse una vez ejecutados los efectos de la secuencia y vinculadas las variables que utiliza.
+
+La sintaxis intermedia permite que un statement sea un enlace ordinario o una agrupación $(l_1\mid\cdots\mid l_n)$. En esta última, cada $l_i$ es a su vez una secuencia de statements. Las variables definidas dentro de una rama no quedan disponibles para las demás ramas, pero aquellas requeridas por la continuación deben ser entregadas como resultados de esa rama. Esta restricción es la que permite reemplazar la agrupación por una expresión construida con \verb|(<$>)| y \verb|(<*>)|.
+
+La Figura~\ref{fig:desugaring-marlow} define el proceso mediante cinco casos recursivos. En conjunto, estos casos eliminan la sintaxis intermedia y producen una expresión formada por operaciones de \texttt{Functor}, \texttt{Applicative} y \texttt{Monad}.
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.85\textwidth]{imagenes/desugar.png}
-  \caption{Etapa de \textit{desugaring} propuesta por Marlow et al.}
+  \includegraphics[width=0.6\textwidth]{imagenes/desugar.png}
+  \caption{Etapa de \textit{desugaring} propuesta por Marlow et al. \cite[p.~96]{MarlowPJKM2016}.}
   \label{fig:desugaring-marlow}
 \end{figure}
 
-El modelo de costos asociado distingue entre secuencias y grupos applicative. Un statement elemental tiene costo unitario; una secuencia suma los costos de sus componentes; y un grupo applicative toma el máximo costo entre sus ramas. Por lo tanto, exponer independencia puede reducir el costo abstracto del plan, incluso si el programa fuente se mantiene escrito con \texttt{do}.
+\begin{description}
+  \item[Caso (0).] Si la secuencia de statements está vacía, no queda ningún efecto por ejecutar y la continuación se introduce en el contexto mediante \texttt{pure}.
 
-La limitación relevante para esta memoria es que \texttt{ApplicativeDo} preserva el orden relativo original de los statements. Esto es necesario para mónadas arbitrarias, pero impide considerar planes que requieren mover statements independientes antes de aplicar el algoritmo. El aporte de esta memoria se ubica exactamente en esa brecha: no reemplaza \texttt{ApplicativeDo}, sino que le entrega órdenes alternativos cuando el bloque fue marcado como conmutativo.
+  \item[Caso (1).] Si solo queda un enlace \verb|p <- e|, el resultado de $e$ se transforma mediante \verb|(<$>)| para producir la continuación. Cuando la continuación coincide exactamente con el patrón $p$, el algoritmo retorna $e$ directamente y evita introducir una transformación identidad innecesaria.
 
-Con esto queda establecida la brecha que desarrolla el siguiente capítulo: \texttt{ApplicativeDo} mejora planes al introducir estructura applicative, pero no explora permutaciones del orden escrito por el programador.
+  \item[Caso (2).] Si un enlace \verb|p <- e| está seguido por más statements, estos pueden depender del valor asociado a $p$. Por ello se utiliza \verb|(>>=)| y el resto de la secuencia se desazucara recursivamente dentro de la función que recibe dicho valor.
+
+  \item[Caso (3).] Si el único elemento restante es una agrupación $(l_1\mid\cdots\mid l_n)$, cada rama se convierte en un argumento independiente. Sus resultados se reciben mediante una función anónima que construye la continuación, y las expresiones de las ramas se combinan usando \verb|(<$>)| y una sucesión de \verb|(<*>)|.
+
+  \item[Caso (4).] Si una agrupación aplicativa está seguida por otros statements, primero se desazucara ese resto para obtener una continuación que todavía produce un cómputo contextualizado. La combinación aplicativa genera entonces un cómputo anidado, por lo que \texttt{join} elimina un nivel del contexto y permite continuar con el plan.
+\end{description}
+
+La función auxiliar \texttt{desugar\_arg} determina el patrón y la expresión correspondientes a cada rama de una agrupación. Para ello, intersecta las variables definidas por la rama con las variables libres de la continuación. Así, una rama compuesta puede realizar varios enlaces internos, pero solo entrega al exterior los resultados que serán utilizados posteriormente. Luego, su propia secuencia se procesa recursivamente mediante \texttt{desugar}, lo que permite conservar dependencias monádicas dentro de una rama y combinarlas aplicativamente con las demás.
+
+\subsection{Aplicación del algoritmo}
+\label{sec:applicative-do-aplicacion}
+
+Para ilustrar ambas etapas se retomará el modelo probabilístico del estudiante presentado en el Código~\ref{lst:main-example}. Con el fin de concentrar la derivación en la estructura del programa, las cuatro expresiones monádicas del lado derecho de los enlaces se representarán temporalmente mediante \texttt{expr1}, \texttt{expr2}, \texttt{expr3} y \texttt{expr4}:
+
+\begin{lstlisting}[style=haskell,caption={Representación abreviada del modelo probabilístico para aplicar \texttt{ApplicativeDo}.},label={lst:applicative-do-main-example-abstract}]
+studentResults = do
+    preparation <- expr1
+    quiz <- expr2
+    difficulty <- expr3
+    finalExam <- expr4
+    return (preparation, quiz, difficulty, finalExam)
+\end{lstlisting}
+
+Estas expresiones son metavariables y no definiciones independientes de \textsf{Haskell}: \texttt{expr2} conserva el uso libre de \texttt{preparation}, mientras que \texttt{expr4} conserva los usos de \texttt{preparation} y \texttt{difficulty}. Por su parte, \texttt{expr1} y \texttt{expr3} no utilizan variables definidas por otros statements del bloque. Denotando los cuatro statements por $s_1$, $s_2$, $s_3$ y $s_4$, respectivamente, la entrada abstracta de \textit{rearrange} es:
+
+\begin{ReportExpression}{Entrada abstracta de \texttt{rearrange} para el modelo probabilístico del estudiante.}{expr:entrada-rearrange-ejemplo}
+\[
+\texttt{do}\ \{s_1;s_2;s_3;s_4\}\
+(\texttt{preparation}, \texttt{quiz}, \texttt{difficulty}, \texttt{finalExam}).
+\]
+\end{ReportExpression}
+
+La llamada inicial a \texttt{segments} examina los tres posibles puntos de corte. El corte después de $s_1$ no es válido porque \texttt{preparation} se utiliza en $s_2$ y $s_4$. El corte después de $s_2$ tampoco lo es, pues $s_4$ todavía utiliza \texttt{preparation}. Finalmente, el corte después de $s_3$ separaría las definiciones de \texttt{preparation} y \texttt{difficulty} de sus usos en $s_4$. En consecuencia, los cuatro statements forman un único segmento y se aplica \texttt{split}.
+
+Para las separaciones $i\in\{1,2,3\}$, las llamadas recursivas a \texttt{rearrange} producen los siguientes planes y costos:
+
+\begin{ReportExpression}{Planes y costos obtenidos por \texttt{rearrange} para las tres separaciones posibles.}{expr:resultados-rearrange-ejemplo}
+\[
+\begin{aligned}
+i=1 &\quad\Longrightarrow\quad
+  \{s_1;(s_2\mid\{s_3;s_4\})\}
+  && C=3,\\
+i=2 &\quad\Longrightarrow\quad
+  \{s_1;s_2;s_3;s_4\}
+  && C=4,\\
+i=3 &\quad\Longrightarrow\quad
+  \{(\{s_1;s_2\}\mid s_3);s_4\}
+  && C=3.
+\end{aligned}
+\]
+\end{ReportExpression}
+
+La primera y la tercera alternativa tienen el mismo costo mínimo. Para continuar la derivación se toma la primera, que coincide con el plan producido por \textsf{GHC} para el orden original, mostrado también en la Tabla~\ref{tab:main-example-plans}. Al sustituir nuevamente los patrones de los statements, el objeto entregado a la etapa de \textit{desugaring} tiene la siguiente estructura intermedia:
+
+\begin{lstlisting}[style=haskell,caption={Plan intermedio producido por la etapa de \textit{rearrange}.},label={lst:applicative-do-main-example-rearranged}]
+do {
+    preparation <- expr1;
+    (quiz <- expr2 |
+        { difficulty <- expr3;
+          finalExam <- expr4 })
+} (preparation, quiz, difficulty, finalExam)
+\end{lstlisting}
+
+El primer enlace permanece secuencial porque los dos componentes posteriores necesitan \texttt{preparation}. Después de obtener ese valor, la expresión asociada al quiz puede combinarse aplicativamente con la secuencia que obtiene la dificultad y, a partir de ella, el resultado del examen final. Al aplicar las reglas de \textit{desugaring}, se obtiene primero la expresión abreviada:
+
+\begin{lstlisting}[style=haskell,caption={Resultado del desazucarado expresado mediante \texttt{expr1}--\texttt{expr4}.},label={lst:applicative-do-main-example-desugared-abstract}]
+studentResults =
+    expr1 >>= \preparation ->
+        (\quiz (difficulty, finalExam) ->
+            (preparation, quiz, difficulty, finalExam))
+        <$> expr2
+        <*> (expr3 >>= \difficulty ->
+                (\finalExam -> (difficulty, finalExam))
+                <$> expr4)
+\end{lstlisting}
+
+En esta expresión, \texttt{expr2} se evalúa dentro del alcance de \texttt{preparation}. La segunda rama conserva un enlace monádico entre \texttt{expr3} y \texttt{expr4}, ya que la última requiere \texttt{difficulty}; el par producido por esa rama permite entregar ambos valores a la función ubicada a la izquierda de \verb|(<$>)|. Este caso no requiere \texttt{join}, porque la agrupación aplicativa es el último componente del plan.
+
+Finalmente, al reemplazar cada metavariable por la expresión correspondiente del programa original, se obtiene la forma explícita generada conceptualmente por las dos etapas de \texttt{ApplicativeDo}:
+
+\begin{lstlisting}[style=haskell,caption={Desazucarado aplicativo del modelo probabilístico del estudiante.},label={lst:applicative-do-main-example-desugared}]
+studentResults =
+    Dist.uniform [Low, High] >>= \preparation ->
+        (\quiz (difficulty, finalExam) ->
+            (preparation, quiz, difficulty, finalExam))
+        <$> quizGiven preparation
+        <*> (Dist.uniform [Easy, Hard] >>= \difficulty ->
+                (\finalExam -> (difficulty, finalExam))
+                <$> examGiven preparation difficulty)
+\end{lstlisting}
+
+La expresión resultante combina operaciones monádicas y aplicativas según las dependencias del programa, pero al aplanar su plan conserva el orden relativo $[1,2,3,4]$. La posibilidad de evaluar órdenes alternativos queda fuera del algoritmo descrito y constituye la limitación que se desarrolla en el capítulo siguiente.

@@ -6,6 +6,289 @@
 
 \usepackage{lipsum}
 
+% ---------------------- Haskell Code Logic ------------------------ %
+
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{etoolbox}
+\usepackage{placeins}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes.geometric}
+
+% Impide que el texto posterior adelante figuras o tablas desplazadas.
+\AfterEndEnvironment{figure}{\FloatBarrier}
+\AfterEndEnvironment{table}{\FloatBarrier}
+\lstset{float=false}
+
+\definecolor{codebg}{HTML}{F8F4EC}
+\definecolor{codeframe}{HTML}{CFC3B3}
+\definecolor{codekeyword}{HTML}{7A4327}
+\definecolor{codecomment}{HTML}{746C62}
+\definecolor{codestring}{HTML}{3F6A51}
+
+\newlength{\ElementCaptionGap}
+\setlength{\ElementCaptionGap}{8pt}
+
+\captionsetup{
+    justification=centering,
+    singlelinecheck=false
+}
+\captionsetup[table]{position=bottom,skip=\ElementCaptionGap}
+\captionsetup[figure]{position=bottom,skip=\ElementCaptionGap}
+\captionsetup[lstlisting]{position=bottom}
+
+% ---------------------- Expression Style ------------------------ %
+
+\newcounter{reportexpression}[chapter]
+\renewcommand{\thereportexpression}{\thechapter.\arabic{reportexpression}}
+\providecommand*{\theHreportexpression}{\thechapter.\arabic{reportexpression}}
+
+% #1 leyenda descriptiva, #2 etiqueta para referencias cruzadas.
+\newenvironment{ReportExpression}[2]{%
+    \def\ReportExpressionCaption{#1}%
+    \def\ReportExpressionLabel{#2}%
+    \par\addvspace{1em}%
+    \noindent\begin{minipage}{\textwidth}%
+    \centering
+}{%
+    \par\vspace{\ElementCaptionGap}%
+    \refstepcounter{reportexpression}%
+    \label{\ReportExpressionLabel}%
+    {\small{Expresión}~\thereportexpression: \ReportExpressionCaption\par}%
+    \end{minipage}%
+    \par\addvspace{1em}%
+}
+
+% ---------------------- Expression Style ------------------------ %
+
+% Dimensiones parametrizables de los bloques de código
+\newlength{\CodeLeftMargin}
+\newlength{\CodeRightMargin}
+\newlength{\CodeInnerPadding}
+
+\setlength{\CodeLeftMargin}{1.2cm}
+\setlength{\CodeRightMargin}{1.2cm}
+\setlength{\CodeInnerPadding}{7pt}
+
+\newcommand{\setcodemargins}[2]{%
+    \setlength{\CodeLeftMargin}{#1}%
+    \setlength{\CodeRightMargin}{#2}%
+}
+
+\setcodemargins{0.5cm}{0.5cm}
+
+\lstdefinestyle{haskell}{
+    language=Haskell,
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{codekeyword}\bfseries,
+    commentstyle=\color{codecomment}\itshape,
+    stringstyle=\color{codestring},
+    frame=single,
+    rulecolor=\color{codeframe},
+    framerule=0.5pt,
+    framesep=\CodeInnerPadding,
+    xleftmargin=\CodeLeftMargin,
+    xrightmargin=\CodeRightMargin,
+    aboveskip=1em,
+    belowskip=1em,
+    captionpos=b,
+    abovecaptionskip=\ElementCaptionGap,
+    belowcaptionskip=0pt,
+    showstringspaces=false,
+    keepspaces=true,
+    columns=fullflexible,
+    breaklines=true,
+    tabsize=4
+}
+
+\lstdefinestyle{haskellnumbered}{
+    style=haskell,
+    numbers=left,
+    numberstyle=\scriptsize\color{codecomment},
+    numbersep=10pt
+}
+
+\renewcommand{\lstlistingname}{Código}
+\renewcommand{\lstlistlistingname}{Índice de códigos}
+\AtBeginDocument{%
+    \renewcommand*{\theHlstlisting}{\thechapter.\arabic{lstlisting}}%
+}
+
+% ---------------------- Haskell Code Logic ------------------------ %
+
+% ---------------------- Table Style ------------------------ %
+
+% Colores semánticos: las variantes visuales solo deben cambiar estos parámetros.
+% #1 fondo del encabezado, #2 texto del encabezado, #3 reglas horizontales,
+% #4 filas impares, #5 filas pares, #6 texto del cuerpo, #7 fila destacada.
+\newcommand{\settabletheme}[7]{%
+    \colorlet{tableHeaderBg}{#1}%
+    \colorlet{tableHeaderFg}{#2}%
+    \colorlet{tableRule}{#3}%
+    \colorlet{tableRowOdd}{#4}%
+    \colorlet{tableRowEven}{#5}%
+    \colorlet{tableBodyFg}{#6}%
+    \colorlet{tableHighlightBg}{#7}%
+}
+
+% Tema inicial, derivado de la paleta de los bloques de código.
+\settabletheme
+    {codekeyword!15!codebg}
+    {codekeyword}
+    {codeframe}
+    {codebg}
+    {codeframe!18!codebg}
+    {black}
+    {codestring!15!white}
+
+\newlength{\TableColumnPadding}
+\setlength{\TableColumnPadding}{8pt}
+\newcommand{\TableRowStretch}{1.18}
+\newcommand{\TableFontSize}{\small}
+
+\AtBeginEnvironment{tabular}{\TableFontSize}
+\AtBeginEnvironment{tabularx}{\TableFontSize}
+
+\newlength{\TableBorderWidth}
+\setlength{\TableBorderWidth}{0.5pt}
+
+\newcommand{\TableSetup}{%
+    \renewcommand{\arraystretch}{\TableRowStretch}%
+    \setlength{\tabcolsep}{\TableColumnPadding}%
+    \arrayrulecolor{tableRule}%
+    \rowcolors{2}{tableRowOdd}{tableRowEven}%
+    \color{tableBodyFg}%
+}
+
+\newcommand{\TableHead}[1]{%
+    \textcolor{tableHeaderFg}{\bfseries #1}%
+}
+
+\newcommand{\TableHighlightRow}{%
+    \rowcolor{tableHighlightBg}%
+}
+
+\newcommand{\TableFrame}[1]{%
+    \begingroup
+    \setlength{\fboxsep}{0pt}%
+    \setlength{\fboxrule}{\TableBorderWidth}%
+    \fcolorbox{tableRule}{tableRowOdd}{#1}%
+    \endgroup
+}
+
+\newcolumntype{T}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+% ---------------------- Table Style ------------------------ %
+
+% ---------------------- Precedence Graph Style ------------------------ %
+
+% Colores semánticos: #1 fondo del nodo, #2 texto del nodo, #3 borde del nodo,
+% #4 aristas y #5 etiquetas inferiores.
+\newcommand{\setgraphtheme}[5]{%
+    \colorlet{graphNodeBg}{#1}%
+    \colorlet{graphNodeFg}{#2}%
+    \colorlet{graphNodeBorder}{#3}%
+    \colorlet{graphEdge}{#4}%
+    \colorlet{graphLabelFg}{#5}%
+}
+
+% Tema inicial, derivado de la paleta de los bloques de código.
+\setgraphtheme
+    {codekeyword!12!codebg}
+    {black}
+    {codeframe}
+    {codekeyword}
+    {codecomment}
+
+\newlength{\GraphNodeWidth}
+\newlength{\GraphNodeHeight}
+\newlength{\GraphNodeInnerXSep}
+\newlength{\GraphNodeInnerYSep}
+\newlength{\GraphHorizontalSeparation}
+\newlength{\GraphVerticalSeparation}
+\newlength{\GraphLabelDistance}
+\newlength{\GraphNodeBorderWidth}
+\newlength{\GraphEdgeWidth}
+
+% Parámetros principales de los nodos: #1 largo, #2 alto y #3 fuente interna.
+\newcommand{\GraphNodeFontSize}{}
+\newcommand{\setgraphnodesize}[3]{%
+    \setlength{\GraphNodeWidth}{#1}%
+    \setlength{\GraphNodeHeight}{#2}%
+    \renewcommand{\GraphNodeFontSize}{#3}%
+}
+
+\setgraphnodesize
+    {2.3cm} % Largo del óvalo
+    {1.3cm} % Alto del óvalo
+    {9pt}   % Tamaño de la fuente interna
+
+\setlength{\GraphNodeInnerXSep}{1pt}
+\setlength{\GraphNodeInnerYSep}{1pt}
+\setlength{\GraphHorizontalSeparation}{0.75cm}
+\setlength{\GraphVerticalSeparation}{0.9cm}
+\setlength{\GraphLabelDistance}{3pt}
+\setlength{\GraphNodeBorderWidth}{0.5pt}
+\setlength{\GraphEdgeWidth}{0.8pt}
+
+\newcommand{\GraphNodeFont}{%
+    \ttfamily\fontsize{\GraphNodeFontSize}{\GraphNodeFontSize}\selectfont
+}
+\newcommand{\GraphLabelFont}{\small}
+\newcommand{\GraphLongEdgeBend}{22}
+
+\tikzset{
+    precedence node/.style={
+        draw=graphNodeBorder,
+        fill=graphNodeBg,
+        text=graphNodeFg,
+        line width=\GraphNodeBorderWidth,
+        ellipse,
+        minimum width=\GraphNodeWidth,
+        minimum height=\GraphNodeHeight,
+        inner xsep=\GraphNodeInnerXSep,
+        inner ysep=\GraphNodeInnerYSep,
+        label distance=\GraphLabelDistance,
+        align=center,
+        font=\GraphNodeFont
+    },
+    precedence label/.style={
+        text=graphLabelFg,
+        font=\GraphLabelFont
+    },
+    precedence edge/.style={
+        ->,
+        >=stealth,
+        draw=graphEdge,
+        line width=\GraphEdgeWidth
+    }
+}
+
+\newenvironment{PrecedenceGraph}[1][]{%
+    \begin{tikzpicture}[
+        node distance=\GraphVerticalSeparation and \GraphHorizontalSeparation,
+        #1
+    ]%
+}{%
+    \end{tikzpicture}%
+}
+
+\newcommand{\PrecedenceNode}[4][]{%
+    \node[precedence node,label={[precedence label]below:{#4}},#1] (#2) {#3};%
+}
+
+\newcommand{\PrecedenceEdge}[3][]{%
+    \draw[precedence edge,#1] (#2) to (#3);%
+}
+
+% ---------------------- Precedence Graph Style ------------------------ %
+
+
+
 \begin{document}
 
 \frontmatter

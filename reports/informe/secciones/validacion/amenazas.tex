@@ -4,7 +4,7 @@
 
 La evidencia experimental tiene varias amenazas a la validez que deben considerarse al interpretar los resultados.
 
-En primer lugar, una parte importante del corpus es sintética. Esto permite controlar formas de dependencia, patrones de binders y casos de costo, pero no garantiza por sí solo que las mismas oportunidades de reordenamiento aparezcan con frecuencia en programas reales. Por esa razón, el corpus real queda definido como parte de la validación en progreso.
+En primer lugar, los dos corpus evaluados son sintéticos. Esto permite controlar formas de dependencia, patrones de binders, comportamiento probabilístico y casos de costo, pero limita la validez externa de los resultados: la frecuencia de las oportunidades de reordenamiento y la escalabilidad del espacio de búsqueda podrían ser distintas en programas de mayor tamaño o no diseñados para aislar estos fenómenos.
 
 En segundo lugar, la validación semántica compara salidas observables. Esta estrategia es adecuada para los casos finitos evaluados, pero no constituye una prueba formal de preservación semántica para todo programa posible. En el corpus probabilístico, la normalización con \texttt{Dist.norm} reduce diferencias representacionales, pero también fija una convención de comparación que debe mantenerse explícita.
 

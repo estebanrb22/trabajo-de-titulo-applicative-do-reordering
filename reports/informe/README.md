@@ -73,16 +73,30 @@ Se definen además entornos que ayudan a dar un formateo adecuado a cada parte d
 * `\begin{thanks}` `\end{thanks}`: Sección de agradecimientos.
 
 #### Entornos matemáticos
-Además, se definen entornos 'matemáticos' que permiten agergar teoremas, definiciones, etc. de manera ordenada y coherente con el estilo del texto. Estos entornos son:
+Además, se definen entornos 'matemáticos' que permiten agregar teoremas, definiciones, etc. de manera ordenada y coherente con el estilo del texto. Estos entornos son:
 
-* `defn`: Definicion.
+* `defn`: Definición.
 * `teo`: Teorema.
 * `cor`: Corolario.
 * `lema`: Lema.
-* `prop`: Proposicion.
+* `prop`: Proposición.
 * `ej`: Ejemplo.
-* `obs`: Observacion.
+* `obs`: Observación.
 * `proof`: Demostración. Se agrega automáticamente el símbolo de término de la demostración al final de esta.
+
+El entorno `ReportExpression`, definido en `main.tex`, permite numerar fórmulas, firmas y representaciones abstractas sin clasificarlas como definiciones o teoremas. Su primer argumento corresponde a la leyenda visible y el segundo a la etiqueta usada para referencias cruzadas:
+
+```latex
+\begin{ReportExpression}
+    {Costo del plan secuencial.}
+    {expr:costo-plan-secuencial}
+\[
+1 + 1 + 1 + 1 = 4
+\]
+\end{ReportExpression}
+```
+
+El elemento anterior puede citarse mediante `Expresión~\ref{expr:costo-plan-secuencial}`. Las expresiones usan una numeración independiente por capítulo y no generan un índice adicional. El contenido puede usar `\[...\]`, `aligned`, `\verb` u otra representación adecuada para el elemento documentado.
 
 Por defecto, cada uno de estos entornos tiene una numeración correlativa e intercapítulos, es decir, escribir un teorema, una definición y luego otro teorema en el capítulo 1 y luego otro teorema en el capítulo 2 tendrá como resultado lo siguiente:
 

@@ -1,0 +1,25 @@
+-- Original program
+CD.do
+  preparation <- Dist.uniform [Low, High]
+  quiz <- quizGiven preparation
+  difficulty <- Dist.uniform [Easy, Hard]
+  finalExam <- examGiven preparation difficulty
+  CD.return (preparation, quiz, difficulty, finalExam)
+
+-- Internal representation with free variables by statement
+ppsfa
+  [(preparation_a1Yf <- Dist.uniform [Low, High], {Dist.uniform, Low, High}),
+   (quiz_a1Yg <- quizGiven preparation_a1Yf, {preparation_a1Yf, quizGiven}),
+   (difficulty_a1Yh <- Dist.uniform [Easy, Hard], {Dist.uniform, Easy, Hard}),
+   (finalExam_a1Yi <- examGiven preparation_a1Yf difficulty_a1Yh, {preparation_a1Yf, difficulty_a1Yh, examGiven}),
+   (CD.return (preparation_a1Yf, quiz_a1Yg, difficulty_a1Yh, finalExam_a1Yi), {preparation_a1Yf, quiz_a1Yg, difficulty_a1Yh, finalExam_a1Yi, CD.return})]
+
+-- Precedence graph adjacency list
+1 -> {2, 4}
+2 -> {}
+3 -> {4}
+4 -> {}
+
+-- Precedence graph RAW dependencies grouped by binder
+preparation: 1 -> {2, 4}
+difficulty: 3 -> {4}
