@@ -266,3 +266,8 @@
 - Se agregó una figura TikZ con el árbol completo del ejemplo: una invocación inicial, 15 llamadas recursivas, 16 estados totales y cinco hojas correspondientes a los candidatos. Cada estado muestra el prefijo emitido y el subgrafo inducido por los vértices restantes.
 - La tabla de candidatos quedó reducida a las columnas `Candidato` y `Reordenamiento`; los costos se reservaron para `Evaluación y Selección de Candidatos`.
 - El informe compiló correctamente con `latexmk` y quedó en 68 páginas, sin referencias o citas indefinidas ni desbordes nuevos en Solución. La inspección visual de las páginas 36--39 confirmó la legibilidad de la tabla de Kahn, el pseudocódigo, el árbol y la tabla final.
+
+## 2026-08-01
+
+- Se agregó bajo `scripts/setup-latex/` un entorno de instalación nativa para CachyOS compuesto por un manifiesto de paquetes, un instalador, un desinstalador seguro y un verificador independiente para las dependencias de compilación del informe.
+- El verificador confirmó mediante una compilación temporal que pdfLaTeX, BibTeX, TikZ, Babel en español, `listings`, las fuentes y los demás paquetes usados por `main.tex` están disponibles, sin modificar los archivos ni artefactos del informe.

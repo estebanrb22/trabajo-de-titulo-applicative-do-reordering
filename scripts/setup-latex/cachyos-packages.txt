@@ -1,0 +1,9 @@
+texlive-basic
+texlive-bin
+texlive-binextra
+texlive-fontsrecommended
+texlive-langspanish
+texlive-latex
+texlive-latexextra
+texlive-latexrecommended
+texlive-pictures
