@@ -1,0 +1,167 @@
+% !TEX root = ../../main.tex
+
+\section{Selección por costo}
+\label{sec:resultados-costos}
+
+La familia de casos \texttt{cost-selection} fue diseñada para observar la política de selección del plan de ejecución de menor costo bajo cuatro perfiles distintos. La Tabla~\ref{tab:resultados-perfiles-costo} separa las tres métricas de costo y los dos conteos relevantes. \textit{Sec} corresponde al costo base de ejecutar todos los statements en secuencia; \textit{ADo}, al plan obtenido por \texttt{ApplicativeDo} sobre el orden fuente; y \textit{Extensión}, al menor costo encontrado después de evaluar los reordenamientos válidos.
+
+\begin{table}[ht]
+\centering
+\begingroup
+\setlength{\TableColumnPadding}{5pt}
+\TableSetup
+\TableFrame{%
+\begin{tabular}{p{4.1cm}ccccc}
+\rowcolor{tableHeaderBg}
+\TableHead{Caso} & \TableHead{Sec} & \TableHead{ADo} & \TableHead{Extensión} & \TableHead{\shortstack{Reordenamientos\\totales}} & \TableHead{\shortstack{Reordenamientos\\costo mínimo}} \\
+\texttt{all-same-cost} & 4 & 2 & 2 & 6 & 6 \\
+\texttt{original-not-minimal} & 4 & 3 & 2 & 5 & 4 \\
+\texttt{unique-minimum} & 5 & 5 & 4 & 5 & 1 \\
+\texttt{many-minimums} & 6 & 4 & 3 & 20 & 14 \\
+\end{tabular}%
+}
+\endgroup
+\caption{Costos y cantidades de reordenamientos de la familia \texttt{cost-selection}.}
+\label{tab:resultados-perfiles-costo}
+\end{table}
+
+\subsection{Todos los candidatos con el mismo costo}
+
+El caso \texttt{all-same-cost} consiste en un bloque \texttt{do} cuyo primer statement define \texttt{x1} y cuyos tres statements siguientes utilizan ese binder sin depender entre sí. Esta forma produce una raíz común con tres sucesores independientes y permite observar qué ocurre cuando todos los reordenamientos válidos tienen el mismo costo. A continuación, en el Código~\ref{lst:resultados-all-same-cost} y la Figura~\ref{fig:resultados-grafo-all-same-cost} se muestran el programa probabilístico asociado a este caso y el grafo de precedencia RAW construido por la extensión, respectivamente.
+
+\begin{lstlisting}[style=haskell,caption={Programa probabilístico asociado al caso \texttt{all-same-cost}.},label={lst:resultados-all-same-cost}]
+CD.do
+  x1 <- Dist.uniform [1, 2]
+  x2 <- Dist.uniform [x1 + 10, x1 + 20]
+  x3 <- Dist.uniform [x1 + 100, x1 + 200]
+  x4 <- Dist.uniform [x1 + 1000, x1 + 2000]
+  CD.return (x1, x2, x3, x4)
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\begingroup
+\setgraphnodesize{1.7cm}{1.0cm}{8pt}
+\begin{PrecedenceGraph}[node distance=0.4cm and 0.45cm]
+    \PrecedenceNode{s1}{x1}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{x2}{$s_2$}
+    \PrecedenceNode[right=of s2]{s3}{x3}{$s_3$}
+    \PrecedenceNode[right=of s3]{s4}{x4}{$s_4$}
+    \PrecedenceEdge{s1}{s2}
+    \PrecedenceEdge[bend left=28]{s1}{s3}
+    \PrecedenceEdge[bend left=45]{s1}{s4}
+\end{PrecedenceGraph}
+\endgroup
+\caption[Grafo RAW del caso \texttt{all-same-cost}.]{Grafo de precedencia RAW construido por la solución para el caso \texttt{all-same-cost}.}
+\label{fig:resultados-grafo-all-same-cost}
+\end{figure}
+
+La Figura~\ref{fig:resultados-grafo-all-same-cost} contiene las aristas $s_1\to s_2$, $s_1\to s_3$ y $s_1\to s_4$. Una vez ejecutado el primer statement, los otros tres pueden aparecer en cualquier orden, por lo que el grafo admite seis órdenes válidos y todos alcanzaron el costo mínimo. La ejecución secuencial obtuvo un costo de 4, mientras que \texttt{ApplicativeDo} y la solución obtuvieron un costo de 2 al agrupar los tres sucesores independientes. Como todos los candidatos tuvieron el mismo costo, la solución conservó de manera estable el orden fuente.
+
+\subsection{Orden original no mínimo}
+
+El caso \texttt{original-not-minimal} consiste en un bloque \texttt{do} en el que \texttt{x2} depende de \texttt{x1}, \texttt{x3} permanece independiente y \texttt{x4} utiliza tanto \texttt{x1} como \texttt{x3}. En el orden fuente, el statement que define \texttt{x2} aparece antes que la distribución independiente, lo que impide que \texttt{ApplicativeDo} exponga directamente las dos etapas aplicativas del grafo. Esta forma permite observar si la solución abandona el orden original cuando existe un reordenamiento de menor costo. A continuación, en el Código~\ref{lst:resultados-original-not-minimal} y la Figura~\ref{fig:resultados-grafo-original-not-minimal} se muestran el programa probabilístico asociado a este caso y el grafo de precedencia RAW construido por la extensión, respectivamente.
+
+\begin{lstlisting}[style=haskell,caption={Programa probabilístico asociado al caso \texttt{original-not-minimal}.},label={lst:resultados-original-not-minimal}]
+CD.do
+  x1 <- Dist.uniform [1, 2]
+  x2 <- Dist.uniform [x1 + 10, x1 + 20]
+  x3 <- Dist.uniform [100, 200]
+  x4 <- Dist.uniform [x1 + x3, x1 + x3 + 1]
+  CD.return (x1, x2, x3, x4)
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\begingroup
+\setgraphnodesize{1.7cm}{1.0cm}{8pt}
+\begin{PrecedenceGraph}[node distance=0.4cm and 0.45cm]
+    \PrecedenceNode{s1}{x1}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{x2}{$s_2$}
+    \PrecedenceNode[right=of s2]{s3}{x3}{$s_3$}
+    \PrecedenceNode[right=of s3]{s4}{x4}{$s_4$}
+    \PrecedenceEdge{s1}{s2}
+    \PrecedenceEdge[bend left=42]{s1}{s4}
+    \PrecedenceEdge{s3}{s4}
+\end{PrecedenceGraph}
+\endgroup
+\caption[Grafo RAW del caso \texttt{original-not-minimal}.]{Grafo de precedencia RAW construido por la solución para el caso \texttt{original-not-minimal}.}
+\label{fig:resultados-grafo-original-not-minimal}
+\end{figure}
+
+La Figura~\ref{fig:resultados-grafo-original-not-minimal} contiene las aristas $s_1\to s_2$, $s_1\to s_4$ y $s_3\to s_4$. El grafo admite cinco órdenes válidos. La ejecución secuencial obtuvo un costo de 4 y \texttt{ApplicativeDo} obtuvo un costo de 3 sobre el orden fuente, que fue el único candidato con ese valor. Los otros cuatro órdenes alcanzaron un costo de 2; la solución seleccionó el primero de ellos, agrupando inicialmente los statements independientes $s_1$ y $s_3$ y luego los sucesores $s_2$ y $s_4$. Este resultado confirma que la política abandona el orden original cuando existe una alternativa de menor costo.
+
+\subsection{Mínimo único}
+
+El caso \texttt{unique-minimum} consiste en un bloque \texttt{do} que combina una cadena de cuatro statements con un statement independiente que utiliza un patrón de tupla. Aunque este último no presenta dependencias RAW, su patrón potencialmente estricto hace que \texttt{ApplicativeDo} conserve la secuencia con el statement siguiente cuando aparece antes del final del bloque. Esta forma produce un único reordenamiento de costo mínimo. A continuación, en el Código~\ref{lst:resultados-unique-minimum} y la Figura~\ref{fig:resultados-grafo-unique-minimum} se muestran el programa probabilístico asociado a este caso y el grafo de precedencia RAW construido por la extensión, respectivamente.
+
+\begin{lstlisting}[style=haskell,caption={Programa probabilístico asociado al caso \texttt{unique-minimum}.},label={lst:resultados-unique-minimum}]
+CD.do
+  x1 <- Dist.uniform [1, 2]
+  x2 <- Dist.uniform [x1 + 10, x1 + 20]
+  x3 <- Dist.uniform [x2 + 100, x2 + 200]
+  (x4, _) <- Dist.uniform [(40, 0), (50, 0)]
+  x5 <- Dist.uniform [x3 + 1000, x3 + 2000]
+  CD.return (x1, x2, x3, x4, x5)
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\begingroup
+\setgraphnodesize{1.5cm}{0.95cm}{8pt}
+\begin{PrecedenceGraph}[node distance=0.4cm and 0.35cm]
+    \PrecedenceNode{s1}{x1}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{x2}{$s_2$}
+    \PrecedenceNode[right=of s2]{s3}{x3}{$s_3$}
+    \PrecedenceNode[right=of s3]{s4}{(x4, \_)}{$s_4$}
+    \PrecedenceNode[right=of s4]{s5}{x5}{$s_5$}
+    \PrecedenceEdge{s1}{s2}
+    \PrecedenceEdge{s2}{s3}
+    \PrecedenceEdge[bend left=35]{s3}{s5}
+\end{PrecedenceGraph}
+\endgroup
+\caption[Grafo RAW del caso \texttt{unique-minimum}.]{Grafo de precedencia RAW construido por la solución para el caso \texttt{unique-minimum}.}
+\label{fig:resultados-grafo-unique-minimum}
+\end{figure}
+
+La Figura~\ref{fig:resultados-grafo-unique-minimum} contiene la cadena de aristas $s_1\to s_2\to s_3\to s_5$, mientras que $s_4$ permanece aislado porque su expresión no lee binders locales y \texttt{x4} no es utilizado por otro statement del grafo. Los cinco órdenes válidos corresponden a las posiciones en que puede insertarse $s_4$ respecto de la cadena. La ejecución secuencial y \texttt{ApplicativeDo} obtuvieron un costo de 5 sobre el orden fuente. Cuatro candidatos conservaron ese costo y solo el orden que ubica $s_4$ después de $s_5$ alcanzó un costo de 4, por lo que la solución seleccionó ese mínimo único y agrupó la cadena completa con el statement independiente.
+
+\subsection{Varios candidatos mínimos}
+
+El caso \texttt{many-minimums} consiste en un bloque \texttt{do} formado por dos cadenas independientes de tres statements cada una. El orden fuente comienza la primera cadena, desarrolla por completo la segunda y deja al final el último statement de la primera, de modo que distintos intercalados pueden exponer agrupaciones aplicativas equivalentes. Esta forma permite observar cómo la solución resuelve un empate entre varios reordenamientos válidos de costo mínimo. A continuación, en el Código~\ref{lst:resultados-many-minimums} y la Figura~\ref{fig:resultados-grafo-many-minimums} se muestran el programa probabilístico asociado a este caso y el grafo de precedencia RAW construido por la extensión, respectivamente.
+
+\newpage
+
+\begin{lstlisting}[style=haskell,caption={Programa probabilístico asociado al caso \texttt{many-minimums}.},label={lst:resultados-many-minimums}]
+CD.do
+  x1 <- Dist.uniform [1, 2]
+  x2 <- Dist.uniform [x1 + 10, x1 + 20]
+  x3 <- Dist.uniform [100, 200]
+  x4 <- Dist.uniform [x3 + 1000, x3 + 2000]
+  x5 <- Dist.uniform [x4 + 10000, x4 + 20000]
+  x6 <- Dist.uniform [x2 + 100000, x2 + 200000]
+  CD.return (x1, x2, x3, x4, x5, x6)
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\begingroup
+\setgraphnodesize{1.35cm}{0.9cm}{8pt}
+\begin{PrecedenceGraph}[node distance=0.35cm and 0.28cm]
+    \PrecedenceNode{s1}{x1}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{x2}{$s_2$}
+    \PrecedenceNode[right=of s2]{s3}{x3}{$s_3$}
+    \PrecedenceNode[right=of s3]{s4}{x4}{$s_4$}
+    \PrecedenceNode[right=of s4]{s5}{x5}{$s_5$}
+    \PrecedenceNode[right=of s5]{s6}{x6}{$s_6$}
+    \PrecedenceEdge{s1}{s2}
+    \PrecedenceEdge[bend left=38]{s2}{s6}
+    \PrecedenceEdge{s3}{s4}
+    \PrecedenceEdge{s4}{s5}
+\end{PrecedenceGraph}
+\endgroup
+\caption[Grafo RAW del caso \texttt{many-minimums}.]{Grafo de precedencia RAW construido por la solución para el caso \texttt{many-minimums}.}
+\label{fig:resultados-grafo-many-minimums}
+\end{figure}
+
+La Figura~\ref{fig:resultados-grafo-many-minimums} contiene las cadenas de aristas $s_1\to s_2\to s_6$ y $s_3\to s_4\to s_5$, sin dependencias entre ellas. Sus intercalados producen 20 órdenes válidos: 14 alcanzan el costo mínimo de 3 y los otros seis obtienen un costo de 4. La ejecución secuencial obtuvo un costo de 6 y \texttt{ApplicativeDo} redujo ese valor a 4 sobre el orden fuente. La solución obtuvo un costo de 3 al disponer cada cadena como una rama completa y seleccionó de manera estable el primero de los 14 candidatos mínimos. En conjunto, los cuatro perfiles confirman que la política funciona con mínimos únicos o empatados y no presupone que todos los casos deban mejorar el plan de \texttt{ApplicativeDo}.

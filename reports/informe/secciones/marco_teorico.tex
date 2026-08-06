@@ -2,7 +2,7 @@
 
 \chapter{Marco Teórico}
 
-Este capítulo presenta los fundamentos conceptuales necesarios para comprender tanto el problema abordado en esta memoria como la solución desarrollada. En primer lugar, se introducen las características de \textsf{Haskell} necesarias para interpretar los ejemplos y las firmas de tipos utilizadas a lo largo del informe. Sobre esta base, se estudian sus principales abstracciones funcionales: functores, aplicativos y mónadas. Estas clases forman una jerarquía que permite estructurar cómputos dentro de un contexto y se distinguen por el grado de dependencia que pueden expresar entre las distintas partes de un programa.
+Este capítulo presenta los fundamentos conceptuales necesarios para comprender tanto el problema abordado en esta memoria como la solución desarrollada. En primer lugar, se introducen los fundamentos de \textsf{Haskell} necesarios para interpretar los ejemplos y las firmas de tipos utilizadas a lo largo del informe. Sobre esta base, también se estudian sus principales abstracciones funcionales: functores, aplicativos y mónadas. Estas clases forman una jerarquía que permite estructurar cómputos dentro de un contexto y se distinguen por el grado de dependencia que pueden expresar entre las distintas partes de un programa.
 
 A continuación, se profundiza en la \textit{do-notation}, explicando su relación con la composición monádica y cómo sus statements de enlace se traducen, en su forma convencional, mediante el operador \textit{bind} \verb|(>>=)|. Esto es fundamental para entender por qué \texttt{ApplicativeDo} puede reemplazar parte de una expresión monádica por una expresión aplicativa \cite{MarlowPJKM2016,GHCApplicativeDo}.
 

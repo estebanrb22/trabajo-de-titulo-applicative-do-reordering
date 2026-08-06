@@ -1,10 +1,14 @@
 % !TEX root = ../main.tex
 
 \chapter{Validación}
+\label{chap:validacion}
+
+El diseño y la implementación desarrollados en los capítulos anteriores permiten generar reordenamientos válidos de los statements de un bloque \texttt{do}, construir un plan de ejecución para cada uno y seleccionar una alternativa de costo estructural mínimo. Este capítulo establece cómo se evalúan experimentalmente esas capacidades. En particular, se busca determinar si los reordenamientos generados conservan el resultado observable de los programas considerados bajo una hipótesis explícita de conmutatividad, si la selección automática realizada por la extensión corresponde efectivamente a un plan de costo mínimo entre los candidatos evaluados y si la ruta conmutativa se activa únicamente en los bloques marcados explícitamente.
+
+Estas propiedades y la condición de activación requieren observar aspectos distintos de la compilación. La preservación del resultado puede estudiarse mediante la ejecución y comparación de las variantes de cada programa asociadas a cada reordenamiento válido; en cambio, el reordenamiento elegido, el plan de ejecución construido, su costo y la ruta seguida por el Renamer no son visibles en la salida cuando la transformación conserva la semántica esperada. Por esta razón, la validación combina comparaciones de ejecución con instrumentación del Renamer, cuyas trazas permiten reconstruir los candidatos generados y las decisiones tomadas por la extensión.
+
+Primeramente se presenta la metodología, incluyendo las métricas obtenidas de las trazas del Renamer y el flujo automatizado utilizado para compilar, ejecutar y contrastar cada reordenamiento válido. Luego se describen los corpus construidos con \texttt{Maybe} y \texttt{Dist.T Rational}, junto con un control negativo basado en \texttt{IO}. El capítulo termina delimitando el alcance de esta evaluación y sus principales limitaciones; la evidencia y resultados obtenidos se presentan por separado en el Capítulo~\ref{chap:resultados}.
 
 \input{secciones/validacion/metodologia}
-\input{secciones/validacion/artefactos}
-\input{secciones/validacion/metricas}
 \input{secciones/validacion/corpus}
-\input{secciones/validacion/resultados}
 \input{secciones/validacion/amenazas}

@@ -2,6 +2,15 @@
 
 \section{Detalles de Implementación}
 
-Esta sección de anexo debe contener los detalles de GHC que serían demasiado densos para el capítulo Solución. Existe para preservar trazabilidad técnica sin interrumpir la lectura principal. Lo ideal es referenciar \verb|docs/renamer.md| y los parches relevantes.
+Esta sección de anexo debe contener los detalles de GHC que serían demasiado densos para el capítulo Implementación de la Solución. Existe para preservar trazabilidad técnica sin interrumpir la lectura principal. Lo ideal es referenciar \verb|docs/renamer.md| y los parches relevantes.
 
-Para completarla, se pueden listar funciones como \texttt{rearrangeForApplicativeDo}, \texttt{isCommutativeQualifiedDo}, \texttt{buildStmtsDependencyGraph} y \texttt{enumerateSemanticTopSortsBounded}. También conviene mencionar los módulos agregados en \texttt{base} y \texttt{ghc-internal}.
+Para completarla, se pueden documentar las funciones principales:
+
+\begin{itemize}
+    \item \texttt{rearrangeForApplicativeDo};
+    \item \texttt{isCommutativeQualifiedDo};
+    \item \texttt{buildStmtsDependencyGraph};
+    \item \texttt{generateAllSemanticTopSorts}.
+\end{itemize}
+
+También conviene mencionar los módulos agregados en \texttt{base} y \texttt{ghc-internal}.

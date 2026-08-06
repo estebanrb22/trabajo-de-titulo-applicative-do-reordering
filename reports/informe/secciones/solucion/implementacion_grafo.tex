@@ -1,0 +1,34 @@
+% !TEX root = ../../main.tex
+
+\section{Construcción del Grafo de Precedencia RAW}
+\label{sec:solucion-implementacion-grafo}
+
+La ruta resaltada en la Figura~\ref{fig:solucion-flujo-renamer} comienza aplicando el modelo de dependencias de la Sección~\ref{sec:solucion-modelo-dependencias} sobre los statements renombrados. Antes de formar el grafo, la función \texttt{rearrangeForApplicativeDo} separa el \texttt{LastStmt}, que produce el resultado del bloque \texttt{do} y permanece fijo. Considerando los demás statements $s_1,\ldots,s_n$, cada uno se asocia con su posición estable, las variables libres de su cuerpo, sus binders y las lecturas locales obtenidas al restringir esas variables libres a nombres definidos dentro del mismo bloque \texttt{do}.
+
+En vez de introducir una estructura de datos nueva, el grafo de precedencia RAW se construye con la biblioteca \path{GHC.Data.Graph.Directed}. Cada vértice almacena la información de un statement y utiliza su posición original como clave. Para cada par $i<j$, se agrega una arista $i\to j$ cuando los nombres escritos por $s_i$ intersectan las lecturas locales de $s_j$. El Código~\ref{lst:algoritmo-construccion-grafo} muestra la construcción de este grafo utilizando pseudocódigo.
+
+\begin{lstlisting}[style=haskell,caption={Pseudocódigo para construir el grafo de precedencia RAW.},label={lst:algoritmo-construccion-grafo}]
+buildRawPrecedenceGraph(statements):
+    n := length(statements)
+    allWrites := union(write(s) for s in statements)
+    graph := graph with vertices {1, ..., n}
+
+    for each s_i in statements:
+        writesLocal[i] := write(s_i)
+        readsLocal[i]  := intersection(freeVars(s_i), allWrites)
+
+    for i := 1 to n:
+        for j := i + 1 to n:
+            if intersection(writesLocal[i], readsLocal[j]) != empty:
+                add edge i -> j to graph
+
+    return graph
+\end{lstlisting}
+
+La condición $i<j$ conserva la precedencia del programa original y garantiza la aciclicidad del grafo, porque los índices aumentan estrictamente a lo largo de cada arista. La construcción de este realiza
+
+\[
+\sum_{i=1}^{n-1}(n-i)=\frac{n(n-1)}{2}
+\]
+
+comparaciones entre pares. Por tanto, la cantidad de pruebas de dependencia es $O(n^2)$, sin considerar el costo interno de construir e intersectar los conjuntos de nombres. En el ejemplo probabilístico del Código~\ref{lst:main-example}, la construcción del grafo de precedencia RAW produce las aristas $1\to2$, $1\to4$ y $3\to4$, presentadas en la Figura~\ref{fig:main-example-precedence-graph}.

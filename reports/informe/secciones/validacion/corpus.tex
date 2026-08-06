@@ -1,66 +1,64 @@
 % !TEX root = ../../main.tex
 
-\section{Corpus}
+\section{Corpus de validación}
+\label{sec:validacion-corpus}
 
-\subsection{Corpus Sintético Maybe}
+La evaluación se organiza en dos corpus sintéticos positivos y un control negativo auxiliar. El primer corpus usa la mónada \texttt{Maybe} para estudiar el comportamiento estructural de la extensión en un contexto determinista. El segundo emplea la mónada probabilística \texttt{Dist.T Rational} para evaluar su aplicación en el dominio principal de la memoria: los programas probabilísticos escritos en \textsf{Haskell}. En conjunto reúnen 99 programas concretos: 47 basados en \texttt{Maybe} y 52 en distribuciones probabilísticas finitas. Su objetivo no es representar exhaustivamente todos los programas posibles, sino cubrir de manera sistemática las formas de dependencia, patrones de binders, clases de statements, comportamientos de costo y fenómenos semánticos que inciden directamente en la solución.
 
-El primer corpus sintético usa la mónada \texttt{Maybe}. Su objetivo es validar fenómenos estructurales del Renamer y del grafo de precedencia con programas pequeños, deterministas y fáciles de comparar. La descripción completa de los casos está en el archivo \texttt{cases.md} del corpus \texttt{maybe-monad}.
+Cada programa se almacena de acuerdo con una jerarquía de familia conceptual, caso específico y variante interna. La variante identifica normalmente la cantidad de statements del bloque \texttt{do} del programa a validar, por ejemplo \texttt{03} o \texttt{04}; cuando existen varias variantes con la misma cantidad de statements se agrega un sufijo descriptivo, como \texttt{08-reorder-improves-ado}.
 
-Las familias implementadas cubren los siguientes aspectos:
+\subsection{Familias compartidas}
 
-\begin{itemize}
-    \item \texttt{dependency-shapes}: formas de grafo como cadenas, grafo vacío, diamante, fanout, fanin y cadenas independientes.
-    \item \texttt{binders}: patrones que definen múltiples variables, patrones de lista, patrones anidados, wildcards, as-patterns y patrones lazy.
-    \item \texttt{let-statements}: interacción entre statements \texttt{let}, binders monádicos y shadowing.
-    \item \texttt{body-stmts}: statements sin binder, tanto independientes como dependientes.
-    \item \texttt{maybe-failure}: comportamiento de \texttt{Nothing}, fallos de patrón y guards.
-    \item \texttt{shadowing}: reutilización del mismo nombre fuente con nombres renombrados distintos.
-    \item \texttt{cost-selection}: casos donde el orden original no es mínimo, todos los costos empatan o existe un mínimo único.
-    \item \texttt{controls}: controles negativos y positivos para verificar que el marcador conmutativo activa la extensión solo cuando corresponde.
-\end{itemize}
+Los corpus comparten 42 variantes estructurales, adaptadas a las operaciones de cada mónada sin modificar la forma de dependencia que se pretende estudiar. La Tabla~\ref{tab:validacion-familias-compartidas} resume su distribución. Como cada variante aparece una vez con \texttt{Maybe} y una vez con \texttt{Dist.T Rational}, este núcleo compartido aporta 84 de los 99 programas.
 
-Este corpus permite aislar errores en la recolección de binders, el cálculo de variables libres locales, la construcción de aristas RAW y la selección de candidatos. En particular, la familia \texttt{cost-selection} comprueba distintos comportamientos de la política de selección, aunque el caso guía transversal del informe se mantiene separado bajo \texttt{experiments/main-example}.
+\begin{table}[ht]
+\centering
+\TableSetup
+\TableFrame{%
+\begin{tabular}{p{4.1cm}cp{8.1cm}}
+\rowcolor{tableHeaderBg}
+\TableHead{Familia} & \TableHead{Variantes} & \TableHead{Cobertura principal} \\
+\texttt{dependency-shapes} & 14 & Distintas formas del grafo de precedencia RAW: cadenas, grafo sin aristas, diamantes, fan-in y fan-out. \\
+\texttt{binders} & 11 & Tuplas, listas, patrones anidados, wildcards, as-patterns y patrones lazy. \\
+\texttt{let-statements} & 4 & Dependencias entre statements \texttt{let} y binders monádicos. \\
+\texttt{body-stmts} & 2 & Statements sin binder, independientes y dependientes. \\
+\texttt{shadowing} & 4 & Reutilización de nombres fuente con identidades renombradas distintas. \\
+\texttt{cost-selection} & 4 & Empates de costo, mínimos únicos y órdenes originales mejorables. \\
+\texttt{controls} & 3 & Activación e inactividad de la ruta conmutativa de la extensión. \\
+\end{tabular}%
+}
+\caption{Familias y variantes compartidas por los dos corpus.}
+\label{tab:validacion-familias-compartidas}
+\end{table}
 
-\subsection{Corpus Sintético Probabilístico}
+Estas familias aíslan el comportamiento del Renamer, la recolección de binders, el cálculo de variables libres locales, la construcción del grafo de precedencia RAW y la política de selección. Las variantes de \texttt{cost-selection} se retoman con código probabilístico en la Sección~\ref{sec:resultados-costos}; las formas fan-in y fan-out permanecen dentro de la cobertura del corpus, aunque no se desarrollan como ejemplos visuales independientes.
 
-El segundo corpus sintético usa la mónada probabilística \texttt{Dist.T Rational} del paquete \texttt{probability}. Este corpus conecta la extensión con el dominio principal de la memoria: programas probabilísticos finitos escritos en \textsf{Haskell}. Su descripción completa está en el archivo \texttt{cases.md} del corpus \texttt{probability-monad}.
+\subsection{Familias específicas}
 
-Los programas probabilísticos imprimen una salida canónica usando \texttt{Dist.norm}. Esta normalización agrupa resultados iguales y suma sus probabilidades, evitando que dos representaciones internas equivalentes se comparen como diferentes por el pipeline. La comparación sigue siendo byte a byte, pero sobre una representación normalizada de la distribución.
+La familia \texttt{maybe-failure} aporta cinco variantes específicas al corpus de \texttt{Maybe}. Por su parte, \texttt{probability-distributions} aporta ocho variantes al corpus probabilístico y \texttt{probability-conditioning} agrega otras dos. La Tabla~\ref{tab:validacion-familias-especificas} resume esta distribución adicional al núcleo compartido.
 
-El corpus reutiliza varias familias estructurales de \texttt{Maybe}, como formas de dependencia, binders, \texttt{let}, \texttt{BodyStmt}, shadowing, selección por costo y controles. Además, incorpora familias específicas de probabilidades:
+\begin{table}[ht]
+\centering
+\TableSetup
+\TableFrame{%
+\begin{tabular}{p{5.2cm}cp{7.2cm}}
+\rowcolor{tableHeaderBg}
+\TableHead{Familia} & \TableHead{Variantes} & \TableHead{Cobertura principal} \\
+\texttt{maybe-failure} & 5 & \texttt{Nothing}, fallos de patrón y acciones que modelan guardas. \\
+{\footnotesize\texttt{probability-distributions}} & 8 & Pesos, soportes dependientes, resultados repetidos y constructores de distribuciones. \\
+{\footnotesize\texttt{probability-conditioning}} & 2 & Distribuciones imposibles y filtrado explícito de resultados. \\
+\end{tabular}%
+}
+\caption{Familias específicas de cada corpus.}
+\label{tab:validacion-familias-especificas}
+\end{table}
 
-\begin{itemize}
-    \item distribuciones independientes con pesos no uniformes;
-    \item resultados duplicados que deben sumarse al normalizar;
-    \item soportes dependientes de valores generados previamente;
-    \item pesos dependientes de binders anteriores;
-    \item distribuciones construidas con \texttt{Dist.choose}, \texttt{Dist.relative} o \texttt{Dist.fromFreqs};
-    \item condicionamiento explícito mediante distribuciones imposibles o filtrado.
-\end{itemize}
+El corpus de \texttt{Maybe} entrega programas pequeños y deterministas para observar fallos y propiedades estructurales. El corpus de \texttt{Dist.T Rational}, por su parte, conecta la extensión con el dominio principal de la memoria. Todos sus programas imprimen una salida canónica mediante \texttt{Dist.norm}, que agrupa resultados iguales y suma sus probabilidades. La comparación continúa siendo byte a byte, pero se realiza sobre distribuciones normalizadas para no confundir una diferencia de representación interna con una diferencia semántica.
 
-Esta separación permite validar dos dimensiones: que el Renamer se comporte igual que en el corpus estructural y que la semántica probabilística observable se conserve después del reordenamiento.
+\subsection{Control negativo con IO}
 
+El caso con \texttt{IO} no se contabiliza como un tercer corpus. Se utiliza para mostrar por qué la preservación de dependencias de un reordenamiento válido no basta para una mónada arbitraria y por qué su equivalencia semántica exige una hipótesis explícita de conmutatividad. En \texttt{IO}, dos acciones que no comparten variables pueden tener efectos observables cuyo orden importa. Por ejemplo, dos impresiones independientes pueden producir salidas distintas si se intercambian.
 
-\subsection{Control IO}
+El programa de control declara deliberadamente una instancia \texttt{CommutativeMonad IO} que no satisface la propiedad asumida y utiliza \texttt{CD.do} para activar la extensión. Por tanto, permite comprobar que el marcador constituye un contrato no verificado: si el programador declara como conmutativos efectos que no lo son, un reordenamiento estructuralmente válido puede cambiar la salida.
 
-El control con \texttt{IO} muestra por qué el reordenamiento no puede activarse para mónadas arbitrarias. En \texttt{IO}, dos acciones que no comparten variables pueden tener efectos observables cuyo orden importa. Por ejemplo, dos impresiones independientes pueden producir salidas distintas si se intercambian.
-
-El log de validación del control negativo registra dos permutaciones. La permutación original imprime:
-
-\begin{verbatim}
-A
-B
-3
-\end{verbatim}
-
-Una permutación alternativa imprime:
-
-\begin{verbatim}
-B
-A
-3
-\end{verbatim}
-
-La comparación semántica detecta la diferencia y termina con \texttt{RESULT: FAIL}. Este resultado no invalida la solución; al contrario, confirma la necesidad del mecanismo de opt-in. El compilador no debe asumir conmutatividad por ausencia de dependencias RAW, porque los efectos observables pueden seguir dependiendo del orden.
-
-Por esta razón, la extensión solo explora reordenamientos cuando el bloque fue marcado explícitamente como conmutativo mediante \texttt{CD.do}. Para bloques \texttt{do} normales, \texttt{ApplicativeDo} conserva el comportamiento estándar y no se habilita la enumeración de permutaciones conmutativas.
+El control negativo también muestra por qué el compilador no debe inferir conmutatividad a partir de la sola ausencia de dependencias RAW. La extensión explora órdenes alternativos únicamente en bloques marcados explícitamente; para bloques \texttt{do} ordinarios, \texttt{ApplicativeDo} conserva su comportamiento y no se habilita la ruta conmutativa.

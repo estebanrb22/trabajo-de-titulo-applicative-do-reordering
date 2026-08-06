@@ -1,0 +1,36 @@
+% !TEX root = ../../main.tex
+
+\section{Generación y Selección de Planes}
+\label{sec:solucion-integracion-applicative-do}
+
+Después de la generación de todos los reordenamientos válidos de un bloque \texttt{do}, como muestra la Figura~\ref{fig:solucion-flujo-renamer} el siguiente paso de la solución consiste en aplicar el algoritmo de \textit{rearrange} sobre cada uno de ellos. Por ende, cada ordenamiento topológico del grafo de precedencia RAW se reconstruye como una secuencia de statements renombrados con sus anotaciones de variables libres y se entrega a la lógica existente de \texttt{ApplicativeDo}.
+
+Todo plan de ejecución resultante se representa programáticamente mediante el tipo \texttt{StmtTree}. Sus tres constructores, mostrados en el Código~\ref{lst:stmt-tree}, expresan un statement elemental, una composición secuencial mediante \textit{bind} o una agrupación aplicativa.
+
+\newpage
+
+\begin{lstlisting}[style=haskell,caption={Representación de los planes de ejecución generados por \textsf{ApplicativeDo}.},label={lst:stmt-tree}]
+data StmtTree a
+  = StmtTreeOne a
+  | StmtTreeBind (StmtTree a) (StmtTree a)
+  | StmtTreeApplicative [StmtTree a]
+\end{lstlisting}
+
+La extensión obtiene un árbol por cada reordenamiento válido. Si $P$ es la cantidad de secuencias generadas y cada una contiene $n$ statements, la etapa de \textit{rearrange} se ejecuta $P$ veces utilizando la estrategia configurada en \textsf{GHC}. Por tanto, según la complejidad establecida en la Expresión~\ref{expr:complejidad-rearrange}, la generación de todos los planes de ejecución tendrá complejidad $P*\,T_{\mathrm{rearrange}}(n)$. Esto corresponde a $O(P*n^2)$ cuando se utiliza la variante heurística predeterminada y a $O(P*n^3)$ cuando se activa la variante óptima.
+
+Para comparar los planes se incorporó la función \texttt{stmtTreeCost}, presentada en el Código~\ref{lst:stmt-tree-cost}. La función implementa la Expresión~\ref{expr:modelo-costos-estructural}: asigna costo unitario a un statement, suma las composiciones secuenciales y adopta el máximo de las ramas aplicativas.
+
+\begin{lstlisting}[style=haskell,caption={Cálculo del costo estructural de un plan de ejecución.},label={lst:stmt-tree-cost}]
+stmtTreeCost :: StmtTree a -> Cost
+stmtTreeCost (StmtTreeOne _) = 1
+stmtTreeCost (StmtTreeBind l r) =
+  stmtTreeCost l + stmtTreeCost r
+stmtTreeCost (StmtTreeApplicative ts) =
+  case ts of
+    [] -> 0
+    _  -> Partial.maximum (map stmtTreeCost ts)
+\end{lstlisting}
+
+La selección del mejor plan de ejecución utiliza \texttt{minimumBy} sobre la lista de arboles aplicando la función \texttt{stmtTreeCost}, escoginedo el primer mínimo, por lo que el orden estable de los reordenemientos válidos proporciona un desempate determinista. En el ejemplo probabilístico con Código~\ref{lst:main-example}, el orden original genera un arbol con costo 3 y los demás reordenamientos válidos obtienen arboles con costo 2; luego se selecciona el primero de ellos, asociado al plan de ejecución $(s_1\mid s_3);(s_2\mid s_4)$ como se muestra en la Tabla~\ref{tab:main-example-plans}.
+
+Finalmente, la función \texttt{stmtTreeToStmts} reconstruye la lista, genera nodos \texttt{ApplicativeStmt} y reincorpora el statement terminal. Desde ese punto la extensión deja de intervenir y, como resume la Expresión~\ref{expr:fases-ast-ghc}, el nodo AST renombrado continúa por el Typechecker y el Desugarer de forma normal.

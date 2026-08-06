@@ -1,0 +1,89 @@
+% !TEX root = ../../main.tex
+
+\section{Grafo de precedencia RAW}
+\label{sec:solucion-grafo-precedencia-raw}
+
+En la primera fase del proceso de generación de reordenamientos válidos se requiere una representación capaz de expresar las precedencias que deben conservarse entre los statements de un bloque \texttt{do} habilitado. Siguiendo el uso de grafos de dependencias para formular e implementar optimizaciones de compiladores \cite{KuckEtAl1981}, la solución utiliza un grafo de precedencia cuyas aristas representan exclusivamente dependencias locales de tipo \textit{Read-after-Write}; este grafo especializado se denomina \textit{grafo de precedencia RAW}. La Figura~\ref{fig:main-example-precedence-graph} presentó previamente esta representación para el programa del Código~\ref{lst:main-example}: cada vértice corresponde a un statement y cada arista conecta un statement productor con otro que consume uno de sus valores. Sin embargo, antes de definir formalmente el grafo, es necesario justificar por qué basta considerar dependencias RAW y por qué las dependencias \textit{Write-after-Read} y \textit{Write-after-Write} no originan precedencias adicionales entre statements renombrados. A continuación, se presenta el modelo de dependencias que fundamenta esta decisión.
+
+\subsection{Modelo de dependencias}
+\label{sec:solucion-modelo-dependencias}
+
+El punto de partida es un modelo general de dependencias entre lecturas y escrituras. Considérense dos statements $s_i$ y $s_j$ tales que $i<j$. Cada statement $s_k$ posee un conjunto $R_k$ de variables leídas y un conjunto $W_k$ de variables escritas. A partir de estos conjuntos se distinguen tres clases de dependencia: \textit{Read-after-Write} (RAW), \textit{Write-after-Read} (WAR) y \textit{Write-after-Write} (WAW):
+
+\begin{ReportExpression}{Dependencias de escritura y lectura de variables entre dos statements $s_i$ y $s_j$.}{expr:dependencias-raw-war-waw}
+\[
+\begin{aligned}
+\operatorname{RAW}(i,j) &\iff W_i\cap R_j\neq\emptyset,\\
+\operatorname{WAR}(i,j) &\iff R_i\cap W_j\neq\emptyset,\\
+\operatorname{WAW}(i,j) &\iff W_i\cap W_j\neq\emptyset.
+\end{aligned}
+\]
+\end{ReportExpression}
+
+Una dependencia RAW establece una relación productor--consumidor: $s_j$ lee una variable cuyo valor fue escrito por $s_i$. Una dependencia WAR aparece cuando $s_i$ debe leer una variable antes de que $s_j$ la sobrescriba; invertir ambos statements haría que la lectura observara el nuevo valor. Finalmente, una dependencia WAW relaciona dos escrituras sobre una misma variable y obliga a conservar cuál de ellas determina su valor posterior. Estas dos últimas relaciones presuponen que distintas escrituras pueden actuar sobre una misma identidad mutable, como ocurre en un modelo imperativo de asignaciones. Alterar cualquiera de estas precedencias puede modificar los valores observados o el estado final del programa \cite{Bernstein1966,ErtlKrall1996}.
+
+La \textit{do-notation} de \textsf{Haskell} presenta un comportamiento diferente. En un statement de la forma \verb|p <- e|, el patrón \verb|p| introduce una nueva vinculación léxica, denominada \textit{binder}; no actualiza destructivamente una variable definida con anterioridad. Si un statement posterior reutiliza el mismo identificador textual, introduce otro binder que oculta al primero en su nuevo alcance. Este comportamiento concuerda con la pureza descrita en la Sección~\ref{sec:fundamentos-haskell} y con las reglas de alcance de la \textit{do-notation} \cite[sección~3.14]{Haskell2010}.
+
+El Renamer de \textsf{GHC} hace explícita esta diferencia al resolver los identificadores del programa. Cada binder recibe un \texttt{Name} único y cada uso queda asociado con la identidad que se encuentra en alcance en ese punto. Por ello, dos definiciones escritas como \texttt{x} en el programa fuente no representan dos escrituras internas sobre el mismo nombre \cite{Appel1998,GHCRenamerSources2026}.
+
+El Código~\ref{lst:original-vs-renaming} ilustra este comportamiento con un bloque \texttt{do} de tipo \texttt{Maybe Int}. En el programa fuente, \texttt{y} lee la primera vinculación de \texttt{x} antes de que un statement posterior vuelva a utilizar ese identificador. La columna derecha presenta esquemáticamente las identidades diferenciadas durante el renombrado del compilador:
+
+\noindent\begin{minipage}{\textwidth}
+\begin{lstlisting}[style=haskell,caption={Representación esquemática de los binders antes y después del renombrado que ejecuta \textsf{GHC} a todo programa.},label={lst:original-vs-renaming}]
+    do                                      do
+      x <- Just 2                             x_a1T2 <- Just 2
+      y <- Just ((2*) x)                      y_a1T3 <- Just ((2*) x_a1T2)
+      x <- Just 3              ==>            x_a1T4 <- Just 3
+      return (x + y)                          return (x_a1T4 + y_a1T3)
+\end{lstlisting}
+\end{minipage}
+
+La primera y la tercera definición escriben, respectivamente, los nombres \texttt{x\_a1T2} y \texttt{x\_a1T4}. Como son identidades diferentes, sus conjuntos de escritura no se intersectan y, por tanto, no existe una dependencia WAW. De manera análoga, el segundo statement lee \texttt{x\_a1T2}, mientras que el tercero escribe \texttt{x\_a1T4}; la intersección entre esa lectura y la escritura posterior también es vacía, por lo que no existe una dependencia WAR. La relación local efectiva entre los statements reordenables es RAW: la definición de \texttt{x\_a1T2} debe permanecer antes del statement que define \texttt{y\_a1T3}. En consecuencia, el grafo de precedencia utilizado por la solución se construye exclusivamente a partir de dependencias RAW entre nombres renombrados.
+
+Sea $S=(s_1,\ldots,s_n)$ la secuencia de statements que participan en el reordenamiento. El statement terminal, representado internamente como \texttt{LastStmt}, no pertenece a $S$ porque produce el resultado del bloque y permanece fijo \cite[p.~95]{MarlowPJKM2016}. La anotación de variables libres que entrega el Renamer para el cuerpo de cada statement contiene los \texttt{Name}s utilizados que no son introducidos por ese mismo cuerpo \cite{GHCRenamerSources2026}. Esto incluye tanto referencias a binders definidos por statements anteriores como nombres globales, entre ellos funciones, operadores y constructores de datos. Por ejemplo, en el segundo statement del Código~\ref{lst:original-vs-renaming} aparecen como nombres libres \texttt{x\_a1T2}, el constructor \texttt{Just} y el operador \verb|(*)|, pero solo el primero corresponde a un valor producido dentro del bloque \texttt{do}. Para distinguir las lecturas locales de las referencias externas se definen los siguientes conjuntos para cada statement $s_i$:
+
+\begin{ReportExpression}{Escrituras y lecturas locales de un statement renombrado.}{expr:lecturas-escrituras-locales}
+\[
+\begin{aligned}
+\operatorname{WRITE}(s_i) &= \operatorname{binders}(s_i),\\
+\operatorname{ALL\_WRITES} &= \bigcup_{k=1}^{n}\operatorname{WRITE}(s_k),\\
+\operatorname{READ}_{\mathrm{local}}(s_i)
+  &= \operatorname{FV}(s_i)\cap\operatorname{ALL\_WRITES}.
+\end{aligned}
+\]
+\end{ReportExpression}
+
+El conjunto $\operatorname{WRITE}(s_i)$ contiene los \texttt{Name}s de los binders introducidos por $s_i$, mientras que $\operatorname{ALL\_WRITES}$ reúne todos los nombres producidos por los statements reordenables del bloque \texttt{do}. Por su parte, $\operatorname{FV}(s_i)$ conserva el conjunto completo de nombres libres informado por el Renamer de \textsf{GHC}. Al intersectarlo con $\operatorname{ALL\_WRITES}$, $\operatorname{READ}_{\mathrm{local}}(s_i)$ retiene únicamente los nombres cuyo valor se origina por un binder de un statement anterior. En el ejemplo del Código~\ref{lst:original-vs-renaming}, \texttt{x\_a1T2} permanece como lectura local del segundo statement, mientras que \texttt{Just} y \verb|(*)| se descartan de $\operatorname{READ}_{\mathrm{local}}(s_2)$ porque, aunque pertenecen a $\operatorname{FV}(s_2)$, no forman parte de $\operatorname{ALL\_WRITES}$.
+
+Con esta información, la restricción relevante entre dos statements $s_i$ y $s_j$ queda dada por
+
+\begin{ReportExpression}{Dependencia RAW local utilizada por la extensión.}{expr:dependencia-raw-local}
+\[
+i\longrightarrow j
+\quad\iff\quad
+i<j
+\quad\land\quad
+\operatorname{WRITE}(s_i)
+\cap
+\operatorname{READ}_{\mathrm{local}}(s_j)
+\neq\emptyset.
+\]
+\end{ReportExpression}
+
+La condición $i<j$ orienta la dependencia según el orden del programa original. La intersección no vacía indica que existe al menos un \texttt{Name} definido por $s_i$ y utilizado localmente por $s_j$; dicho nombre actúa como testigo de una relación productor--consumidor que debe preservarse \cite{HarroldSoffa1994}. Debido a que la comparación se realiza sobre nombres renombrados, la arista no puede surgir solo por la reutilización de un mismo identificador textual.
+
+El grafo de precedencia RAW de un bloque \texttt{do} se define entonces como:
+
+\begin{ReportExpression}{Grafo de precedencia RAW inducido por las dependencias locales de un bloque \texttt{do}.}{expr:grafo-precedencia-raw}
+\[
+G_{\mathrm{RAW}}=(V,E_{\mathrm{RAW}}),
+\qquad
+V=\{1,\ldots,n\},
+\qquad
+E_{\mathrm{RAW}}=\{(i,j)\in V\times V\mid i\longrightarrow j\}.
+\]
+\end{ReportExpression}
+
+Cada vértice representa un statement reordenable y cada arista registra una dependencia RAW local que, al mismo tiempo, impone una precedencia productor--consumidor. Como toda arista satisface $i<j$, los índices aumentan estrictamente a lo largo de cualquier camino y $G_{\mathrm{RAW}}$ es acíclico. El conjunto $E_{\mathrm{RAW}}$ contiene todas las dependencias detectadas por el criterio anterior y no corresponde necesariamente a una reducción transitiva; la relación de alcanzabilidad del grafo induce el orden parcial que debe respetar todo reordenamiento válido \cite{Pratt1986}.
+
+El grafo de precedencia RAW expresa así las restricciones estructurales que determinan la validez de un reordenamiento; por sí solo no garantiza equivalencia semántica, que en esta memoria depende de la hipótesis explícita de conmutatividad \cite[secciones~5 y~9]{Kock2012}. A partir del orden parcial inducido por este grafo, la segunda fase determina los reordenamientos de statements que preservan todas las precedencias.

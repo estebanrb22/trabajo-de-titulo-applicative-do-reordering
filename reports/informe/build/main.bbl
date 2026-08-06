@@ -1,5 +1,16 @@
 \begin{thebibliography}{10}
 
+\bibitem{Appel1998}
+Andrew~W. Appel.
+\newblock {SSA} is functional programming.
+\newblock {\em ACM SIGPLAN Notices}, 33(4):17--20, 1998.
+
+\bibitem{Bernstein1966}
+A.~J. Bernstein.
+\newblock Analysis of programs for parallel processing.
+\newblock {\em IEEE Transactions on Electronic Computers}, EC-15(5):757--763,
+  1966.
+
 \bibitem{RomeroApplicativeDoRepo}
 Esteban~Romero Berríos.
 \newblock Repositorio experimental para el estudio de applicative-do y
@@ -10,6 +21,12 @@ Esteban~Romero Berríos.
 Alan~L. Davis and Robert~M. Keller.
 \newblock Data flow program graphs.
 \newblock {\em Computer}, 15(2):26--41, 1982.
+
+\bibitem{ErtlKrall1996}
+M.~Anton Ertl and Andreas Krall.
+\newblock Removing anti dependences by repairing.
+\newblock In {\em Compiler Construction}, volume 1060 of {\em Lecture Notes in
+  Computer Science}, pages 33--43. Springer, 1996.
 
 \bibitem{ErwigKollmansberger2006}
 Martin Erwig and Steve Kollmansberger.
@@ -36,6 +53,13 @@ Zoubin Ghahramani.
 {GHC Contributors}.
 \newblock Commit 8ecf6d8f7dfee9e5b1844cd196f83f00f3b6b879, 2015.
 \newblock GitHub commit.
+
+\bibitem{GHCRenamerSources2026}
+{GHC Contributors}.
+\newblock {GHC} renamer source code.
+\newblock C\'odigo fuente oficial de GHC, 2026.
+\newblock Commit \texttt{0b36e96};
+  \url{https://gitlab.haskell.org/ghc/ghc/-/tree/0b36e96/compiler/GHC}.
 
 \bibitem{GHCApplicativeDoTestsuite}
 {GHC Contributors}.
@@ -76,10 +100,23 @@ Arthur~B. Kahn.
 \newblock Topological sorting of large networks.
 \newblock {\em Communications of the ACM}, 5(11):558--562, 1962.
 
+\bibitem{KnuthSzwarcfiter1974}
+Donald~E. Knuth and Jayme~L. Szwarcfiter.
+\newblock A structured program to generate all topological sorting
+  arrangements.
+\newblock {\em Information Processing Letters}, 2(6):153--157, 1974.
+
 \bibitem{Kock2012}
 Anders Kock.
 \newblock Commutative monads as a theory of distributions.
 \newblock {\em Theory and Applications of Categories}, 26(4):97--131, 2012.
+
+\bibitem{KuckEtAl1981}
+David~J. Kuck, Robert~H. Kuhn, David~A. Padua, Bruce Leasure, and Michael
+  Wolfe.
+\newblock Dependence graphs and compiler optimizations.
+\newblock In {\em Proceedings of the 8th ACM SIGPLAN-SIGACT Symposium on
+  Principles of Programming Languages}, pages 207--218. ACM, 1981.
 
 \bibitem{Haskell2010}
 Simon Marlow.
@@ -127,6 +164,12 @@ Justin Pombrio.
 \newblock {\em Resugaring: Lifting Evaluation Sequences through Syntactic
   Sugar}.
 \newblock PhD thesis, Brown University, 2018.
+
+\bibitem{Pratt1986}
+Vaughan Pratt.
+\newblock Modeling concurrency with partial orders.
+\newblock {\em International Journal of Parallel Programming}, 15(1):33--71,
+  1986.
 
 \bibitem{ScibiorGG2015}
 Adam {\'S}cibior, Zoubin Ghahramani, and Andrew~D. Gordon.

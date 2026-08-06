@@ -1,0 +1,13 @@
+% !TEX root = ../main.tex
+
+\chapter{Implementación de la Solución}
+\label{chap:implementacion-solucion}
+
+Este capítulo describe cómo se materializó en \textsf{GHC} el diseño de la solución presentado en el capítulo anterior. Primero se introduce el flujo de compilación relevante de \textsf{GHC} y se identifican los puntos intervenidos; luego se presenta el mecanismo declarativo que permite reconocer un bloque conmutativo y se detalla su integración en el Renamer. A continuación se desarrollan la construcción del grafo de precedencia RAW y la generación recursiva de reordenamientos válidos. Finalmente, se explica cómo cada reordenamiento es procesado por \texttt{ApplicativeDo}, evaluado mediante el modelo de costo y reducido al plan que continúa en el flujo normal del compilador.
+
+\input{secciones/solucion/implementacion_flujo_ghc}
+\input{secciones/solucion/implementacion_activacion}
+\input{secciones/solucion/implementacion_renamer}
+\input{secciones/solucion/implementacion_grafo}
+\input{secciones/solucion/implementacion_reordenamientos}
+\input{secciones/solucion/implementacion_planes}

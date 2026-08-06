@@ -1,0 +1,14 @@
+% !TEX root = ../main.tex
+
+\chapter{Diseño de Solución}
+\label{chap:diseno-solucion}
+
+A partir del problema formulado en la Sección~\ref{sec:problema-formulacion}, se observa que, aunque \texttt{ApplicativeDo} puede mejorar el plan de ejecución completamente secuencial, la preservación del orden relativo de los statements limita el espacio de planes que puede explorar. Bajo una hipótesis explícita de conmutatividad, aplicar \texttt{ApplicativeDo} sobre un reordenamiento válido de statements puede exponer un plan de ejecución de menor costo que el obtenido a partir del orden original \cite[pp.~94--95]{MarlowPJKM2016}.
+
+La solución propuesta por la memoria consiste en extender el espacio de búsqueda de \texttt{ApplicativeDo}: para un bloque \texttt{do} declarado como conmutativo, se generan los reordenamientos válidos, se aplica el algoritmo existente sobre cada uno y se selecciona el plan de ejecución de menor costo. De este modo, la extensión aprovecha la libertad adicional del bloque \texttt{do} sin reemplazar \texttt{ApplicativeDo} ni modificar el tratamiento de los bloques ordinarios.
+
+En este capítulo se desarrolla el diseño de dicha solución. Primero, se presenta el flujo general de la extensión, desde la declaración del bloque como conmutativo hasta la selección del plan de ejecución de menor costo. A continuación, se introduce el \textit{grafo de precedencia RAW} como representación de las restricciones entre los statements de un bloque \texttt{do}, junto con el modelo de dependencias que justifica por qué basta considerar dependencias locales de tipo \textit{Read-after-Write}. Finalmente, se caracterizan los reordenamientos válidos como ordenamientos topológicos del grafo y se describe el recorrido exhaustivo utilizado para generarlos.
+
+\input{secciones/solucion/flujo_solucion}
+\input{secciones/solucion/modelo_dependencias}
+\input{secciones/solucion/generacion_reordenamientos}

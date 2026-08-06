@@ -1,6 +1,6 @@
 % !TEX root = ../../main.tex
 
-\section{Abstracciones Funcionales}
+\section{Abstracciones funcionales}
 
 Las funciones de primera clase, la currificación, la aplicación parcial y las clases de tipos proporcionan la base para las abstracciones estudiadas en esta sección. \texttt{Functor}, \texttt{Applicative} y \texttt{Monad} forman una jerarquía que se distingue por el grado de dependencia que permiten expresar entre las partes de un programa. Un functor permite transformar el resultado de un cómputo; un aplicativo permite combinar cómputos cuya estructura está determinada de antemano; y una mónada permite que un cómputo posterior dependa del valor producido por uno anterior \cite{Wadler1995,McBride2008,Yorgey2009}.
 
@@ -9,8 +9,8 @@ Las funciones de primera clase, la currificación, la aplicación parcial y las 
 En \textsf{Haskell}, \texttt{Functor} es una clase de tipos cuyas instancias se definen para constructores de tipos, como las listas \verb|[]| o \verb|Maybe|. Su operación principal es \texttt{fmap}, que permite aplicar una función a los valores asociados a una estructura y obtener un resultado que conserva el mismo constructor de tipos. La definición simplificada de la clase se muestra en el Código~\ref{lst:functor-class}:
 
 \begin{lstlisting}[style=haskell,caption={Definición simplificada de la clase \texttt{Functor}.},label={lst:functor-class}]
-class Functor f where
-    fmap :: (a -> b) -> f a -> f b
+    class Functor f where
+        fmap :: (a -> b) -> f a -> f b
 \end{lstlisting}
 
 En esta firma, \verb|f| representa un constructor de tipos, mientras que \verb|a| y \verb|b| representan los tipos de los valores antes y después de aplicar la función. Así, \texttt{fmap} recibe una función de tipo \verb|a -> b| y transforma un valor de tipo \verb|f a| en uno de tipo \verb|f b|, manteniendo el contexto representado por \verb|f|.
@@ -26,9 +26,9 @@ Como se mencionó anteriormente, otro ejemplo relevante es \texttt{Maybe}. El ti
 En la implementación de \texttt{base} incluida con GHC, este comportamiento se define mediante la instancia de \texttt{Functor} para el constructor de tipos \texttt{Maybe} mostrada en el Código~\ref{lst:functor-maybe-instance} \cite{GHCInternalBase}:
 
 \begin{lstlisting}[style=haskell,caption={Instancia de \texttt{Functor} para \texttt{Maybe}.},label={lst:functor-maybe-instance}]
-instance Functor Maybe where
-    fmap _ Nothing  = Nothing
-    fmap f (Just a) = Just (f a)
+    instance Functor Maybe where
+        fmap _ Nothing  = Nothing
+        fmap f (Just a) = Just (f a)
 \end{lstlisting}
 
 La primera ecuación establece que, cuando el valor recibido es \texttt{Nothing}, no existe ningún elemento sobre el cual aplicar la función y, por tanto, el resultado permanece como \texttt{Nothing}. El guion bajo indica que la función recibida no necesita utilizarse en este caso. En cambio, cuando el valor tiene la forma \texttt{Just a}, la segunda ecuación aplica la función \texttt{f} al elemento \texttt{a} y vuelve a encapsular el resultado mediante el constructor \texttt{Just}. Ambos comportamientos se ilustran en el Código~\ref{lst:functor-maybe-fmap-examples}:
@@ -89,9 +89,9 @@ Esta misma restricción implica que, si se quisiera que el segundo argumento dep
 En \textsf{Haskell}, \texttt{Monad} es una clase de tipos cuyas instancias definen cómo secuenciar cómputos dentro de un mismo contexto cuando un cómputo posterior puede depender del valor producido por uno anterior \cite{Wadler1995}. Como \texttt{Applicative} es una superclase de \texttt{Monad}, todo constructor de tipos que posea una instancia de \texttt{Monad} también debe poseer una instancia de \texttt{Applicative}. El Código~\ref{lst:monad-class} muestra una definición simplificada con las operaciones relevantes:
 
 \begin{lstlisting}[style=haskell,caption={Definición simplificada de la clase \texttt{Monad}.},label={lst:monad-class}]
-class Applicative m => Monad m where
-    (>>=)  :: m a -> (a -> m b) -> m b
-    return :: a -> m a
+    class Applicative m => Monad m where
+        (>>=)  :: m a -> (a -> m b) -> m b
+        return :: a -> m a
 \end{lstlisting}
 
 Para interpretar la firma de \verb|(>>=)|, consideraremos un cómputo \verb|ma :: m a| y una función \verb|k :: a -> m b|. La expresión \verb|ma >>= k| compone el primer cómputo con la función k de acuerdo con el comportamiento definido por la instancia, por ende entrega su resultado de tipo \verb|a| a la función \verb|k| y obtiene un nuevo cómputo de tipo \verb|m b|. De esta manera, la función \verb|k| puede utilizar el resultado anterior para determinar la forma del cómputo siguiente.

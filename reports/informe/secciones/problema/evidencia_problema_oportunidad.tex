@@ -1,25 +1,25 @@
 % !TEX root = ../../main.tex
 
-\section{Evidencia del Problema y Oportunidad}
+\section{Evidencia del problema y oportunidad}
 
 Para evidenciar la limitación anterior se retoma el modelo probabilístico del estudiante presentado en el Código~\ref{lst:main-example}. La Sección~\ref{sec:applicative-do-aplicacion} aplicó el algoritmo de \texttt{ApplicativeDo} a su orden original $[1,2,3,4]$ y obtuvo un plan de costo 3. En esta subsección se conserva el mismo programa y se estudia qué ocurre al intercambiar únicamente $s_2$ y $s_3$.
 
 Se utilizarán nuevamente las metavariables \texttt{expr1}, \texttt{expr2}, \texttt{expr3} y \texttt{expr4} introducidas en el Código~\ref{lst:applicative-do-main-example-abstract}. Estas mantienen las variables libres de las expresiones originales, pero permiten concentrar el análisis en la estructura del bloque. Después del intercambio, el programa abreviado queda en el orden $[1,3,2,4]$:
 
 \begin{lstlisting}[style=haskell,caption={Representación abreviada del modelo probabilístico con los statements \texttt{s2} y \texttt{s3} intercambiados.},label={lst:problema-main-example-reordered-abstract}]
-studentResults = do
-    preparation <- expr1
-    difficulty <- expr3
-    quiz <- expr2
-    finalExam <- expr4
-    return (preparation, quiz, difficulty, finalExam)
+    studentResults = do
+        preparation <- expr1
+        difficulty <- expr3
+        quiz <- expr2
+        finalExam <- expr4
+        return (preparation, quiz, difficulty, finalExam)
 \end{lstlisting}
 
-Este orden conserva las precedencias del programa. El statement $s_1$ permanece antes de $s_2$ y $s_4$, mientras que $s_3$ permanece antes de $s_4$, tal como muestra la Figura~\ref{fig:main-example-reordered-precedence-graph}. Por lo tanto, el intercambio no separa ninguna definición de sus usos. Además, en el bloque no aparecen escrituras, mutación de estado ni otros efectos observables sensibles al orden: adelantar la elección de la dificultad no modifica las relaciones condicionales modeladas por \texttt{quizGiven} y \texttt{examGiven}. En concordancia con el carácter conmutativo supuesto para la mónada de distribuciones, se adopta entonces la hipótesis de que este orden es semánticamente equivalente al original.
+El reordenamiento \texttt{[1,3,2,4]} es válido porque conserva las precedencias del programa. El statement $s_1$ permanece antes de $s_2$ y $s_4$, mientras que $s_3$ permanece antes de $s_4$, tal como muestra la Figura~\ref{fig:main-example-reordered-precedence-graph}. Por lo tanto, el intercambio no separa ninguna definición de sus usos. Además, en el bloque no aparecen escrituras, mutación de estado ni otros efectos observables sensibles al orden: adelantar la elección de la dificultad no modifica las relaciones condicionales modeladas por \texttt{quizGiven} y \texttt{examGiven}. Bajo la hipótesis explícita de conmutatividad adoptada para la mónada de distribuciones, este reordenamiento válido se considera semánticamente equivalente al orden original.
 
-La entrada abstracta de \texttt{rearrange} para el nuevo orden es:
+La entrada abstracta de \texttt{rearrange} para el reordenamiento válido \texttt{[1,3,2,4]} es:
 
-\begin{ReportExpression}{Entrada abstracta de \texttt{rearrange} para el orden $[1,3,2,4]$.}{expr:entrada-rearrange-ejemplo-reordenado}
+\begin{ReportExpression}{Entrada abstracta de \texttt{rearrange} para el reordenamiento válido $[1,3,2,4]$.}{expr:entrada-rearrange-ejemplo-reordenado}
 \[
 \texttt{do}\ \{s_1;s_3;s_2;s_4\}\
 (\texttt{preparation}, \texttt{quiz}, \texttt{difficulty}, \texttt{finalExam}).
@@ -30,7 +30,7 @@ La llamada inicial a \texttt{segments} tampoco encuentra un corte exterior para 
 
 La función \texttt{split} evalúa las separaciones $i\in\{1,2,3\}$. Para cada una aplica recursivamente \texttt{rearrange} al prefijo y al sufijo, y obtiene los siguientes planes de acuerdo con el modelo de costos de la Expresión~\ref{expr:modelo-costos-estructural}:
 
-\begin{ReportExpression}{Planes y costos obtenidos por \texttt{split} para el orden $[1,3,2,4]$.}{expr:resultados-rearrange-ejemplo-reordenado}
+\begin{ReportExpression}{Planes y costos obtenidos por \texttt{split} para el reordenamiento válido $[1,3,2,4]$.}{expr:resultados-rearrange-ejemplo-reordenado}
 \[
 \begin{aligned}
 i=1 &\quad\Longrightarrow\quad
@@ -50,43 +50,43 @@ La separación $i=2$ divide la secuencia en el prefijo $\{s_1;s_3\}$ y el sufijo
 
 Al sustituir los patrones de los statements, la etapa de \textit{rearrange} entrega a \textit{desugaring} la siguiente estructura intermedia:
 
-\begin{lstlisting}[style=haskell,caption={Plan intermedio producido por \textit{rearrange} para el orden \texttt{[1,3,2,4]}.},label={lst:problema-main-example-reordered-plan}]
-do {
-    (preparation <- expr1 |
-        difficulty <- expr3);
-    (quiz <- expr2 |
-        finalExam <- expr4)
-} (preparation, quiz, difficulty, finalExam)
+\begin{lstlisting}[style=haskell,caption={Plan intermedio producido por \textit{rearrange} para el reordenamiento válido \texttt{[1,3,2,4]}.},label={lst:problema-main-example-reordered-plan}]
+    do {
+        (preparation <- expr1 |
+            difficulty <- expr3);
+        (quiz <- expr2 |
+            finalExam <- expr4)
+    } (preparation, quiz, difficulty, finalExam)
 \end{lstlisting}
 
 La etapa de \textit{desugaring} procesa primero la segunda agrupación, que es el último componente del plan, y combina \texttt{expr2} y \texttt{expr4} mediante \verb|(<$>)| y \verb|(<*>)|. La primera agrupación está seguida por ese cómputo contextualizado, por lo que corresponde al caso que produce un contexto anidado. La operación \texttt{join} elimina ese nivel adicional y permite secuenciar ambas agrupaciones. El resultado abreviado es:
 
 \noindent\begin{minipage}{\textwidth}
-\begin{lstlisting}[style=haskell,caption={Desazucarado del plan reordenado expresado mediante \texttt{expr1}--\texttt{expr4}.},label={lst:problema-main-example-reordered-desugared-abstract}]
-studentResults =
-    join $
-        (\preparation difficulty ->
-            (\quiz finalExam ->
-                (preparation, quiz, difficulty, finalExam))
-            <$> expr2
-            <*> expr4)
-        <$> expr1
-        <*> expr3
+\begin{lstlisting}[style=haskell,caption={Desazucarado del plan obtenido a partir del reordenamiento válido \texttt{[1,3,2,4]}, expresado mediante \texttt{expr1}--\texttt{expr4}.},label={lst:problema-main-example-reordered-desugared-abstract}]
+    studentResults =
+        join $
+            (\preparation difficulty ->
+                (\quiz finalExam ->
+                    (preparation, quiz, difficulty, finalExam))
+                <$> expr2
+                <*> expr4)
+            <$> expr1
+            <*> expr3
 \end{lstlisting}
 \end{minipage}
 
 Finalmente, al reemplazar las metavariables por las expresiones del Código~\ref{lst:main-example}, se obtiene:
 
-\begin{lstlisting}[style=haskell,caption={Desazucarado aplicativo del modelo probabilístico después del reordenamiento.},label={lst:problema-main-example-reordered-desugared}]
-studentResults =
-    join $
-        (\preparation difficulty ->
-            (\quiz finalExam ->
-                (preparation, quiz, difficulty, finalExam))
-            <$> quizGiven preparation
-            <*> examGiven preparation difficulty)
-        <$> Dist.uniform [Low, High]
-        <*> Dist.uniform [Easy, Hard]
+\begin{lstlisting}[style=haskell,caption={Desazucarado aplicativo del modelo probabilístico obtenido a partir del reordenamiento válido \texttt{[1,3,2,4]}.},label={lst:problema-main-example-reordered-desugared}]
+    studentResults =
+        join $
+            (\preparation difficulty ->
+                (\quiz finalExam ->
+                    (preparation, quiz, difficulty, finalExam))
+                <$> quizGiven preparation
+                <*> examGiven preparation difficulty)
+            <$> Dist.uniform [Low, High]
+            <*> Dist.uniform [Easy, Hard]
 \end{lstlisting}
 
-En comparación con el último desazucarado del orden original, presentado en el Código~\ref{lst:applicative-do-main-example-desugared}, la nueva expresión aumenta de una a dos apariciones de \verb|(<*>)|. La primera combina la preparación con la dificultad y la segunda combina el quiz con el examen final. Este mayor uso de la estructura aplicativa concuerda con el plan de costo 2: el reordenamiento expone dos pares de cómputos independientes donde el orden original solo permitía una agrupación aplicativa exterior. Por consiguiente, existe una oportunidad de mejora que el algoritmo estándar no puede aprovechar mientras conserve exclusivamente el orden escrito por el programador.
+En comparación con el último desazucarado del orden original, presentado en el Código~\ref{lst:applicative-do-main-example-desugared}, la nueva expresión aumenta de una a dos apariciones de \verb|(<*>)|. La primera combina la preparación con la dificultad y la segunda combina el quiz con el examen final. Este mayor uso de la estructura aplicativa concuerda con el plan de costo 2: el reordenamiento válido \texttt{[1,3,2,4]} expone dos pares de cómputos independientes donde el orden original solo permitía una agrupación aplicativa exterior. Por consiguiente, existe una oportunidad de mejora que el algoritmo estándar no puede aprovechar mientras conserve exclusivamente el orden escrito por el programador.

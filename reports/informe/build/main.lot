@@ -5,8 +5,14 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces Aplicación del algoritmo de Kahn al grafo del ejemplo probabilístico.}}{37}{table.caption.14}%
-\contentsline {table}{\numberline {4.2}{\ignorespaces Reordenamientos topológicos válidos para el ejemplo probabilístico.}}{39}{table.caption.17}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces Ordenamientos topológicos del grafo de precedencia RAW de la Figura~\ref {fig:main-example-precedence-graph}.}}{38}{table.caption.13}%
 \addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces Métricas extraídas de las trazas del Renamer.}}{52}{table.caption.17}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Familias y variantes compartidas por los dos corpus.}}{54}{table.caption.18}%
+\contentsline {table}{\numberline {6.3}{\ignorespaces Familias específicas de cada corpus.}}{54}{table.caption.19}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {7.1}{\ignorespaces Costos y cantidades de reordenamientos de la familia \texttt {cost-selection}.}}{66}{table.caption.33}%
+\contentsline {table}{\numberline {7.2}{\ignorespaces Salidas observables producidas por los dos órdenes del control negativo con \texttt {IO}.}}{70}{table.caption.39}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }

@@ -1,0 +1,32 @@
+% !TEX root = ../../main.tex
+
+\section{Generación de reordenamientos válidos}
+\label{sec:solucion-generacion-reordenamientos}
+
+Una vez construido el grafo de precedencia RAW $G_{\mathrm{RAW}}$ asociado a un bloque \texttt{do}, generar los reordenamientos válidos equivale a obtener los ordenamientos topológicos del grafo. Un ordenamiento topológico es una forma de disponer todos sus vértices en una secuencia que respeta la dirección de las aristas \cite{Kahn1962}. En este caso, si existe una arista $i\to j$, el statement $s_i$ debe aparecer antes que $s_j$; si el grafo no impone una precedencia entre dos statements, estos pueden aparecer en cualquier orden relativo. Esta caracterización es central para el diseño de la solución: transforma la preservación de las dependencias locales en una propiedad estructural verificable sobre el grafo. En otras palabras, para determinar si un reordenamiento es válido basta comprobar que el origen de cada arista aparezca antes que su destino. Como toda arista satisface $i<j$, el orden original $(s_1,\ldots,s_n)$ también es topológico y permanece entre los candidatos efectivamente evaluados.
+
+El procedimiento construye estos ordenamientos una posición a la vez. En cada paso puede seleccionar cualquier statement que todavía no haya sido agregado y cuyos predecesores ya aparezcan en la secuencia. Si existen varios statements disponibles, el procedimiento explora cada elección como una alternativa distinta. Este proceso se repite hasta incorporar todos los statements y, al considerar todas las elecciones posibles, se obtienen todos los ordenamientos topológicos del grafo y por ende todos los reordenamientos válidos del bloque \texttt{do} \cite{KnuthSzwarcfiter1974}.
+
+Aplicado al programa del Código~\ref{lst:main-example}, este procedimiento debe preservar las tres aristas del grafo de precedencia RAW presentado en la Figura~\ref{fig:main-example-precedence-graph}. Los cinco ordenamientos topológicos que satisfacen estas restricciones se presentan en la Tabla~\ref{tab:solucion-candidatos-ejemplo}.
+
+\begin{table}[ht]
+\centering
+\TableSetup
+\TableFrame{%
+\begin{tabular}{cc}
+\rowcolor{tableHeaderBg}
+\TableHead{Índice} & \TableHead{Ordenamiento topológico} \\
+0 & \texttt{[1,2,3,4]} \\
+1 & \texttt{[1,3,2,4]} \\
+2 & \texttt{[1,3,4,2]} \\
+3 & \texttt{[3,1,2,4]} \\
+4 & \texttt{[3,1,4,2]} \\
+\end{tabular}%
+}
+\caption{Ordenamientos topológicos del grafo de precedencia RAW de la Figura~\ref{fig:main-example-precedence-graph}.}
+\label{tab:solucion-candidatos-ejemplo}
+\end{table}
+
+El primer ordenamiento conserva la secuencia original; los demás intercalan statements independientes sin invertir ninguna de las tres aristas del grafo.
+
+Así, el grafo de precedencia RAW determina las restricciones de un bloque \texttt{do} y su recorrido exhaustivo materializa los reordenamientos válidos que se entregan a la etapa de \textit{rearrange} de \texttt{ApplicativeDo}. El Capítulo~\ref{chap:implementacion-solucion} desarrolla la implementación de ambas fases dentro del Renamer de \textsf{GHC}.

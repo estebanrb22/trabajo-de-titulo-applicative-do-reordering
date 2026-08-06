@@ -3,12 +3,14 @@
 \section{Mónadas Conmutativas}
 \label{sec:monadas-conmutativas}
 
-Kock formaliza la conmutatividad de una mónada mediante dos mapas de Fubini que combinan un par de cómputos en órdenes opuestos. Cuando ambos mapas coinciden, el orden elegido para efectuar esta combinación no modifica su significado \cite[secciones~5 y~9]{Kock2012}. En términos operacionales, esto significa que, dados dos cómputos monádicos independientes, ejecutar el primero y luego el segundo es semánticamente equivalente a ejecutarlos en el orden contrario, siempre que se conserven las asociaciones entre sus resultados.
+La sección anterior mostró que la ausencia de una dependencia de datos entre dos statements permite formular dos órdenes distintos de estos mismos, pero no basta por sí sola para asegurar que el intercambio conserve el significado del programa. Las mónadas conmutativas proporcionan precisamente la propiedad semántica necesaria para justificarlo. En términos operacionales, esto significa que, dados dos cómputos monádicos independientes, ejecutar el primero y luego el segundo es semánticamente equivalente a ejecutarlos en el orden contrario, siempre que se conserven las asociaciones entre sus resultados.
+
+Kock formaliza esta propiedad mediante dos mapas de Fubini, correspondientes a las dos formas de combinar un par de cómputos al efectuar primero uno u otro. Una mónada es conmutativa cuando ambos mapas coinciden; en ese caso, el orden elegido para realizar la combinación no modifica su significado \cite[secciones~5 y~9]{Kock2012}.
 
 La mónada \texttt{Maybe} permite ilustrar esta propiedad mediante el mismo ejemplo de suma utilizado en las secciones anteriores. El Código~\ref{lst:commutative-maybe-sum} presenta el bloque original y una variante en la que se intercambian los dos primeros statements:
 
 \noindent\begin{minipage}{\textwidth}
-\begin{lstlisting}[style=haskell,caption={Suma monádica sobre \texttt{Maybe} en el orden original y en el reordenado.},label={lst:commutative-maybe-sum}]
+\begin{lstlisting}[style=haskell,caption={Suma monádica sobre \texttt{Maybe} en el orden original y según un reordenamiento válido.},label={lst:commutative-maybe-sum}]
     sumaOriginal = do                            sumaReordenada = do  
         x <- Just 3                                  y <- Just 2
         y <- Just 2               <==>               x <- Just 3
@@ -16,10 +18,10 @@ La mónada \texttt{Maybe} permite ilustrar esta propiedad mediante el mismo ejem
 \end{lstlisting}
 \end{minipage}
 
-En \texttt{sumaOriginal}, el primer statement vincula el valor 3 con \texttt{x} y el segundo vincula el valor 2 con \texttt{y}. En \texttt{sumaReordenada} se invierte el orden de ejecución, pero se mantienen las mismas asociaciones: \texttt{x} continúa vinculado con 3 y \texttt{y} con 2. Como la expresión final tampoco cambia, ambos bloques producen \texttt{Just 5}.
+En \texttt{sumaOriginal}, el primer statement vincula el valor 3 con \texttt{x} y el segundo vincula el valor 2 con \texttt{y}. En \texttt{sumaReordenada} se invierte el orden de ejecución, pero se mantienen las mismas asociaciones: \texttt{x} continúa vinculado con 3 e \texttt{y} con 2. Como la expresión final tampoco cambia, ambos bloques producen \texttt{Just 5}.
 
 Esta equivalencia no se debe a que la suma sea una operación conmutativa. El intercambio de statements no modifica el orden de los argumentos de \verb|((+) x y)|, sino solamente el orden en que se obtienen los valores asociados a \texttt{x} e \texttt{y}. La propiedad relevante pertenece a la mónada: bajo la semántica total de valores opcionales, si ambos cómputos producen un valor de la forma \texttt{Just}, estos valores se conservan en cualquiera de los dos órdenes; si alguno produce \texttt{Nothing}, ambos órdenes producen \texttt{Nothing}. Esta caracterización no considera valores divergentes, como \texttt{undefined}, ni efectos externos.
 
-Por lo tanto, conviene distinguir independencia estructural de conmutatividad. La expresión \texttt{Just 2} no utiliza \texttt{x}, de modo que intercambiar los dos primeros statements conserva su alcance y sus dependencias de datos. Sin embargo, esta ausencia de dependencia no bastaría para una mónada arbitraria: dos acciones de tipo \texttt{IO} podrían no utilizar sus resultados mutuamente y aun así imprimir mensajes en órdenes diferentes. La independencia permite formular ambos órdenes, mientras que la conmutatividad garantiza que el cambio de orden no altera los efectos observables \cite[p.~94]{MarlowPJKM2016}.
+Por lo tanto, conviene distinguir independencia estructural de conmutatividad. La expresión \texttt{Just 2} no utiliza \texttt{x}, de modo que intercambiar ambos statements conserva su alcance y sus dependencias de datos. Sin embargo, esta ausencia de dependencia no bastaría para afirmar conmutatividad en una mónada arbitraria: dos acciones de tipo \texttt{IO} podrían no utilizar sus resultados mutuamente y aun así imprimir mensajes en órdenes diferentes. La independencia permite formular ambos órdenes, mientras que la conmutatividad garantiza que el cambio de orden no altera los efectos observables \cite[p.~94]{MarlowPJKM2016}.
 
 La noción también aparece de manera natural en el estudio de distribuciones. Kock presenta las mónadas conmutativas como una teoría general de distribuciones \cite{Kock2012}, mientras que Jacobs identifica específicamente la mónada de distribuciones discretas finitas como una mónada conmutativa \cite[sección~3.1]{Jacobs2018}. Esta relación proporciona la base para estudiar a continuación las mónadas de probabilidad, sin implicar que toda construcción monádica probabilística sea necesariamente conmutativa.

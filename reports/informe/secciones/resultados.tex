@@ -1,0 +1,14 @@
+% !TEX root = ../main.tex
+
+\chapter{Resultados}
+\label{chap:resultados}
+
+La metodología y los corpus de validación presentados en el capítulo anterior establecen las condiciones bajo las cuales se evalúa experimentalmente la solución implementada. En este capítulo se muestran los resultados obtenidos al aplicar este procedimiento sobre los programas de cada corpus, siendo \texttt{Maybe} y \texttt{Dist.T Rational} las mónadas sobre las que se valida la solución. Primeramente se presentarán los resultados de forma agrupada, de modo que sea posible observar el comportamiento general de todas las variantes sometidas a validación.
+
+Luego de mostrar los resultados generales, se analizan los casos destacables del corpus probabilístico. Para cada uno de ellos se presenta el código fuente que lo conforma junto con su grafo de precedencia RAW asociado, lo que permite relacionar las dependencias presentes en el código con la estructura construida por la extensión. Posteriormente se examinan los programas de la familia \texttt{cost-selection} para estudiar el comportamiento de la selección del mejor plan de ejecución ante distintos perfiles de costo. Finalmente, se describen los resultados del control negativo con \texttt{IO} y se discute el alcance de la evidencia obtenida.
+
+\input{secciones/resultados/generales}
+\input{secciones/resultados/formas_grafo}
+\input{secciones/resultados/seleccion_costos}
+\input{secciones/resultados/control_io}
+\input{secciones/resultados/discusion}

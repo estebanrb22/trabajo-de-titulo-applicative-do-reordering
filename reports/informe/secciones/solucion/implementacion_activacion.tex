@@ -1,0 +1,37 @@
+% !TEX root = ../../main.tex
+
+\section{Activación mediante CommutativeDo}
+\label{sec:solucion-qualified-do}
+
+La implementación de la solución requiere que la hipótesis de conmutatividad sea declarada de manera explícita y local a cada bloque \texttt{do}. Para proporcionar esta interfaz se incorporaron los módulos específicos \path{GHC.Internal.Control.Monad.CommutativeDo}, dentro de \texttt{ghc-internal}, y \path{Control.Monad.CommutativeDo}, dentro de \texttt{base}. El primero contiene el soporte interno, mientras que el segundo reexporta la interfaz destinada a los programas de usuario.
+
+Dentro de estos módulos se define la clase \texttt{CommutativeMonad}, cuya única superclase es \texttt{Monad}. Una mónada utilizada mediante esta notación debe contar con una instancia de la clase. La instancia constituye una afirmación del programador acerca de la posibilidad de intercambiar efectos independientes; \textsf{GHC} no intenta demostrar la propiedad de conmutatividad. Las operaciones exportadas por el módulo incorporan la restricción \texttt{CommutativeMonad}, por lo que su cumplimiento se comprueba posteriormente durante el typechecking.
+
+Para hacer uso de la solución dentro de un programa de \textsf{Haskell}, se utilizó la extensión \texttt{QualifiedDo}, esta permite anteponer el nombre de un módulo a un bloque \texttt{do}, por ejemplo \texttt{M.do} \cite{GHCQualifiedDo}. Este nombre actúa como calificador e indica al compilador que debe interpretar los statements utilizando las operaciones exportadas por el módulo \texttt{M}, en lugar de las operaciones monádicas habituales sin calificar. De esta manera, la interfaz puede seleccionarse localmente para un bloque, mientras que los demás bloques \texttt{do} del programa conservan su comportamiento normal.
+
+En esta implementación, el módulo público se importa calificadamente, habitualmente como \texttt{CD}. Un bloque declarado como conmutativo se escribe comenzando con \texttt{CD.do} y construyendo su resultado terminal mediante \texttt{CD.return}. El calificador hace que los statements utilicen las operaciones exportadas por \texttt{CommutativeDo}, cuyos tipos incorporan la restricción \texttt{CommutativeMonad}. Además de las operaciones monádicas requeridas por \texttt{QualifiedDo}, el módulo exporta las operaciones aplicativas que puede necesitar la transformación posterior de \texttt{ApplicativeDo}.
+
+Para conectar esta interfaz con el compilador, ambos módulos exportan el marcador \texttt{\_\_commutative\_do\_\_}. Durante el renombrado se consulta la presencia de este nombre en el módulo que califica \texttt{CD.do}. Esta comprobación es independiente de la resolución de la instancia: el marcador habilita la ruta de reordenamiento en el Renamer, mientras que la clase restringe las operaciones y se verifica en una etapa posterior. La activación requiere, además, que \texttt{ApplicativeDo} y \texttt{QualifiedDo} estén habilitados.
+
+De esta forma, para aplicar la extensión experimental a un bloque \texttt{do} conmutativo como el presentado en el Código~\ref{lst:do-notation-maybe-sum}, se deben habilitar ambas extensiones, importar la interfaz calificada y declarar la instancia de \texttt{CommutativeDo} correspondiente. El Código~\ref{lst:commutative-do-maybe-sum} muestra la declaración resultante.
+
+\noindent\begin{minipage}{\textwidth}
+\begin{lstlisting}[style=haskell,caption={Uso de la extensión experimental \texttt{CommutativeDo} sobre una suma monádica con \texttt{Maybe Int}.},label={lst:commutative-do-maybe-sum}]
+    {-# LANGUAGE ApplicativeDo #-}
+    {-# LANGUAGE QualifiedDo #-}
+
+    import qualified Control.Monad.CommutativeDo as CD
+
+    instance CD.CommutativeMonad Maybe
+
+    sumaConmutativa :: Maybe Int
+    sumaConmutativa = CD.do
+        x <- Just 3
+        y <- Just 2
+        CD.return ((+) x y)    
+\end{lstlisting}
+\end{minipage}
+
+Los pragmas habilitan los dos mecanismos requeridos por la solución, mientras que la importación proporciona el calificador \texttt{CD}. La instancia declara la hipótesis de conmutatividad para \texttt{Maybe} y el uso de \texttt{CD.do} identifica localmente el bloque que seguirá la ruta experimental. La declaración conserva los cómputos del Código~\ref{lst:do-notation-maybe-sum} y produce el mismo resultado, \texttt{Just 5}.
+
+Con estas condiciones establecidas, la sección siguiente detalla la bifurcación incorporada al flujo de renombrado.

@@ -29,8 +29,20 @@ Otra opción es usar [la plantilla en Overleaf](https://www.overleaf.com/latex/t
 
 (En caso de haber usado la versión 1.6, hubo un bug cuando se quitaba el comando `\tesis{...}`. Para resolver ese problema, se puede reemplazar el archivo `umemoria.cls` con la versión actualizada acá y debería desparecer el problema.)
 
+## Compilación automática en VS Code
+
+El repositorio configura [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) para recompilar el informe cuando cambia cualquiera de sus dependencias. La configuración está pensada para abrir el repositorio localmente en VS Code, no dentro del Dev Container.
+
+1. Instale la extensión recomendada `James-Yu.latex-workshop` cuando VS Code lo solicite.
+2. Abra `main.tex` o cualquier archivo bajo `secciones/`.
+3. Guarde sus cambios. La extensión detectará `main.tex` como documento raíz y ejecutará `latexmk` automáticamente.
+
+La receta también responde a cambios realizados fuera de VS Code, incluidos los de la bibliografía y las imágenes utilizadas por el informe. Los archivos auxiliares se guardan en `build/` y el documento final queda en `main.pdf`.
+
+Para solicitar una compilación manual se puede ejecutar **LaTeX Workshop: Build LaTeX project** desde la paleta de comandos o usar `Ctrl+Alt+B`. Los errores de compilación aparecen en el panel **Problems** y en la salida **LaTeX Compiler**.
+
 ## Modo de Uso
-Se puede bajar el repositorio, abrir el archivo `main.tex` y compilarlo con `pdflatex` (o algo parecido).
+El documento principal es `main.tex`. La receta configurada usa `latexmk`, que ejecuta automáticamente las pasadas necesarias de pdfLaTeX y BibTeX para resolver la bibliografía y las referencias cruzadas.
 
 ### Opciones
 La clase `umemoria` cuenta con variadas opciones. En primer lugar, cabe notar que se heredan todas las opciones de la clase `book`. Se pasan por defecto las opciones `12pt`,`letterpaper`,`oneside`, a la clase `book` pero las opciones como `fleqn`, `leqno`, etc., también se encuentran disponibles. Además, se agregan las siguientes a la clase `umemoria`:

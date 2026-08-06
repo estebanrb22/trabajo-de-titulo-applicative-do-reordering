@@ -2,8 +2,8 @@
 
 \section{Cierre}
 
-El trabajo muestra una vía concreta para ampliar \texttt{ApplicativeDo} sin abandonar el compilador real ni la sintaxis habitual de \textsf{Haskell}. Bajo una hipótesis explícita de conmutatividad, el orden escrito por el programador deja de ser el único orden que el compilador puede evaluar, siempre que se preserven las dependencias locales de variables.
+El trabajo muestra una vía concreta para ampliar \texttt{ApplicativeDo} sin abandonar el compilador real ni la sintaxis habitual de \textsf{Haskell}. Bajo una hipótesis explícita de conmutatividad, el compilador puede evaluar todos los reordenamientos válidos, incluido el orden escrito por el programador; por definición, todos preservan las dependencias locales de variables.
 
-El aporte principal no es solo el algoritmo de reordenamiento, sino su integración experimental en \textsf{GHC} con trazabilidad: módulos agregados, parches, corpus, scripts y logs reproducibles. Esto permite estudiar la idea de manera concreta, observar sus beneficios en casos controlados y delimitar sus riesgos.
+El aporte principal no es solo el algoritmo de generación de reordenamientos válidos, sino su integración experimental en \textsf{GHC} con trazabilidad: módulos agregados, parches, corpus, scripts y logs reproducibles. Esto permite estudiar la idea de manera concreta, observar sus beneficios en casos controlados y delimitar sus riesgos.
 
 En síntesis, la memoria entrega evidencia experimental de que el espacio de planes de \texttt{ApplicativeDo} puede ampliarse para mónadas declaradas como conmutativas, obteniendo mejoras de costo sin modificar la semántica observable en los casos sintéticos evaluados.

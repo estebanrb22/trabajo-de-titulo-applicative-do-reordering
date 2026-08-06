@@ -12,7 +12,7 @@ Además, las funciones de \textsf{Haskell} se encuentran currificadas. Esto sign
 Este comportamiento puede observarse en el operador binario \verb|(+)|, cuya firma de tipos se muestra en el Código~\ref{lst:sum-type-signature} \cite[sección~6.4 y figura~6.2]{Haskell2010}.
 
 \begin{lstlisting}[style=haskell,caption={Firma de tipos del operador de suma \texttt{(+)}.},label={lst:sum-type-signature}]
-(+) :: Num a => a -> a -> a
+    (+) :: Num a => a -> a -> a
 \end{lstlisting}
 
 En esta firma, \verb|a| es una variable de tipo y la restricción \verb|Num a| establece que debe elegirse un tipo perteneciente a la clase \texttt{Num}. Si se aplica \verb|(+)| únicamente al valor \verb|5|, se fija su primer argumento y se obtiene una nueva función que todavía espera el argumento restante. Esta operación se denomina \textit{aplicación parcial}. En este caso, la expresión \verb|(+) 5| produce la función unaria \verb|(5+)| de tipo \verb|Num a => a -> a| \cite[secciones~3.5, 4.1.3 y~6.4]{Haskell2010}.

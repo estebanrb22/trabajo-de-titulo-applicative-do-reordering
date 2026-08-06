@@ -1,10 +1,10 @@
 % !TEX root = ../../main.tex
 
-\section{Formulación}
+\section{Formulación del problema}
 \label{sec:problema-formulacion}
 
 El algoritmo de \texttt{ApplicativeDo} transforma correctamente programas sobre una mónada arbitraria. Como sus efectos pueden ser observables y sensibles al orden, preserva la secuencia relativa de los statements escritos por el programador. Esta decisión permite introducir combinadores aplicativos sin cambiar el comportamiento que tendría el desazucarado monádico original.
 
-La situación es menos restrictiva cuando la mónada es conmutativa. Si dos statements son independientes, su intercambio puede preservar tanto las dependencias del programa como su significado. La evidencia de la subsección anterior muestra que esta libertad semántica no es solo una propiedad abstracta: un orden equivalente puede permitir que el mismo algoritmo de \texttt{ApplicativeDo} produzca un plan de menor costo que el obtenido sobre el orden original.
+La situación es menos restrictiva cuando la mónada es conmutativa. Si dos statements son independientes, su intercambio puede preservar tanto las dependencias del programa como su significado. La evidencia de la subsección anterior muestra que esta libertad semántica no es solo una propiedad abstracta: un reordenamiento válido, considerado semánticamente equivalente al orden original bajo una hipótesis explícita de conmutatividad, puede permitir que el mismo algoritmo de \texttt{ApplicativeDo} produzca un plan de menor costo que el obtenido sobre el orden original.
 
-Sin embargo, la implementación actual de \texttt{ApplicativeDo} en \textsf{GHC} no incorpora un tratamiento especializado para este caso: aun cuando la mónada pueda tratarse como conmutativa, no estudia órdenes alternativos de los statements antes de construir el plan. El problema abordado por esta memoria consiste, por tanto, en determinar cómo aprovechar la conmutatividad para ampliar el espacio de planes evaluables, considerando únicamente reordenamientos que preserven las dependencias del bloque, sin alterar el comportamiento general requerido para mónadas arbitrarias.
+Sin embargo, la implementación actual de \texttt{ApplicativeDo} en \textsf{GHC} no incorpora un tratamiento especializado para este caso: aun cuando la mónada pueda tratarse bajo una hipótesis explícita de conmutatividad, no estudia reordenamientos válidos de los statements antes de construir el plan de ejecución. El problema abordado por esta memoria consiste, por tanto, en determinar cómo aprovechar esa hipótesis para ampliar el espacio de planes evaluables mediante reordenamientos válidos, sin alterar el comportamiento general requerido para mónadas arbitrarias.

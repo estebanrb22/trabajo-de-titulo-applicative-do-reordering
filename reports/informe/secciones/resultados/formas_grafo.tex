@@ -1,0 +1,288 @@
+% !TEX root = ../../main.tex
+
+\section{Casos destacables}
+\label{sec:resultados-casos-destacables}
+
+Ya declarados los resultados globales de los dos corpus evaluados, en esta sección se examinarán casos representativos de las familias de casos descritas en el capítulo anterior, las cuales se encuentran en las Tablas~\ref{tab:validacion-familias-compartidas} y \ref{tab:validacion-familias-especificas}. Se utilizan las variantes de \texttt{Dist.T Rational} para mantener el análisis dentro del dominio probabilístico principal de la memoria; las variantes estructurales equivalentes de \texttt{Maybe} produjeron los mismos grafos y métricas.
+
+\subsection{Formas de dependencia}
+
+La familia \texttt{dependency-shapes} permite contrastar la cantidad de reordenamientos válidos generados por la solución con cantidades conocidas que se obtienen en función de la forma del grafo de precedencia RAW. Los cuatro casos siguientes abarcan desde una secuencia de statements no reordenable hasta un programa con un espacio de exploración de 70 reordenamientos válidos.
+
+\subsubsection{Cadena completa}
+
+El caso \texttt{chain-no-reorder} consiste en un bloque \texttt{do} en el que cada distribución utiliza el binder definido por el statement anterior. Esta forma produce una cadena completa de dependencias y fija el orden de todos los statements. A continuación, en el Código~\ref{lst:resultados-cadena} y la Figura~\ref{fig:resultados-grafo-cadena} se muestran el programa probabilístico asociado a este caso y el grafo de precedencia RAW construido por la extensión, respectivamente.
+
+\begin{lstlisting}[style=haskell,caption={Programa probabilístico asociado al caso \texttt{chain-no-reorder}.},label={lst:resultados-cadena}]
+CD.do
+  x1 <- Dist.uniform [1, 2]
+  x2 <- Dist.uniform [x1 + 10, x1 + 20]
+  x3 <- Dist.uniform [x2 + 100, x2 + 200]
+  x4 <- Dist.uniform [x3 + 1000, x3 + 2000]
+  CD.return (x1, x2, x3, x4)
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\begin{PrecedenceGraph}
+    \PrecedenceNode{s1}{x1}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{x2}{$s_2$}
+    \PrecedenceNode[right=of s2]{s3}{x3}{$s_3$}
+    \PrecedenceNode[right=of s3]{s4}{x4}{$s_4$}
+    \PrecedenceEdge{s1}{s2}
+    \PrecedenceEdge{s2}{s3}
+    \PrecedenceEdge{s3}{s4}
+\end{PrecedenceGraph}
+\caption[Grafo RAW del caso \texttt{chain-no-reorder}.]{Grafo de precedencia RAW construido por la solución para el caso \texttt{chain-no-reorder}.}
+\label{fig:resultados-grafo-cadena}
+\end{figure}
+
+Como muestra la Figura~\ref{fig:resultados-grafo-cadena}, las aristas $s_1\to s_2\to s_3\to s_4$ fijan por completo el orden de los cuatro statements. Por esta razón, la solución solo generó el candidato correspondiente al orden fuente y no encontró órdenes alternativos. La ejecución secuencial, \texttt{ApplicativeDo} y la solución obtuvieron un costo de 4. Este resultado confirma que las dependencias RAW restringen la generación de reordenamientos cuando todos los statements forman una cadena.
+
+\subsubsection{Diamante de seis statements}
+
+El caso \texttt{diamond} consiste en un bloque \texttt{do} que comienza con una distribución común, continúa con dos cadenas de distribuciones independientes entre sí y finaliza con una distribución que utiliza los resultados de ambas. Esta forma produce dos ramas que se separan a partir de \texttt{root} y convergen en \texttt{join}. A continuación, en el Código~\ref{lst:resultados-diamante} y la Figura~\ref{fig:resultados-grafo-diamante} se muestran el programa probabilístico asociado a este caso y el grafo de precedencia RAW construido por la extensión, respectivamente.
+
+\begin{lstlisting}[style=haskell,caption={Programa probabilístico asociado al caso \texttt{diamond}.},label={lst:resultados-diamante}]
+CD.do
+  root <- Dist.uniform [1, 2]
+  a1 <- Dist.uniform [root + 10, root + 20]
+  b1 <- Dist.uniform [root + 100, root + 200]
+  a2 <- Dist.uniform [a1 + 1000, a1 + 2000]
+  b2 <- Dist.uniform [b1 + 10000, b1 + 20000]
+  join <- Dist.uniform [a2 + b2 + 100000, a2 + b2 + 200000]
+  CD.return (root, a1, a2, b1, b2, join)
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\begingroup
+\setgraphnodesize{1.55cm}{1.0cm}{8pt}
+\begin{PrecedenceGraph}[node distance=0.45cm and 0.35cm]
+    \PrecedenceNode{s1}{root}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{a1}{$s_2$}
+    \PrecedenceNode[right=of s2]{s3}{b1}{$s_3$}
+    \PrecedenceNode[right=of s3]{s4}{a2}{$s_4$}
+    \PrecedenceNode[right=of s4]{s5}{b2}{$s_5$}
+    \PrecedenceNode[right=of s5]{s6}{join}{$s_6$}
+    \PrecedenceEdge{s1}{s2}
+    \PrecedenceEdge[bend right=48]{s1}{s3}
+    \PrecedenceEdge[bend left=35]{s2}{s4}
+    \PrecedenceEdge[bend right=45]{s3}{s5}
+    \PrecedenceEdge[bend left=40]{s4}{s6}
+    \PrecedenceEdge{s5}{s6}
+\end{PrecedenceGraph}
+\endgroup
+\caption[Grafo RAW del caso \texttt{diamond}.]{Grafo de precedencia RAW construido por la solución para el caso \texttt{diamond}.}
+\label{fig:resultados-grafo-diamante}
+\end{figure}
+
+La Figura~\ref{fig:resultados-grafo-diamante} muestra un grafo que contiene las cadenas de aristas $s_1\to s_2\to s_4\to s_6$ y $s_1\to s_3\to s_5\to s_6$. Los statements de una rama pueden intercalarse con los de la otra siempre que cada cadena conserve su orden, por lo que el grafo admite seis órdenes válidos, cuatro de ellos con costo mínimo. La ejecución secuencial obtuvo un costo de 6, mientras que \texttt{ApplicativeDo} y la solución obtuvieron un costo de 4. Como \texttt{ApplicativeDo} ya construyó un plan mínimo sobre el orden fuente, la solución conservó ese primer candidato.
+
+\subsubsection{Grafo sin aristas}
+
+El caso \texttt{no-deps} consiste en un bloque \texttt{do} con cuatro distribuciones que no leen binders locales producidos por otros statements. Esta independencia produce un grafo de precedencia RAW sin aristas. A continuación, en el Código~\ref{lst:resultados-grafo-vacio} y la Figura~\ref{fig:resultados-grafo-vacio} se muestran el programa probabilístico asociado a este caso y el grafo de precedencia RAW construido por la extensión, respectivamente.
+
+\begin{lstlisting}[style=haskell,caption={Programa probabilístico asociado al caso \texttt{no-deps}.},label={lst:resultados-grafo-vacio}]
+CD.do
+  x1 <- Dist.uniform [1, 2]
+  x2 <- Dist.uniform [10, 20]
+  x3 <- Dist.uniform [100, 200]
+  x4 <- Dist.uniform [1000, 2000]
+  CD.return (x1, x2, x3, x4)
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\begin{PrecedenceGraph}
+    \PrecedenceNode{s1}{x1}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{x2}{$s_2$}
+    \PrecedenceNode[right=of s2]{s3}{x3}{$s_3$}
+    \PrecedenceNode[right=of s3]{s4}{x4}{$s_4$}
+\end{PrecedenceGraph}
+\caption[Grafo RAW del caso \texttt{no-deps}.]{Grafo de precedencia RAW construido por la solución para el caso \texttt{no-deps}.}
+\label{fig:resultados-grafo-vacio}
+\end{figure}
+
+El grafo de la Figura~\ref{fig:resultados-grafo-vacio} no contiene aristas, de modo que los cuatro statements pueden aparecer en cualquier orden. El grafo admite 24 órdenes válidos y todos alcanzaron el costo mínimo. La ejecución secuencial obtuvo un costo de 4, mientras que \texttt{ApplicativeDo} y la solución obtuvieron un costo de 1 al agrupar las cuatro distribuciones independientes. Como todos los candidatos tuvieron el mismo costo, la solución conservó el orden fuente.
+
+\subsubsection{Dos cadenas independientes}
+
+El caso \texttt{two-chains} consiste en un bloque \texttt{do} formado por dos cadenas independientes de cuatro distribuciones cada una. En el orden fuente, el último statement de cada cadena aparece separado de los tres anteriores, lo que dificulta que \texttt{ApplicativeDo} agrupe ambas cadenas completas. A continuación, en el Código~\ref{lst:resultados-dos-cadenas} y la Figura~\ref{fig:resultados-grafo-dos-cadenas} se muestran el programa probabilístico asociado a este caso y el grafo de precedencia RAW construido por la extensión, respectivamente.
+
+\begin{lstlisting}[style=haskell,caption={Programa probabilístico asociado al caso \texttt{two-chains}.},label={lst:resultados-dos-cadenas}]
+CD.do
+  a1 <- Dist.uniform [1, 2]
+  a2 <- Dist.uniform [a1 + 100, a1 + 200]
+  a3 <- Dist.uniform [a2 + 10000, a2 + 20000]
+  b1 <- Dist.uniform [10, 20]
+  b2 <- Dist.uniform [b1 + 1000, b1 + 2000]
+  b3 <- Dist.uniform [b2 + 100000, b2 + 200000]
+  a4 <- Dist.uniform [a3 + 1000000, a3 + 2000000]
+  b4 <- Dist.uniform [b3 + 10000000, b3 + 20000000]
+  CD.return (a1, a2, a3, a4, b1, b2, b3, b4)
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\begingroup
+\setgraphnodesize{1.55cm}{0.85cm}{8pt}
+\begin{PrecedenceGraph}[node distance=0.35cm and 0.2cm]
+    \PrecedenceNode{s1}{a1}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{a2}{$s_2$}
+    \PrecedenceNode[right=of s2]{s3}{a3}{$s_3$}
+    \PrecedenceNode[right=of s3]{s4}{b1}{$s_4$}
+    \PrecedenceNode[right=of s4]{s5}{b2}{$s_5$}
+    \PrecedenceNode[right=of s5]{s6}{b3}{$s_6$}
+    \PrecedenceNode[right=of s6]{s7}{a4}{$s_7$}
+    \PrecedenceNode[right=of s7]{s8}{b4}{$s_8$}
+    \PrecedenceEdge{s1}{s2}
+    \PrecedenceEdge{s2}{s3}
+    \PrecedenceEdge[bend left=35]{s3}{s7}
+    \PrecedenceEdge{s4}{s5}
+    \PrecedenceEdge{s5}{s6}
+    \PrecedenceEdge[bend right=60]{s6}{s8}
+\end{PrecedenceGraph}
+\endgroup
+\caption[Grafo RAW del caso \texttt{two-chains}.]{Grafo de precedencia RAW construido por la solución para el caso \texttt{two-chains}.}
+\label{fig:resultados-grafo-dos-cadenas}
+\end{figure}
+
+Como se muestra en la Figura~\ref{fig:resultados-grafo-dos-cadenas}, el grafo contiene la cadena de aristas $s_1\to s_2\to s_3\to s_7$ junto con $s_4\to s_5\to s_6\to s_8$. Como no existen dependencias entre ambas cadenas, sus statements pueden intercalarse de 70 formas, 30 de las cuales alcanzaron el costo mínimo. La ejecución secuencial obtuvo un costo de 8 y \texttt{ApplicativeDo} redujo ese valor a 6. La solución reunió los statements de cada cadena y obtuvo un costo de 4, lo que muestra que un reordenamiento puede exponer agrupaciones aplicativas que no eran visibles en el orden fuente.
+
+\subsection{Dependencias introducidas por statements let}
+
+El caso \texttt{bind-depends-on-let} consiste en un bloque \texttt{do} cuyo primer statement define \texttt{x1} mediante \texttt{let}, mientras que el segundo utiliza ese identificador para construir una distribución y el tercero permanece independiente. Esta forma permite observar una dependencia RAW cuyo productor no es un binder monádico. A continuación, en el Código~\ref{lst:resultados-bind-depends-on-let} y la Figura~\ref{fig:resultados-grafo-bind-depends-on-let} se muestran el programa probabilístico asociado a este caso y el grafo de precedencia RAW construido por la extensión, respectivamente.
+
+\begin{lstlisting}[style=haskell,caption={Programa probabilístico asociado al caso \texttt{bind-depends-on-let}.},label={lst:resultados-bind-depends-on-let}]
+CD.do
+  let x1 = 10
+  x2 <- Dist.uniform [x1 + 1, x1 + 2]
+  x3 <- Dist.uniform [100, 200]
+  CD.return (x1, x2, x3)
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\begin{PrecedenceGraph}[node distance=0.5cm and 0.6cm]
+    \PrecedenceNode{s1}{let x1}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{x2}{$s_2$}
+    \PrecedenceNode[right=of s2]{s3}{x3}{$s_3$}
+    \PrecedenceEdge{s1}{s2}
+\end{PrecedenceGraph}
+\caption[Grafo RAW del caso \texttt{bind-depends-on-let}.]{Grafo de precedencia RAW construido por la solución para el caso \texttt{bind-depends-on-let}.}
+\label{fig:resultados-grafo-bind-depends-on-let}
+\end{figure}
+
+La Figura~\ref{fig:resultados-grafo-bind-depends-on-let} muestra un grafo de precedencia que contiene la arista $s_1\to s_2$, cuyo identificador usado es \texttt{x1}, mientras que $s_3$ no presenta dependencias con los otros statements. El grafo admite tres órdenes válidos y todos alcanzaron el costo mínimo. La ejecución secuencial obtuvo un costo de 3, mientras que \texttt{ApplicativeDo} y la solución obtuvieron un costo de 2 al agrupar el tercer statement con la secuencia formada por los dos primeros. Este resultado confirma que la extensión considera las declaraciones \texttt{let} como productoras de binders al construir las precedencias RAW.
+
+\subsection{Binders definidos mediante patrones}
+
+El caso \texttt{tuple-pattern} consiste en un bloque \texttt{do} cuyo primer statement utiliza un patrón de tupla para definir simultáneamente los binders \texttt{x1} y \texttt{x2}. Los dos statements siguientes consumen estos binders por separado, lo que permite observar cómo la extensión recolecta múltiples nombres desde un mismo patrón. A continuación, en el Código~\ref{lst:resultados-tuple-binder} y la Figura~\ref{fig:resultados-grafo-tuple-binder} se muestran el programa probabilístico asociado a este caso y el grafo de precedencia RAW construido por la extensión, respectivamente.
+
+\begin{lstlisting}[style=haskell,caption={Programa probabilístico asociado al caso \texttt{tuple-pattern}.},label={lst:resultados-tuple-binder}]
+CD.do
+  (x1, x2) <- Dist.uniform [(1, 10), (2, 20)]
+  x3 <- Dist.uniform [x1 + 1, x1 + 2]
+  x4 <- Dist.uniform [x2 + 1, x2 + 2]
+  CD.return (x1, x2, x3, x4)
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\begingroup
+\begin{PrecedenceGraph}[node distance=0.45cm and 0.55cm]
+    \PrecedenceNode{s1}{(x1, x2)}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{x3}{$s_2$}
+    \PrecedenceNode[right=of s2]{s3}{x4}{$s_3$}
+    \PrecedenceEdge{s1}{s2}
+    \PrecedenceEdge[bend left=35]{s1}{s3}
+\end{PrecedenceGraph}
+\endgroup
+\caption[Grafo RAW del caso \texttt{tuple-pattern}.]{Grafo de precedencia RAW construido por la solución para el caso \texttt{tuple-pattern}.}
+\label{fig:resultados-grafo-tuple-binder}
+\end{figure}
+
+El grafo de la Figura~\ref{fig:resultados-grafo-tuple-binder} contiene las aristas $s_1\to s_2$ y $s_1\to s_3$, cuyos identificadores consumidos son \texttt{x1} y \texttt{x2}, respectivamente. Como los dos statements posteriores no dependen entre sí, el grafo admite dos órdenes válidos y ambos alcanzaron el costo mínimo. La ejecución secuencial obtuvo un costo de 3, mientras que \texttt{ApplicativeDo} y la solución obtuvieron un costo de 2. Este resultado confirma que la extensión recolecta por separado los binders definidos dentro de un patrón de tupla.
+
+\subsection{Distribuciones con parámetros dependientes}
+
+El caso \texttt{choose-dependent} consiste en un bloque \texttt{do} en el que el valor de \texttt{x1} determina los pesos utilizados por \texttt{Dist.choose} para producir \texttt{x2}, mientras que \texttt{x3} permanece independiente. Esta forma permite observar una dependencia introducida dentro de una expresión condicional que modifica los parámetros de una distribución. A continuación, en el Código~\ref{lst:resultados-choose-dependent} y la Figura~\ref{fig:resultados-grafo-choose-dependent} se muestran el programa probabilístico asociado a este caso y el grafo de precedencia RAW construido por la extensión, respectivamente.
+
+\begin{lstlisting}[style=haskell,caption={Programa probabilístico asociado al caso \texttt{choose-dependent}.},label={lst:resultados-choose-dependent}]
+CD.do
+  x1 <- Dist.uniform [1, 2]
+  x2 <- if x1 == 1
+        then Dist.choose (1 / 4) 10 20
+        else Dist.choose (3 / 4) 10 20
+  x3 <- Dist.uniform [100, 200]
+  CD.return (x1, x2, x3)
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\begin{PrecedenceGraph}[node distance=0.5cm and 0.6cm]
+    \PrecedenceNode{s1}{x1}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{x2}{$s_2$}
+    \PrecedenceNode[right=of s2]{s3}{x3}{$s_3$}
+    \PrecedenceEdge{s1}{s2}
+\end{PrecedenceGraph}
+\caption[Grafo RAW del caso \texttt{choose-dependent}.]{Grafo de precedencia RAW construido por la solución para el caso \texttt{choose-dependent}.}
+\label{fig:resultados-grafo-choose-dependent}
+\end{figure}
+
+La condición que selecciona los pesos lee \texttt{x1}, por lo que la Figura~\ref{fig:resultados-grafo-choose-dependent} contiene la arista $s_1\to s_2$, mientras que $s_3$ no presenta dependencias con los otros statements. El grafo admite tres órdenes válidos y todos alcanzaron el costo mínimo. La ejecución secuencial obtuvo un costo de 3, mientras que \texttt{ApplicativeDo} y la solución obtuvieron un costo de 2. Los tres órdenes conservaron la distribución normalizada y las probabilidades no uniformes definidas por cada rama, lo que muestra que la extensión detecta lecturas dentro de expresiones condicionales.
+
+\subsection{Condicionamiento de una distribución dependiente}
+
+El caso \texttt{filter-bind} consiste en un bloque \texttt{do} en el que el binder \texttt{x1} determina el soporte de la distribución entregada a \texttt{Dist.filter} en el segundo statement, mientras que el tercero permanece independiente. Esta forma representa el condicionamiento de una distribución que depende de un resultado producido previamente. A continuación, en el Código~\ref{lst:resultados-filter-bind} y la Figura~\ref{fig:resultados-grafo-filter-bind} se muestran el programa probabilístico asociado a este caso y el grafo de precedencia RAW construido por la extensión, respectivamente.
+
+\begin{lstlisting}[style=haskell,caption={Programa probabilístico asociado al caso \texttt{filter-bind}.},label={lst:resultados-filter-bind}]
+CD.do
+  x1 <- Dist.uniform [1, 2]
+  x2 <- Dist.filter even (Dist.uniform [x1, x1 + 1, x1 + 2])
+  x3 <- Dist.uniform [100, 200]
+  CD.return (x1, x2, x3)
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\begin{PrecedenceGraph}[node distance=0.5cm and 0.6cm]
+    \PrecedenceNode{s1}{x1}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{x2}{$s_2$}
+    \PrecedenceNode[right=of s2]{s3}{x3}{$s_3$}
+    \PrecedenceEdge{s1}{s2}
+\end{PrecedenceGraph}
+\caption[Grafo RAW del caso \texttt{filter-bind}.]{Grafo de precedencia RAW construido por la solución para el caso \texttt{filter-bind}.}
+\label{fig:resultados-grafo-filter-bind}
+\end{figure}
+
+La lectura de \texttt{x1} dentro de la distribución filtrada produce la arista $s_1\to s_2$ de la Figura~\ref{fig:resultados-grafo-filter-bind}, mientras que $s_3$ no presenta dependencias con los otros statements. El grafo admite tres órdenes válidos y todos alcanzaron el costo mínimo. La ejecución secuencial obtuvo un costo de 3, mientras que \texttt{ApplicativeDo} y la solución obtuvieron un costo de 2. Los tres órdenes conservaron el soporte filtrado y sus probabilidades normalizadas, lo que confirma que la extensión mantiene la precedencia cuando una lectura aparece dentro de una operación de condicionamiento.
+
+\subsection{Identidades únicas frente a shadowing}
+
+El caso \texttt{read-after-rebind} consiste en un bloque \texttt{do} que reutiliza el identificador textual \texttt{x} en los dos primeros statements y luego lee ese identificador en el tercero para definir \texttt{y}. La segunda vinculación oculta a la primera, por lo que esta lectura debe depender del binder más reciente y no del \texttt{x} original. A continuación, en el Código~\ref{lst:resultados-shadowing} y la Figura~\ref{fig:resultados-grafo-shadowing} se muestran el programa probabilístico asociado a este caso y el grafo de precedencia RAW construido por la extensión, respectivamente.
+
+\begin{lstlisting}[style=haskell,caption={Programa probabilístico asociado al caso \texttt{read-after-rebind}.},label={lst:resultados-shadowing}]
+CD.do
+  x <- Dist.uniform [1, 2]
+  x <- Dist.uniform [10, 20]
+  y <- Dist.uniform [x + 100, x + 200]
+  CD.return (x, y)
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\begingroup
+\begin{PrecedenceGraph}[node distance=0.45cm and 0.5cm]
+    \PrecedenceNode{s1}{x\_a1Y4}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{x\_a1Y5}{$s_2$}
+    \PrecedenceNode[right=of s2]{s3}{y\_a1Y6}{$s_3$}
+    \PrecedenceEdge{s2}{s3}
+\end{PrecedenceGraph}
+\endgroup
+\caption[Grafo RAW del caso \texttt{read-after-rebind}.]{Grafo de precedencia RAW construido por la solución para el caso \texttt{read-after-rebind} utilizando los identificadores ya renombrados por el Renamer.}
+\label{fig:resultados-grafo-shadowing}
+\end{figure}
+
+La Figura~\ref{fig:resultados-grafo-shadowing} contiene la arista $s_2\to s_3$, cuya lectura es \texttt{x\_a1Y5}. No existe una arista desde $s_1$, porque las identidades \texttt{x\_a1Y4} y \texttt{x\_a1Y5} representan binders distintos y la lectura del tercer statement fue asociada con el segundo. Por tanto, el primer statement permanece independiente de la cadena formada por los dos siguientes. El grafo admite tres órdenes válidos y todos alcanzaron el costo mínimo. La ejecución secuencial obtuvo un costo de 3, mientras que \texttt{ApplicativeDo} y la solución obtuvieron un costo de 2. Los tres órdenes conservaron la distribución normalizada, lo que confirma que la extensión respeta el shadowing y construye la dependencia RAW a partir de la identidad actualmente visible.

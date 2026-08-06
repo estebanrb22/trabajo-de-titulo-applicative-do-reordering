@@ -271,3 +271,49 @@
 
 - Se agregó bajo `scripts/setup-latex/` un entorno de instalación nativa para CachyOS compuesto por un manifiesto de paquetes, un instalador, un desinstalador seguro y un verificador independiente para las dependencias de compilación del informe.
 - El verificador confirmó mediante una compilación temporal que pdfLaTeX, BibTeX, TikZ, Babel en español, `listings`, las fuentes y los demás paquetes usados por `main.tex` están disponibles, sin modificar los archivos ni artefactos del informe.
+
+## 2026-08-02
+
+- El antiguo capítulo `Solución` se dividió en los capítulos `Diseño de Solución` e `Implementación de Solución`, incorporados mediante los wrappers `secciones/diseno_solucion.tex` y `secciones/implementacion_solucion.tex`.
+- El contenido de `Diseño Algorítmico` se separó antes de `Construcción del Grafo de Precedencia`: `Modelo de Dependencias` permanece en el diseño, mientras el pseudocódigo, Kahn, la enumeración topológica y la selección de candidatos forman ahora la sección `Implementación Algorítmica`.
+- Se actualizaron `main.tex`, `structure.md` y la referencia del anexo a la nueva organización. Validación pasó a ser el capítulo 6 y Conclusión el capítulo 7.
+- La compilación forzada con `latexmk` finalizó correctamente y mantuvo `main.pdf` en 68 páginas. El índice, las referencias y las citas quedaron resueltos; la revisión visual de las páginas 31--46 confirmó los límites y la disposición de ambos capítulos sin advertencias tipográficas nuevas en ellos.
+- `Diseño de Solución` quedó organizado en `Enfoque y Requisitos`, el `Modelo de Dependencias` previamente validado y `Flujo Conceptual de la Solución`. El ejemplo de binders renombrados se conservó sin reescribir la sección del modelo.
+- `Implementación de Solución` se reescribió según el flujo `CommutativeDo`--Renamer--grafo--reordenamientos--planes. Se eliminaron los listados internos extensos y se conservaron únicamente los pseudocódigos del grafo y la enumeración, junto con las definiciones breves de `StmtTree` y `stmtTreeCost`.
+- La opción `-fado-reorder-candidate-n` se eliminó por completo de Implementación y se documentó exclusivamente en Metodología como instrumentación experimental para ejecutar cada reordenamiento durante la validación.
+- La compilación final con `latexmk` generó un PDF de 63 páginas, sin referencias o citas indefinidas ni advertencias tipográficas en Diseño, Implementación o la nueva explicación de la flag. La inspección visual de las páginas 31--41 confirmó la disposición del modelo, los diagramas, los cuatro códigos conservados y la transición hacia Validación.
+- El flujo conceptual de la Figura 4.1 se redujo a cuatro etapas independientes de la implementación: bloque declarado como conmutativo, generación de reordenamientos válidos, aplicación de `ApplicativeDo` sobre cada reordenamiento y selección del candidato de menor costo. La compilación y la revisión visual de la página 34 confirmaron que el esquema permanece legible y dentro de los márgenes.
+- Se fijó `grafo de precedencia RAW` como término canónico para el grafo inducido por dependencias RAW locales entre statements. `Dependencia RAW local` queda reservada para la relación que origina cada arista y `el grafo` puede usarse como referencia anafórica; se descartaron `grafo RAW`, `grafo de dependencias` y `grafo de precedencia` como nombres alternativos en la redacción vigente.
+- La Introducción expande `Read-after-Write` antes de la primera figura y el Modelo de Dependencias define formalmente $G_{\mathrm{RAW}}=(V,E_{\mathrm{RAW}})$, excluye el `LastStmt` de sus vértices y distingue las aristas detectadas de la relación de precedencia inducida por alcanzabilidad.
+- La recompilación forzada con `latexmk` finalizó correctamente y generó un PDF de 64 páginas, sin referencias ni citas indefinidas. La revisión visual de las páginas 3--4, 34 y 38 confirmó la disposición de la primera definición, ambos grafos, la Expresión 4.4 y el título `Construcción del Grafo de Precedencia RAW`; permanecen únicamente las advertencias previas de portada, bibliografía y anexos.
+
+## 2026-08-04
+
+- Se reformuló el capítulo `Validación` para presentar su propósito y recorrido, y se retiró `Artefactos de Validación` del cuerpo principal en favor de una exposición centrada en metodología, métricas, corpus, resultados y limitaciones.
+- La metodología quedó organizada mediante las preguntas PV1 y PV2, cuatro clases de variantes y un diagrama TikZ del flujo que obtiene `n`, fuerza los candidatos `0..n-1` y ejecuta `n+3` binarios. También se delimitó el mínimo a la estrategia predeterminada de `ApplicativeDo` y se distinguió el análisis posterior de costos del veredicto semántico automatizado.
+- La sección de métricas documenta la instrumentación con `-ddump-rn-trace`, define los seis campos del resumen y desarrolla los valores `4 -> 3 -> 2` del ejemplo probabilístico principal.
+- Los resultados distinguen 93 comparaciones exhaustivas, seis controles de activación, las familias `dependency-shapes` y `cost-selection`, el ejemplo principal y la divergencia esperada de `IO`. El control se interpreta como evidencia de que la declaración de conmutatividad es un contrato no verificado.
+- `Amenazas a la Validez` se reemplazó por `Alcance y limitaciones de la validación`, incorporando representatividad, cobertura sintáctica, evidencia observacional, oráculo de costo, conmutatividad declarada, escalabilidad y alcance del modelo estructural.
+- Se actualizó `structure.md` y se recompiló el informe con `latexmk`; el capítulo no dejó referencias indefinidas y sus figuras y tablas permanecieron dentro de los márgenes.
+
+## 2026-08-05
+
+- Se separaron la metodología experimental y la evidencia en dos capítulos: `Validación` conserva Metodología, Corpus y Alcance y Limitaciones, mientras `Resultados` se incorporó como capítulo 7 antes de Conclusión.
+- Las seis métricas de `-ddump-rn-trace` se integraron en una exposición continua de Metodología; se retiraron las antiguas secciones independientes `Métricas` y `Resultados` bajo `secciones/validacion/`.
+- Corpus quedó organizado mediante la jerarquía `<corpus>/cases/<familia>/<caso>/<variante>/`, con 42 variantes compartidas, cinco específicas de `Maybe` y diez específicas de `Dist.T Rational`, para un total de 47 y 52 programas respectivamente.
+- El nuevo capítulo presenta resultados generales, cuatro formas del grafo de precedencia RAW con código probabilístico y diagramas TikZ, cuatro perfiles de selección por costo, el ejemplo académico `4 -> 3 -> 2`, el control negativo con `IO` y una discusión de PV1 y PV2.
+- Se actualizaron `structure.md`, `report-context.md` y las guías de anexos para reflejar la separación entre Validación y Resultados. Conclusión pasó a ser el capítulo 8.
+- La compilación forzada con `latexmk` finalizó correctamente y generó un PDF de 83 páginas, sin referencias ni citas indefinidas y sin desbordes tipográficos nuevos en Validación o Resultados. La revisión visual confirmó la disposición de tablas, códigos y grafos.
+
+## 2026-08-06
+
+- Se agregó PV3 como pregunta de validación adicional para comprobar que la ruta conmutativa se active únicamente en bloques marcados con `CD.do` y permanezca inactiva en bloques `do` ordinarios.
+- PV1 y PV2 conservan el flujo exhaustivo de cuatro variantes; PV3 utiliza un flujo reducido sobre los seis controles de activación, tres por corpus, e inspecciona el indicador `commutative-do` de las trazas del Renamer.
+- Se aclaró que los controles inactivos pueden registrar `generated-permutations = 1` por conservar el orden original como candidato técnico, aunque el flujo contabiliza cero reordenamientos alternativos.
+- Resultados y `structure.md` se actualizaron para responder explícitamente PV1, PV2 y PV3 sin modificar el tercer objetivo específico.
+- La compilación forzada con `latexmk` generó correctamente un PDF de 83 páginas, sin referencias o citas indefinidas ni desbordes tipográficos nuevos en Validación o Resultados. La formulación de PV3, el diagrama y su discusión fueron revisados visualmente.
+- `Alcance y limitaciones de la validación` se reescribió como una narración continua, eliminando los siete encabezados `\paragraph` y las enumeraciones redundantes respecto de Corpus.
+- La nueva redacción conserva los límites de representatividad, cobertura sintáctica y de activación, evidencia observacional, conmutatividad declarada, instrumentación, escalabilidad y costo estructural; el peor caso factorial se presenta sin asociarlo a un caso concreto del corpus.
+- La compilación y revisión visual generaron un PDF de 82 páginas, sin referencias indefinidas ni advertencias tipográficas nuevas en la sección modificada.
+- Se incorporó un párrafo introductorio que conecta Metodología y Corpus con el alcance de la evidencia, y se enlazaron las limitaciones mediante transiciones temáticas sobre cobertura, PV1, conmutatividad, PV2 y escalabilidad.
+- La revisión final mantuvo el informe en 82 páginas y confirmó que la sección conserva una narración continua en dos páginas, sin encabezados internos ni advertencias tipográficas nuevas.

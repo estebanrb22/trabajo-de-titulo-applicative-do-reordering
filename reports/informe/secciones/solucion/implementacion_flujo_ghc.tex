@@ -1,0 +1,38 @@
+% !TEX root = ../../main.tex
+
+\section{Flujo de compilación de GHC}
+\label{sec:solucion-pipeline-ghc}
+
+Antes de ubicar la extensión dentro de \textsf{GHC}, es necesario presentar las etapas del compilador que atraviesa una expresión de \textsf{Haskell}. La descripción se concentra en el \textit{frontend}, desde la lectura del programa hasta la producción de \texttt{Core}, porque en ese recorrido se encuentran la representación y la información utilizadas por la solución.
+
+Al comenzar la compilación, las opciones de la línea de comandos y los pragmas \texttt{LANGUAGE} del módulo determinan las extensiones habilitadas. Esta configuración forma parte de las opciones dinámicas del compilador y es consultada por las etapas que requieren cada característica. Por ejemplo, el Parser comprueba que \texttt{QualifiedDo} permita la sintaxis de un bloque \texttt{do} calificado, mientras que el Renamer consulta \texttt{ApplicativeDo} antes de ejecutar su postprocesamiento. Por tanto, la comprobación de las extensiones no constituye una transformación separada del programa, sino una condición que guía el comportamiento de las fases posteriores.
+
+La mayoría de los compiladores representan internamente un programa mediante un \textit{árbol de sintaxis abstracta}, o AST por su nombre en inglés. Esta estructura organiza jerárquicamente construcciones como módulos, declaraciones, expresiones y statements. Sus nodos conservan la estructura necesaria para analizar y transformar el programa, sin depender directamente de la secuencia de caracteres del archivo fuente.
+
+En \textsf{GHC}, el AST de \textsf{Haskell} está parametrizado por la etapa de compilación. Por ejemplo, una expresión se representa mediante \texttt{HsExpr p}, donde el parámetro \texttt{p} determina la información disponible en sus nodos. Los alias \texttt{GhcPs}, \texttt{GhcRn} y \texttt{GhcTc} identifican, respectivamente, las representaciones producidas por el Parser, el Renamer y el Typechecker. No se trata de tres árboles sin relación, sino de una misma familia de sintaxis cuyos campos e invariantes evolucionan a medida que el compilador incorpora nueva información. La Expresión~\ref{expr:fases-ast-ghc} resume este recorrido para una expresión.
+
+\begin{ReportExpression}{Fases relevantes del AST de una expresión en \textsf{GHC}.}{expr:fases-ast-ghc}
+\[
+\begin{aligned}
+\text{código fuente}
+&\xrightarrow{\mathrm{Parser}}
+\texttt{HsExpr GhcPs}
+\xrightarrow{\mathrm{Renamer}}
+\texttt{HsExpr GhcRn}\\
+&\xrightarrow{\mathrm{Typechecker}}
+\texttt{HsExpr GhcTc}
+\xrightarrow{\mathrm{Desugarer}}
+\texttt{Core}.
+\end{aligned}
+\]
+\end{ReportExpression}
+
+El Parser reconoce la sintaxis del programa y construye la primera representación estructurada. En particular, un bloque \texttt{do} se incorpora como una expresión \texttt{HsDo} dentro del AST, el cual contiene el alias \texttt{GhcPs}. En esta etapa los identificadores aún corresponden a los nombres escritos en el programa y no se han resuelto sus definiciones ni sus alcances.
+
+El Renamer transforma esa representación en un nodo del AST con alias \texttt{GhcRn}. Para ello resuelve cada identificador, determina su alcance y asigna identidades únicas de tipo \texttt{Name} a los binders. También calcula las variables libres de cada statement agrupandolas en una estructura adecuada, y ejecuta el postprocesamiento de \texttt{ApplicativeDo} sobre los bloques habilitados. Esta combinación de estructura sintáctica e información de nombres es la que permite analizar las dependencias locales sin confundir identificadores textualmente iguales que corresponden a vinculaciones distintas.
+
+El Typechecker verifica los tipos de las expresiones y las restricciones exigidas por las clases utilizadas, y registra esa información en el mismo nodo del AST pero con alias \texttt{GhcTc}. En la solución propuesta, esta etapa comprueba indirectamente la restricción \texttt{CommutativeMonad} a través de los tipos de las operaciones calificadas empleadas por el bloque. Finalmente, el Desugarer traduce la expresión tipada a \texttt{Core}, donde las agrupaciones introducidas por \texttt{ApplicativeDo} ya se expresan mediante las operaciones aplicativas y monádicas correspondientes.
+
+La implementación interviene en dos zonas de este recorrido. Por una parte, en la infraestructura de opciones dinámicas de \path{GHC} se incorpora la instrumentación experimental para la selección de reordenamientos válidos forzada, la cual se explicará en el capítulo de Validación. Por otra parte, la modificación funcional se concentra en el Renamer de \textsf{GHC}, donde se detecta el marcador conmutativo asociado a la declaración explicita hecha por el programador, se generan los reordenamientos válidos y se selecciona el plan de ejecución que permanecerá en el nodo del AST renombrado.
+
+Además, se agregaron dos nuevos módulos de \textsf{Haskell} asociados a las mónadas conmutativas llamados ambos \texttt{CommutativeDo}, estos debieron agregarse en los archivos asociados a \texttt{ghc-internal} y en \texttt{base}, junto con las entradas necesarias para exponerlos desde ambas bibliotecas. El Parser, el Typechecker y el Desugarer no requirieron modificaciones: la solución reutiliza el soporte que estas etapas ya proporcionaban para \texttt{QualifiedDo} y \texttt{ApplicativeDo}. La sección siguiente desarrolla la interfaz declarativa que conecta dichos módulos con la modificación del Renamer.

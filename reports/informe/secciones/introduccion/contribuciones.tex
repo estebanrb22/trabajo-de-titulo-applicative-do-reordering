@@ -5,7 +5,7 @@
 Las principales contribuciones de esta memoria son:
 
 \begin{itemize}
-    \item Un mecanismo para generar reordenamientos de statements que preservan las dependencias del programa y que, bajo una hipótesis explícita de conmutatividad, representan permutaciones semánticamente equivalentes.
+    \item Un mecanismo para generar reordenamientos válidos de statements, definidos por la preservación de las dependencias locales del programa y considerados semánticamente equivalentes al orden original bajo una hipótesis explícita de conmutatividad.
     \item Una extensión experimental de \textsf{GHC} que integra este mecanismo con \texttt{ApplicativeDo}, amplía el espacio de planes de ejecución considerado por el compilador y selecciona una alternativa de costo mínimo según el modelo estructural adoptado.
-    \item Una validación experimental reproducible que comprueba, en los casos conmutativos evaluados, que todas las permutaciones generadas producen el mismo resultado observable que el programa original y que la selección automática corresponde a un plan de costo estructural mínimo.
+    \item Una validación experimental reproducible que comprueba, bajo la hipótesis explícita de conmutatividad y en los casos evaluados, que todos los reordenamientos válidos generados producen el mismo resultado observable que el programa original y que la selección automática corresponde a un plan de costo estructural mínimo.
 \end{itemize}

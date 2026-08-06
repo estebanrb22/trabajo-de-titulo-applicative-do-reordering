@@ -1,27 +1,106 @@
 % !TEX root = ../../main.tex
 
 \section{Metodología}
+\label{sec:validacion-metodologia}
 
-La validación busca comprobar dos propiedades experimentales. Primero, que las permutaciones generadas por la extensión preserven la salida observable de los programas evaluados. Segundo, que el reordenamiento pueda producir planes con menor costo abstracto que \texttt{ApplicativeDo} aplicado únicamente al orden original.
+La metodología evalúa las dos propiedades establecidas por el tercer objetivo específico de la memoria y, adicionalmente, el requisito de activación explícita definido en el diseño de la solución. La primera corresponde a la preservación experimental del comportamiento observable; la segunda, a la selección del plan de ejecución según el modelo de costo adoptado; y la tercera, a la activación de la ruta conmutativa únicamente cuando un bloque \texttt{do} contiene el marcador correspondiente. Estos aspectos se expresan mediante las siguientes preguntas de validación:
 
-El pipeline de validación compila varias variantes de cada caso:
+\begin{enumerate}
+    \item[\textbf{PV1.}] En los casos evaluados bajo una hipótesis explícita de conmutatividad, ¿todos los reordenamientos válidos generados preservan la salida observable y el código de salida del programa original?
+    \item[\textbf{PV2.}] ¿El plan de ejecución seleccionado posee el costo estructural mínimo entre todos los planes obtenidos a partir de los reordenamientos válidos generados?
+    \item[\textbf{PV3.}] Con \texttt{ApplicativeDo} habilitado, ¿la ruta conmutativa se activa únicamente en los bloques \texttt{do} marcados explícitamente mediante \texttt{CD.do} y permanece inactiva en bloques \texttt{do} ordinarios?
+\end{enumerate}
+
+La primera pregunta estudia experimentalmente la preservación del comportamiento observable al activar la solución; no pretende demostrar equivalencia semántica para todo programa posible. La segunda evalúa la política de selección del mejor reordenamiento válido bajo el modelo de costo estructural adoptado. Cabe recalcar que un resultado correcto no implica que obligatoriamente el plan de ejecución resultante deba mejorar el costo de \texttt{ApplicativeDo}: es suficiente con que la extensión seleccione uno de los mínimos disponibles, incluso cuando el orden original ya sea mínimo o existan varios reordenamientos válidos candidatos empatados. La tercera pregunta evalúa el mecanismo de activación explícita de la extensión, independientemente de la preservación observable y de la selección por costo.
+
+La igualdad de resultados observables y la validez estructural de los reordenamientos generados constituyen evidencias complementarias. La primera se comprueba mediante ejecución, mientras que la segunda se examina a partir de las trazas del Renamer, las que documentan las aristas del grafo de precedencia RAW, los reordenamientos válidos generados y la selección del plan de ejecución resultante. De esta forma, la validación no infiere la corrección de los reordenamientos únicamente a partir de que las ejecuciones produzcan la misma salida.
+
+Para responder las preguntas \textbf{PV1} y \textbf{PV2}, primeramente es necesario tener un programa de \textsf{Haskell} para validar la extensión, este debe declarar solo un bloque \texttt{do} e imprimir en pantalla su expresión terminal que generada con \texttt{return}, de esta forma se puede obtener el resultado final para su posterior análisis. De este programa se materializarán cuatro variantes:
 
 \begin{itemize}
-    \item el programa original;
-    \item el programa con \texttt{ApplicativeDo} normal, sin marcador conmutativo;
-    \item el candidato óptimo seleccionado automáticamente por la extensión;
-    \item cada permutación válida, forzada mediante la flag de selección de candidato.
+    \item \textbf{Programa original:} conserva el orden fuente y se compila sin \texttt{ApplicativeDo}. Esta variante constituye la referencia para la comparación de resultados observables.
+    \item \textbf{ApplicativeDo:} activa \texttt{ApplicativeDo} sin el marcador de conmutatividad. Así se obtienen resultados asociados a solo la aplicación de este algoritmo.
+    \item \textbf{Selección automática:} activa la extensión mediante un bloque \texttt{CD.do}. Las extensiones \texttt{QualifiedDo} y \texttt{ApplicativeDo} permanecen habilitadas y se obtiene el plan de ejecución de menor costo.
+    \item \textbf{Selección forzada:} mantiene la extensión activa al igual que la variante anterior, pero fuerza la selección de un reordenamiento válido específico, para compilarlo y ejecutarlo de manera independiente.
 \end{itemize}
 
-Luego, el pipeline ejecuta cada binario, captura \texttt{stdout}, registra el código de salida y compara los resultados contra la referencia. En los dos corpus sintéticos, una validación exitosa exige que las salidas y códigos de salida coincidan. En el corpus sintético probabilístico, los programas imprimen distribuciones normalizadas para evitar diferencias superficiales de representación. El caso con \texttt{IO} se mantiene separado como control negativo: su divergencia observable es el resultado esperado y muestra por qué el reordenamiento requiere una declaración explícita de conmutatividad.
+La última variante se obtiene mediante la nueva opción de compilación
 
-Existen dos modos de ejecución. Los casos que no dependen de paquetes externos pueden compilarse directamente con el \textsf{GHC} modificado. Los casos probabilísticos se validan mediante Cabal, porque usan el paquete \texttt{probability}. En ambos modos, el resultado se guarda bajo \texttt{tests/}, junto con trazas del Renamer, resúmenes de costo y outputs de ejecución.
+\begin{center}
+\texttt{-fado-reorder-candidate-n=<i>}.
+\end{center}
 
-El ejemplo guía sigue este segundo modo. Su programa y sus resultados se encuentran, respectivamente, en:
+Esta opción existe exclusivamente como instrumentación de validación. No activa la extensión, no genera candidatos adicionales ni modifica sus costos; una vez construidos los reordenamientos válidos, reemplaza la selección automática del plan de ejecución menos costoso por el plan de ejecución asociado al reordenamiento válido de índice \texttt{i}.
 
-\begin{verbatim}
-experiments/main-example/main.hs
-tests/main-example
-\end{verbatim}
+El flujo de validación de un programa comienza compilando las tres primeras variantes anteriormente mencionadas. La variante asociada a la selección automática del mejor plan se compila con la opción de compilación \texttt{-ddump-rn-trace}, lo que permite obtener desde la traza del Renamer la métrica \texttt{generated-permutations} y, con ella, el valor $n$, correspondiente a la cantidad de reordenamientos válidos generados. A continuación, el mismo archivo se recompila $n$ veces con la opción de selección forzada. En cada compilación la extensión vuelve a construir el conjunto de reordenamientos candidatos, pero el árbol que continúa hacia las etapas posteriores de \textsf{GHC} corresponde al índice indicado en \texttt{-fado-reorder-candidate-n}. En total, para un bloque \texttt{do} que posea $n$ reordenamientos válidos, se construyen y ejecutan $n+3$ binarios. En la Figura~\ref{fig:validacion-flujo} se muestra el flujo de validación de la solución, aplicada sobre un programa de \textsf{Haskell} específico.
 
-Este caso se usa transversalmente para explicar el problema y la solución, pero no se contabiliza como un tercer corpus: la evaluación agregada continúa organizada en un corpus estructural con \texttt{Maybe} y otro probabilístico con \texttt{Dist.T Rational}.
+\begin{figure}[ht]
+\centering
+\vspace{0.3cm}
+\captionsetup{skip=15pt}
+\begin{tikzpicture}[
+    node distance=0.42cm,
+    validation step/.style={
+        draw=codeframe,
+        fill=codebg,
+        rounded corners=2pt,
+        minimum height=1.35cm,
+        text width=1.75cm,
+        align=center,
+        font=\footnotesize
+    },
+    validation trace/.style={
+        validation step,
+        draw=codekeyword,
+        fill=codekeyword!18!codebg
+    },
+    validation arrow/.style={precedence edge,draw=codekeyword,line width=0.7pt}
+]
+
+    \node[validation step,text width=2.7cm] (references) {Compilar programa original y \texttt{ApplicativeDo}};
+    \node[validation trace,text width=2.8cm,right=of references] (automatic) {Compilar selección automática con \texttt{-ddump-rn-trace}};
+    \node[validation step,text width=3.5cm,right=of automatic] (metrics) {Obtener cantidad de reordenamientos $n$ y las métricas};
+    \node[validation trace,text width=2.25cm,right=of metrics] (candidates) {Compilar reordenamientos candidatos $i=0, \ldots, n-1$};
+    \node[validation step,text width=2.15cm,right=of candidates] (compare) {Ejecutar y analizar las $n+3$ variantes};
+
+    \draw[validation arrow] (references) -- (automatic);
+    \draw[validation arrow] (automatic) -- (metrics);
+    \draw[validation arrow] (metrics) -- (candidates);
+    \draw[validation arrow] (candidates) -- (compare);
+\end{tikzpicture}
+\caption{Flujo de validación de la solución para responder \textbf{PV1} y \textbf{PV2}.}
+\label{fig:validacion-flujo}
+\end{figure}
+
+La aplicación de la extensión sobre un programa considerado como conmutativo debe preservar el resultado observable. Precisamente por esta razón, una ejecución correcta no permite identificar qué reordenamientos válidos estudió el compilador, qué plan de ejecución construyó para cada uno ni cuál seleccionó. Para observar estas decisiones internas se incorporó al Renamer un esquema de trazas basado en la opción \texttt{-ddump-rn-trace} de \textsf{GHC}. Las compilaciones de la selección automática y de cada selección forzada activan esta opción; posteriormente, el flujo de validación procesa estas trazas y genera archivos legibles que contienen el grafo de precedencia RAW, los reordenamientos válidos generados y los árboles producidos por \texttt{ApplicativeDo} junto con sus costos asociados. Específicamente, de las trazas de la selección automática se obtienen las seis métricas de la Tabla~\ref{tab:validacion-metricas}.
+
+\begin{table}[ht]
+\centering
+\TableSetup
+\TableFrame{%
+\begin{tabular}{p{5.2cm}p{8.5cm}}
+\rowcolor{tableHeaderBg}
+\TableHead{Métrica} & \TableHead{Interpretación} \\
+\texttt{minimum-cost-perm-index} & Índice, comenzando desde cero, del primer reordenamiento válido que alcanza el costo mínimo. \\
+\texttt{original-cost} & Costo del plan de ejecución base completamente secuencial, con costo unitario por statement. \\
+\texttt{applicative-do-cost} & Costo del plan de ejecución obtenido por \texttt{ApplicativeDo} al conservar el orden original. \\
+{\footnotesize\texttt{reorder-and-ado-minimum-cost}} & Menor costo entre los planes de ejecución de cada reordenamiento válido generado. \\
+\texttt{generated-permutations} & Cantidad de reordenamientos válidos generados, considerando el orden original dentro de ellos. \\
+\texttt{minimum-cost-permutations} & Cantidad de reordenamientos válidos cuyos planes de ejecución tienen costo igual al mínimo encontrado. \\
+\end{tabular}%
+}
+\caption{Métricas extraídas de las trazas del Renamer.}
+\label{tab:validacion-metricas}
+\end{table}
+
+Las tres métricas de costo se calculan mediante el modelo estructural de la Expresión~\ref{expr:modelo-costos-estructural}, caracterizando la secuencialidad y las agrupaciones aplicativas de los planes. Las métricas de cantidad caracterizan el espacio explorado y distinguen si el mínimo es único o si varios reordenamientos válidos poseen ese mismo costo.
+
+Una vez terminadas las compilaciones, el flujo de validación ejecuta cada binario, captura su salida observable y registra su código de salida. Para responder la pregunta \textbf{PV1}, las variantes con \texttt{ApplicativeDo}, selección automática y selección forzada se comparan contra el programa original. La validación de un programa se considera exitosa solo si todos los códigos de salida y todas las salidas coinciden con el programa original. En el caso de utilizar mónadas probabilísticas, este programa debe normalizar su distribución resultante con \texttt{Dist.norm}, de modo que la comparación se realice sobre una representación canónica y no sobre diferencias internas de orden o duplicación. En caso de existir alguna salida que no coincida con lo esperado, se considera no validado.
+
+Para responder la pregunta \textbf{PV2}, el análisis posterior extrae el costo registrado en la traza de cada reordenamiento candidato individual y vuelve a calcular el mínimo, su primer índice y la cantidad de empates. Estos valores se contrastan con el reordenamiento seleccionado automáticamente y con las métricas de la Tabla~\ref{tab:validacion-metricas} emitidas por el Renamer; por tanto, estas no se utilizan como único criterio para aceptar la selección. Las cantidades y costos obtenidos también se comparan en cuyos casos estructurales con comportamientos esperados, por ejemplo grafos de precedencia sin aristas o cadenas de statements no reordenables.
+
+Para responder la pregunta \textbf{PV3} se utiliza un flujo de validación reducido. A partir del programa en el que se desea validar la extensión se construyen tres variantes, cada una compilada con la opción \texttt{-ddump-rn-trace}, pues esta traza permite determinar si el Renamer ingresa en la ruta conmutativa. La primera habilita únicamente \texttt{ApplicativeDo} y conserva un bloque \texttt{do} ordinario. La segunda habilita además \texttt{QualifiedDo}, importa el módulo conmutativo y declara la instancia correspondiente, pero también conserva la notación ordinaria; por tanto, ninguna de estas dos variantes debe activar la ruta conmutativa. La tercera mantiene la configuración de la segunda, pero escribe el bloque mediante \texttt{CD.do} y utiliza \texttt{CD.return} para su expresión terminal. Esta última variante sí debe activar la ruta y generar los reordenamientos válidos. 
+
+El mecanismo de compilación depende de las dependencias del programa que se desea validar. Los programas sin dependencias externas se compilan directamente con la versión modificada de \textsf{GHC}. Cuando el programa requiere paquetes externos administrados mediante \texttt{Cabal}, la compilación se realiza a través de esta herramienta, configurada para utilizar la misma versión modificada del compilador.
+
+Ya definida la metodología de validación de la solución, la siguiente sección presenta los corpus de programas seleccionados para aplicar la validación, junto con su organización y los fenómenos cubiertos por sus casos de prueba.

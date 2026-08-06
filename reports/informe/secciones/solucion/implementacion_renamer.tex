@@ -1,0 +1,79 @@
+% !TEX root = ../../main.tex
+
+\section{Integración en el Renamer}
+\label{sec:solucion-integracion-renamer}
+
+La integración de la solución comienza en el renombramiento de toda expresión de \textsf{Haskell}, lógica implementada por la función \texttt{rnExpr}, especificamente cuando debe procesar un nodo del AST con la expresión \texttt{HsDo}. Esta debe invocar a \texttt{rnStmtsWithFreeVars} para renombrar todos los statements y asociar a cada cuerpo el conjunto de variables libres calculado durante el recorrido. A continuación, la función \texttt{postProcessStmtsForApplicativeDo} decide si debe aplicar la transformación de \texttt{ApplicativeDo} o devolver los statements sin dicho postprocesamiento.
+
+El postprocesamiento de un bloque \texttt{do} se ejecuta cuando \texttt{ApplicativeDo} está habilitada, ingresando a la función \texttt{rearrangeForApplicativeDo}, continuando con el proceso de renombrado.
+
+Dentro de esa función, \texttt{isCommutativeQualifiedDo} consulta si el contexto es un bloque \texttt{do} calificado y si el módulo calificador permite resolver el marcador \texttt{\_\_commutative\_do\_\_}. Cuando el marcador no se encuentra, el orden original constituye el único candidato y \texttt{ApplicativeDo} aplica su algoritmo habitual. Cuando el marcador se encuentra, la extensión genera todos los reordenamientos válidos de statements, aplica el algoritmo de \textit{rearrange} sobre cada uno y selecciona el plan de ejcución de menor costo. La Figura~\ref{fig:solucion-flujo-renamer} presenta las rutas de compilación del Renamer con la extensión integrada.
+
+\begin{figure}[ht]
+\centering
+\vspace{0.2cm}
+\captionsetup{skip=12pt}
+\begin{tikzpicture}[
+    node distance=0.48cm and 0.65cm,
+    renamer step/.style={
+        draw=codeframe,
+        fill=codebg,
+        rounded corners=2pt,
+        minimum width=4.2cm,
+        minimum height=0.72cm,
+        text width=3.8cm,
+        align=center,
+        font=\fontsize{8.0pt}{10pt}\selectfont
+    },
+    renamer contribution/.style={
+        renamer step,
+        draw=codekeyword,
+        fill=codekeyword!18!codebg
+    },
+    renamer decision/.style={
+        diamond,
+        draw=codekeyword,
+        fill=codebg,
+        aspect=2.0,
+        inner sep=0.0pt,
+        text width=3.2cm,
+        align=center,
+        font=\fontsize{8.0pt}{10pt}\selectfont
+    },
+    renamer arrow/.style={-latex,draw=codekeyword,line width=0.7pt},
+    renamer branch/.style={fill=white,inner sep=1pt,font=\fontsize{8.0pt}{10pt}\selectfont}
+]
+    \node[renamer step] (hsdo) {Renombrar una expresión \texttt{HsDo} asociada a un bloque \texttt{do}};
+    \node[renamer step,below=of hsdo] (rename) {Renombrar los statements y asociar sus variables libres};
+    \node[renamer step,below=of rename] (postprocess) {Postprocesar los statements para \texttt{ApplicativeDo}};
+    \node[renamer decision,below=0.65cm of postprocess] (ado) {¿Está habilitada \texttt{ApplicativeDo}?};
+    \node[renamer step,below=0.65cm of ado] (enter) {Entrar en \texttt{rearrangeForApplicativeDo}};
+    \node[renamer step,right=of enter] (noado) {Continuar sin postprocesamiento de \texttt{ApplicativeDo}};
+    \node[renamer decision,below=0.65cm of enter] (marker) {¿Se resuelve el marcador conmutativo?};
+    \node[renamer contribution,below=0.65cm of marker] (orders) {Generar reordenamientos válidos};
+    \node[renamer step,left=of orders] (ordinary) {Aplicar \textit{rearrange} sobre el orden original};
+    \node[renamer contribution,below=of orders] (rearrange) {Aplicar \textit{rearrange} a cada reordenamiento};
+    \node[renamer contribution,below=of rearrange] (select) {Seleccionar el plan de menor costo};
+    \node[renamer step,below=0.65cm of select] (continue) {Continuar con la etapa siguiente del compilador};
+
+    \draw[renamer arrow] (hsdo) -- (rename);
+    \draw[renamer arrow] (rename) -- (postprocess);
+    \draw[renamer arrow] (postprocess) -- (ado);
+    \draw[renamer arrow] (ado) -- node[renamer branch,left] {sí} (enter);
+    \draw[renamer arrow] (ado.east) -| node[renamer branch,near start] {no} (noado.north);
+    \draw[renamer arrow] (enter) -- (marker);
+    \draw[renamer arrow] (marker) -- node[renamer branch,left] {sí} (orders);
+    \draw[renamer arrow] (marker.west) -| node[renamer branch,near start] {no} (ordinary.north);
+    \draw[renamer arrow] (orders) -- (rearrange);
+    \draw[renamer arrow] (rearrange) -- (select);
+    \draw[renamer arrow] (select) -- (continue);
+    \draw[renamer arrow] (ordinary.south) |- (continue.west);
+    \draw[renamer arrow] (noado.south) |- (continue.east);
+\end{tikzpicture}
+\caption{Flujo de renombrado y condiciones de activación de la ruta de reordenamiento de statements.}
+\label{fig:solucion-flujo-renamer}
+\end{figure}
+
+Dentro de ese alcance, la Figura~\ref{fig:solucion-flujo-renamer} muestra que \texttt{ApplicativeDo} es una condición previa para ingresar en el postprocesamiento. La función \texttt{rearrangeForApplicativeDo} solo se invoca cuando esa condición se cumple; por ello, la presencia del marcador no activa por sí sola la generación de reordenamientos. Del mismo modo, \texttt{QualifiedDo} ya debió permitir la sintaxis calificada durante el parseo. Solo la combinación de un bloque calificado aceptado, \texttt{ApplicativeDo} habilitada y el marcador resoluble alcanza la ruta resaltada.
+
+Ubicar la modificación en este punto evita realizar una reescritura externa o analizar una representación posterior que ya haya perdido la estructura del bloque \texttt{do}. También permite utilizar las identidades únicas y las variables libres producidas durante el renombrado tanto para construir las dependencias como para generar los reordenamientos válidos que recibirá \texttt{ApplicativeDo}. Las tres secciones siguientes desarrollan, en ese orden, la formación del grafo de precedencia RAW, la generación de reordenamientos válidos y la selección del plan de ejecución de menor costo.

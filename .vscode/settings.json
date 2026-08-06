@@ -1,0 +1,36 @@
+{
+  "latex-workshop.latex.autoBuild.run": "onFileChange",
+  "latex-workshop.latex.autoBuild.cleanAndRetry.enabled": false,
+  "latex-workshop.latex.outDir": "%DIR%",
+  "latex-workshop.latex.auxDir": "%DIR%/build",
+  "latex-workshop.latex.search.rootFiles.include": [
+    "reports/informe/main.tex"
+  ],
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "Informe (latexmk)",
+      "tools": [
+        "latexmk-informe"
+      ]
+    }
+  ],
+  "latex-workshop.latex.recipe.default": "Informe (latexmk)",
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk-informe",
+      "command": "latexmk",
+      "args": [
+        "-pdf",
+        "-bibtex",
+        "-synctex=0",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "-file-line-error",
+        "-auxdir=%AUXDIR%",
+        "-out2dir=%OUTDIR%",
+        "%DOC%"
+      ],
+      "cwd": "%DIR%"
+    }
+  ]
+}

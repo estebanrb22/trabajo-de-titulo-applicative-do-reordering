@@ -1,0 +1,115 @@
+% !TEX root = ../../main.tex
+
+\section{Generación de Reordenamientos Válidos}
+\label{sec:solucion-implementacion-permutaciones}
+
+La función \texttt{generateAllSemanticTopSorts} recibe el grafo de precedencia RAW y materializa los reordenamientos válidos como sus ordenamientos topológicos. Para ello calcula el grado de entrada de cada vértice mediante el grafo original y su transposición. Un vértice cuyo grado de entrada es cero no posee predecesores, por lo que puede ser declarado para ser el siguiente statement en el reordenamiento calculado. Luego de ser declarado, todas las aristas salientes de este mismo son eliminadas para así garantizar que los statements originalmente dependendientes de este puedan ser declarados y así continuar con la generación del ordenamiento topológico.
+
+El algoritmo de Kahn clásico selecciona uno a uno los vértices del grafo de precedencia y produce un único ordenamiento topológico \cite{Kahn1962}. La implementación de la solución reemplaza esa elección por una ramificación sobre todos los vértices disponibles. Cada rama emite un vértice, decrementa el grado de entrada de sus sucesores y repite el procedimiento sobre el estado resultante. Cuando la secuencia acumulada de statements contiene todos los vértices del grafo, se obtiene un orden topológico y por ende un reordenamiento válido. El Código~\ref{lst:algoritmo-enumeracion-topologica} presenta el procedimiento abstracto.
+
+\newpage
+
+\begin{lstlisting}[style=haskell,caption={Pseudocódigo del algoritmo que genera todos los ordenamientos topológicos del grafo de precendencia RAW de un bloque \texttt{do}.},label={lst:algoritmo-enumeracion-topologica}]
+generateAllSemanticTopSorts(graph):
+    indegree := computeIndegrees(graph)
+    extendTopSorts(graph, indegree, empty, [])
+
+extendTopSorts(graph, indegree, emitted, order):
+    if length(order) == numberOfVertices(graph):
+        emit order
+        return
+
+    choices := every non-emitted vertex v with indegree[v] == 0
+
+    for each v in choices:
+        nextIndegree := copy(indegree)
+        for each successor w of v:
+            nextIndegree[w] := nextIndegree[w] - 1
+
+        extendTopSorts(
+            graph,
+            nextIndegree,
+            union(emitted, {v}),
+            order ++ [v])
+\end{lstlisting}
+
+Cada llamada recursiva agrega únicamente un vértice cuyos predecesores ya fueron emitidos, por lo que todo resultado completo conserva las aristas del grafo. A la inversa, la primera posición de cualquier ordenamiento topológico debe tener grado de entrada cero; como el algoritmo ramifica sobre todas esas posibilidades y repite el criterio sobre el grafo restante, también alcanza cada reordenamiento válido.
+
+Los índices se recorren en orden creciente para producir resultados estables. En particular, la primera ramificación completa del algoritmo reproduce el orden original, que queda asociado al índice cero. Si $P$ es la cantidad de ordenamientos topológicos, la función materializa $P$ secuencias de longitud $n$. En el caso extremo de un grafo sin aristas, todos los statements pueden ocupar cualquier posición y se generan $n!$ reordenamientos válidos.
+
+La Figura~\ref{fig:arbol-enumeracion-main-example} muestra la ejecución recursiva del algoritmo sobre el bloque \texttt{do} del ejemplo probabilístico con Código~\ref{lst:main-example}. Cada estado contiene el prefijo emitido $\pi$ y el subgrafo $G[R]$ inducido por los vértices restantes. Una arista representa la elección del statement emitido y las hojas corresponden a los reordenamientos completos.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[
+    enumeration state/.style={
+        draw=graphNodeBorder,
+        fill=graphNodeBg,
+        text=graphNodeFg,
+        rounded corners=2pt,
+        line width=0.6pt,
+        minimum width=2.45cm,
+        minimum height=0.9cm,
+        align=center,
+        font=\scriptsize
+    },
+    enumeration leaf/.style={
+        enumeration state,
+        fill=codekeyword!16!codebg
+    },
+    enumeration edge/.style={
+        -latex,
+        draw=graphEdge,
+        line width=0.7pt
+    },
+    branch label/.style={
+        fill=white,
+        inner sep=1pt,
+        font=\scriptsize
+    }
+]
+    \node[enumeration state] (root) at (0,8) {$\pi=[]$\\$G[\{1,2,3,4\}]$};
+
+    \node[enumeration state] (p1) at (-3.75,6) {$\pi=[1]$\\$G[\{2,3,4\}]$};
+    \node[enumeration state] (p3) at (4.5,6) {$\pi=[3]$\\$G[\{1,2,4\}]$};
+
+    \node[enumeration state] (p12) at (-6,4) {$\pi=[1,2]$\\$G[\{3,4\}]$};
+    \node[enumeration state] (p13) at (-1.5,4) {$\pi=[1,3]$\\$G[\{2,4\}]$};
+    \node[enumeration state] (p31) at (4.5,4) {$\pi=[3,1]$\\$G[\{2,4\}]$};
+
+    \node[enumeration state] (p123) at (-6,2) {$\pi=[1,2,3]$\\$G[\{4\}]$};
+    \node[enumeration state] (p132) at (-3,2) {$\pi=[1,3,2]$\\$G[\{4\}]$};
+    \node[enumeration state] (p134) at (0,2) {$\pi=[1,3,4]$\\$G[\{2\}]$};
+    \node[enumeration state] (p312) at (3,2) {$\pi=[3,1,2]$\\$G[\{4\}]$};
+    \node[enumeration state] (p314) at (6,2) {$\pi=[3,1,4]$\\$G[\{2\}]$};
+
+    \node[enumeration leaf] (c0) at (-6,0) {$R_0$\\$\pi=[1,2,3,4]$\\$G[\varnothing]$};
+    \node[enumeration leaf] (c1) at (-3,0) {$R_1$\\$\pi=[1,3,2,4]$\\$G[\varnothing]$};
+    \node[enumeration leaf] (c2) at (0,0) {$R_2$\\$\pi=[1,3,4,2]$\\$G[\varnothing]$};
+    \node[enumeration leaf] (c3) at (3,0) {$R_3$\\$\pi=[3,1,2,4]$\\$G[\varnothing]$};
+    \node[enumeration leaf] (c4) at (6,0) {$R_4$\\$\pi=[3,1,4,2]$\\$G[\varnothing]$};
+
+    \draw[enumeration edge] (root) -- node[branch label] {$s_1$} (p1);
+    \draw[enumeration edge] (root) -- node[branch label] {$s_3$} (p3);
+
+    \draw[enumeration edge] (p1) -- node[branch label] {$s_2$} (p12);
+    \draw[enumeration edge] (p1) -- node[branch label] {$s_3$} (p13);
+    \draw[enumeration edge] (p3) -- node[branch label] {$s_1$} (p31);
+
+    \draw[enumeration edge] (p12) -- node[branch label] {$s_3$} (p123);
+    \draw[enumeration edge] (p13) -- node[branch label] {$s_2$} (p132);
+    \draw[enumeration edge] (p13) -- node[branch label] {$s_4$} (p134);
+    \draw[enumeration edge] (p31) -- node[branch label] {$s_2$} (p312);
+    \draw[enumeration edge] (p31) -- node[branch label] {$s_4$} (p314);
+
+    \draw[enumeration edge] (p123) -- node[branch label] {$s_4$} (c0);
+    \draw[enumeration edge] (p132) -- node[branch label] {$s_4$} (c1);
+    \draw[enumeration edge] (p134) -- node[branch label] {$s_2$} (c2);
+    \draw[enumeration edge] (p312) -- node[branch label] {$s_4$} (c3);
+    \draw[enumeration edge] (p314) -- node[branch label] {$s_2$} (c4);
+\end{tikzpicture}
+\caption{Árbol de llamadas para generar todos los reordenamientos válidos del programa probabilístico con Código~\ref{lst:main-example}. La raíz representa la invocación inicial y los otros 15 estados corresponden a llamadas recursivas.}
+\label{fig:arbol-enumeracion-main-example}
+\end{figure}
+
+Las cinco hojas de la figura corresponden, en el mismo orden, a los ordenamientos topológicos presentados en la Tabla~\ref{tab:solucion-candidatos-ejemplo}. La hoja $R_0$ conserva la secuencia original de statements; las demás intercalan statements independientes sin invertir ninguna de las tres aristas del grafo de precedencia RAW de la Figura~\ref{fig:main-example-precedence-graph}.

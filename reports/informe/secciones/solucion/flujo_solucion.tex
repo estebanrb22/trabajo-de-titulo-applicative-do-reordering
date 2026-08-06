@@ -1,0 +1,48 @@
+% !TEX root = ../../main.tex
+
+\section{Flujo general de la extensión}
+\label{sec:solucion-flujo}
+
+El diseño propuesto amplía el flujo habitual de \texttt{ApplicativeDo} al incorporar la exploración de órdenes alternativos antes de construir el plan de ejecución. Sobre un bloque \texttt{do} habilitado, la solución representa las dependencias locales mediante un grafo de precedencia RAW. Sus aristas determinan qué relaciones deben conservarse y, por tanto, caracterizan como reordenamientos válidos a las secuencias completas que respetan todas esas precedencias. Dentro del alcance experimental de esta memoria, la hipótesis explícita de conmutatividad permite considerar dichos reordenamientos semánticamente equivalentes al orden original; la ausencia de una dependencia local, por sí sola, no sería suficiente para autorizar el intercambio sobre una mónada arbitraria \cite[p.~94]{MarlowPJKM2016}.
+
+Cada reordenamiento válido se entrega a la etapa de \textit{rearrange} de \texttt{ApplicativeDo}. Como se explicó en la Sección~\ref{sec:applicative-do-rearrange}, esta etapa conserva el orden de statements recibido y construye un árbol que combina secuencias monádicas y agrupaciones aplicativas. La extensión compara los árboles obtenidos para todos los reordenamientos mediante el modelo de costo de la Expresión~\ref{expr:modelo-costos-estructural} y selecciona el primer candidato de menor costo. El árbol seleccionado continúa luego hacia la etapa de \textit{desugaring}. Por consiguiente, la contribución amplía el espacio de búsqueda, mientras que \texttt{ApplicativeDo} sigue siendo responsable de construir el plan asociado a cada reordenamiento. La Figura~\ref{fig:solucion-pipeline-conceptual} resume este proceso.
+
+\begin{figure}[ht]
+\centering
+\vspace{0.3cm}
+\captionsetup{skip=15pt}
+\begin{tikzpicture}[
+    node distance=1.05cm and 0.45cm,
+    solution step/.style={
+        draw=codeframe,
+        fill=codebg,
+        rounded corners=2pt,
+        minimum width=3.25cm,
+        minimum height=1.05cm,
+        text width=2.9cm,
+        align=center,
+        font=\small
+    },
+    solution contribution/.style={
+        solution step,
+        draw=codekeyword,
+        fill=codekeyword!18!codebg
+    },
+    solution arrow/.style={precedence edge,draw=codekeyword,line width=0.7pt}
+]
+    \node[solution step] (marked) {Bloque \texttt{do} declarado como conmutativo};
+    \node[solution contribution,right=of marked] (orders) {Generación de reordenamientos válidos};
+    \node[solution step,right=of orders] (ado) {Aplicación de \texttt{ApplicativeDo} sobre cada reordenamiento};
+    \node[solution step,right=of ado] (selected) {Selección del plan de ejecución de menor costo};
+
+    \draw[solution arrow] (marked) -- (orders);
+    \draw[solution arrow] (orders) -- (ado);
+    \draw[solution arrow] (ado) -- (selected);
+\end{tikzpicture}
+\caption{Flujo general de la extensión propuesta.}
+\label{fig:solucion-pipeline-conceptual}
+\end{figure}
+
+El diseño separa así dos responsabilidades. El programador afirma que el orden de efectos independientes puede intercambiarse en el bloque \texttt{do} marcado. El compilador restringe la exploración a reordenamientos que conservan las relaciones locales de definición y uso, evalúa los planes de ejecución correspondientes y selecciona el menos costoso, sin modificar la compilación de los bloques que no son declarados como conmutativos.
+
+En este flujo, el núcleo algorítmico de la extensión corresponde a la generación de reordenamientos válidos, cuyo diseño se divide en dos fases. La primera construye el grafo de precedencia RAW que representa las restricciones entre los statements del bloque; la segunda recorre exhaustivamente dicho grafo para generar los reordenamientos que preservan esas restricciones. Ambas fases se desarrollan, respectivamente, en las Secciones~\ref{sec:solucion-grafo-precedencia-raw} y~\ref{sec:solucion-generacion-reordenamientos}.

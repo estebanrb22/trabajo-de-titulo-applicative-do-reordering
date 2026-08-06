@@ -1,0 +1,49 @@
+% !TEX root = ../../main.tex
+
+\section{Control negativo con IO}
+\label{sec:resultados-io}
+
+La evidencia positiva presentada en las secciones anteriores se obtuvo sobre programas evaluados bajo una hipótesis explícita de conmutatividad. Para contrastar ese escenario, esta sección retoma el control negativo con \texttt{IO} definido en el capítulo anterior. Su propósito es mostrar que un reordenamiento puede respetar todas las dependencias RAW y, aun así, modificar el comportamiento observable cuando la mónada utilizada no es conmutativa.
+
+El programa sobre el que se aplicará el control negativo de la solución declara deliberadamente una instancia \texttt{CommutativeMonad IO} que no satisface la propiedad que esta clase representa. Dentro del bloque \texttt{CD.do}, el primer statement imprime \texttt{A} y produce el valor 1, mientras que el segundo imprime \texttt{B} y produce el valor 2. Ninguna acción lee el binder definido por la otra, pero ambas realizan efectos visibles sobre la salida estándar. A continuación, en el Código~\ref{lst:resultados-control-io} y la Figura~\ref{fig:resultados-grafo-control-io} se muestran el programa asociado a este control y el grafo de precedencia RAW construido por la extensión, respectivamente.
+
+\begin{lstlisting}[style=haskell,caption={Programa asociado al control negativo con \texttt{IO}.},label={lst:resultados-control-io}]
+instance CD.CommutativeMonad IO
+
+program :: IO Int
+program = CD.do
+  x <- putStrLn "A" >> pure 1
+  y <- putStrLn "B" >> pure 2
+  CD.return (x + y)
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\begin{PrecedenceGraph}
+    \PrecedenceNode{s1}{x}{$s_1$}
+    \PrecedenceNode[right=of s1]{s2}{y}{$s_2$}
+\end{PrecedenceGraph}
+\caption[Grafo RAW del control con \texttt{IO}.]{Grafo de precedencia RAW construido por la solución para el control negativo con \texttt{IO}.}
+\label{fig:resultados-grafo-control-io}
+\end{figure}
+
+El grafo de la Figura~\ref{fig:resultados-grafo-control-io} no contiene aristas, ya que ninguno de los dos statements lee el binder producido por el otro. Por esta razón, el grafo admite los órdenes \texttt{[1,2]} y \texttt{[2,1]}, y ambos candidatos alcanzaron el costo mínimo. La ejecución secuencial obtuvo un costo de 2, mientras que \texttt{ApplicativeDo} y la solución obtuvieron un costo de 1. Como los dos candidatos empataron, la selección estable escogió el candidato de índice 0 y conservó el orden fuente \texttt{[1,2]}.
+
+Desde la perspectiva del grafo y del modelo de costo, los dos órdenes son indistinguibles. Sin embargo, la ausencia de dependencias RAW no asegura que los efectos de las acciones puedan intercambiarse. Además del candidato seleccionado, la validación exhaustiva compiló y ejecutó el candidato forzado de índice 1, correspondiente al orden \texttt{[2,1]}. Ambos terminaron con código de salida cero y retornaron el entero 3, pero produjeron las secuencias observables resumidas en la Tabla~\ref{tab:resultados-control-io}.
+
+\begin{table}[ht]
+\centering
+\TableSetup
+\TableFrame{%
+\begin{tabular}{lccc}
+\rowcolor{tableHeaderBg}
+\TableHead{Orden} & \TableHead{Primera línea} & \TableHead{Segunda línea} & \TableHead{Resultado} \\
+\texttt{[1,2]} & \texttt{A} & \texttt{B} & \texttt{3} \\
+\texttt{[2,1]} & \texttt{B} & \texttt{A} & \texttt{3} \\
+\end{tabular}%
+}
+\caption{Salidas observables producidas por los dos órdenes del control negativo con \texttt{IO}.}
+\label{tab:resultados-control-io}
+\end{table}
+
+Como muestra la Tabla~\ref{tab:resultados-control-io}, el orden fuente imprimió primero \texttt{A} y luego \texttt{B}, mientras que el candidato invertido produjo ambas líneas en el orden contrario. La comparación con el programa original detectó esta diferencia y terminó la validación con fracaso. Este resultado es el desenlace esperado del control y no representa un error de la implementación: confirma que un ordenamiento topológico preserva las dependencias locales de datos, pero no garantiza que los efectos de una mónada arbitraria puedan intercambiarse. La instancia \texttt{CommutativeMonad} expresa un contrato semántico que el compilador no demuestra, por lo que una declaración incorrecta puede habilitar transformaciones estructuralmente válidas que alteran el comportamiento observable.

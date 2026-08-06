@@ -4,7 +4,7 @@
 
 \texttt{ApplicativeDo} es una extensión de \textsf{GHC} basada en el trabajo de Marlow, Peyton Jones, Kmett y Mokhov \cite{MarlowPJKM2016}. Su objetivo es permitir que programas escritos con \textit{do-notation} usen combinadores aplicativos cuando las dependencias lo permiten. De esta forma, el programador conserva la sintaxis monádica habitual, mientras el compilador puede generar una estructura de ejecución más paralelizable.
 
-La transformación propuesta recibe un bloque \texttt{do}, analiza las dependencias entre sus statements y produce una expresión equivalente que utiliza operaciones aplicativas donde existe independencia, sin dejar de utilizar operaciones monádicas donde un cómputo depende del resultado de otro. Para ello, el algoritmo se organiza conceptualmente como un \textit{pipeline} de dos etapas: \textit{rearrange} construye un plan que combina secuencias y agrupaciones aplicativas, mientras que \textit{desugaring} traduce ese plan a combinadores explícitos \cite[pp.~95--96]{MarlowPJKM2016}.
+La transformación que implementa \texttt{ApplicativeDo} recibe un bloque \texttt{do}, analiza las dependencias entre sus statements y produce una expresión equivalente que utiliza operaciones aplicativas donde existe independencia, sin dejar de utilizar operaciones monádicas donde un cómputo depende del resultado de otro. Para ello, el algoritmo se organiza conceptualmente como un \textit{pipeline} de dos etapas: \textit{rearrange} construye un plan que combina secuencias y agrupaciones aplicativas, mientras que \textit{desugaring} traduce ese plan a combinadores explícitos \cite[pp.~95--96]{MarlowPJKM2016}.
 
 Esta separación también forma parte del diseño de la implementación. La primera etapa conserva la estructura de los statements y registra cómo deben agruparse; la segunda consume esa información para producir las operaciones que implementan el plan. A continuación se profundizará en el diseño conceptual de las etapas ya mencionadas \textit{rearrange} y \textit{desugaring}, aplicando luego el algoritmo de \texttt{ApplicativeDo} al programa probabilístico del Código~\ref{lst:main-example}.
 
@@ -17,7 +17,111 @@ La Figura~\ref{fig:rearrangement-marlow} presenta las funciones que componen est
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.6\textwidth]{imagenes/rearrangement.png}
+  \begingroup
+  \small
+  \setlength{\jot}{2pt}
+  \newcommand{\AdoFn}[1]{\mathsf{#1}}
+  \newcommand{\AdoAppend}{\mathbin{\text{\ttfamily ++}}}
+  \newcommand{\AdoLine}[2]{%
+    \noindent\hspace*{#1}\(#2\)\par
+  }
+  \newcommand{\AdoBlockGap}{\vspace{1.5\baselineskip}}
+  \begin{minipage}{0.6\textwidth}
+  \setlength{\parindent}{0pt}
+  \setlength{\parskip}{0pt}
+  \raggedright
+  \AdoLine{0pt}{
+    \begin{alignedat}{2}
+    \AdoFn{rearrange}\,\{s_1;\ldots;s_n\}
+      &={} \{s_1\},
+      &\qquad& \textit{if } n=1,\\
+      &={} \AdoFn{split}\,g_1,
+      && \textit{if } k=1,\\
+      &={} \{(\AdoFn{split}\,g_1\mid\ldots\mid\AdoFn{split}\,g_k)\},
+      && \text{otherwise}
+    \end{alignedat}
+  }
+  \AdoLine{1.2em}{\text{\bfseries where}}
+  \AdoLine{2.8em}{
+    g_1\ldots g_k
+      = \AdoFn{segments}\,\{s_1;\ldots;s_n\}
+  }
+
+  \AdoBlockGap
+  \AdoLine{0pt}{
+    \AdoFn{segments}\,\{s_1;\ldots;s_n\}
+      = \{s_1;\ldots;s_{i_1}\}\ldots
+        \{s_{(i_k)+1};\ldots;s_n\}
+  }
+  \AdoLine{1.2em}{\text{\bfseries where}}
+  \AdoLine{2.8em}{
+    \begin{aligned}
+    i_1\ldots i_k
+      &= \bigl\{\,i\in 1\ldots n\\
+      &\quad \mathrel{|}
+        \AdoFn{bv}\,\{s_1;\ldots;s_i\}
+        \cap
+        \AdoFn{fv}\,\{s_{i+1};\ldots;s_n\}
+        =\emptyset\,\bigr\}
+    \end{aligned}
+  }
+
+  \AdoBlockGap
+  \AdoLine{0pt}{
+    \begin{alignedat}{2}
+    \AdoFn{split}\,\{s_1;\ldots;s_n\}
+      &={} \{s_1\},
+      &\qquad& \textit{if } n=1,\\
+      &={} \AdoFn{splitat}\,i_{\mathrm{opt}},
+      && \text{otherwise}
+    \end{alignedat}
+  }
+  \AdoLine{1.2em}{\text{\bfseries where}}
+  \AdoLine{2.8em}{
+    \AdoFn{splitat}\,i
+      = \AdoFn{rearrange}\,\{s_1;\ldots;s_i\}
+        \AdoAppend
+        \AdoFn{rearrange}\,\{s_{i+1};\ldots;s_n\}
+  }
+  \AdoLine{2.8em}{
+    i_{\mathrm{opt}}\in 1\ldots n\ \text{\bfseries such that}
+  }
+  \AdoLine{3.6em}{
+    \forall j.\ 1\leq j<n.\quad
+    \AdoFn{cost}_s\,(\AdoFn{splitat}\,j)
+      \geq \AdoFn{cost}_s\,(\AdoFn{splitat}\,i_{\mathrm{opt}})
+  }
+
+  \AdoBlockGap
+  \AdoLine{0pt}{
+    \AdoFn{cost}_s\,\{s_1;\ldots;s_n\}
+      = \textstyle\sum\bigl\{\AdoFn{cost}_a\,s_i
+        \mathrel{|} 1\leq i\leq n\bigr\}
+  }
+
+  \AdoBlockGap
+  \AdoLine{0pt}{
+    \begin{array}{@{}l@{\;}c@{\;}l@{}}
+    \AdoFn{cost}_a\,(p\leftarrow e)
+      & = & 1\\
+    \AdoFn{cost}_a\,(l_1\mid\ldots\mid l_n)
+      & = & \AdoFn{max}\bigl\{\AdoFn{cost}_s\,l_i
+        \mathrel{|} 1\leq i\leq n\bigr\}
+    \end{array}
+  }
+
+  \AdoBlockGap
+  \AdoLine{0pt}{
+    \begin{array}{@{}l@{\;}c@{\;}l@{}}
+    \AdoFn{fv}\,\{s_1;\ldots;s_n\}
+      & = & \text{\itshape the free variables of }s_1\ldots s_n\\
+    \AdoFn{bv}\,\{s_1;\ldots;s_n\}
+      & = & \text{\itshape the variables bound by }s_1\ldots s_n
+    \end{array}
+  }
+  \end{minipage}
+  \endgroup
+  \captionsetup{skip=14pt}
   \caption{Etapa de \textit{rearrange} propuesta por Marlow et al. \cite[p.~95]{MarlowPJKM2016}.}
   \label{fig:rearrangement-marlow}
 \end{figure}
@@ -39,9 +143,23 @@ La condición anterior expresa una relación \textit{def-use}. Esta relación es
 
 Cuando \texttt{segments} obtiene más de un grupo, \texttt{rearrange} construye la forma $(\texttt{split}\ g_1\mid\cdots\mid\texttt{split}\ g_k)$. Cada grupo se procesa mediante \texttt{split} para descubrir posibles agrupaciones anidadas. Si, por el contrario, toda la entrada constituye un único segmento, no existe un corte exterior que permita combinar dos partes aplicativamente y \texttt{rearrange} delega directamente la secuencia completa a \texttt{split}.
 
-La función \texttt{split} considera nuevamente las separaciones $i\in\{1,\ldots,n-1\}$, pero con un propósito distinto. Para cada $i$, aplica \texttt{rearrange} recursivamente al prefijo y al sufijo, y luego compone ambos resultados de manera secuencial. De todas estas alternativas selecciona una de costo mínimo según el modelo estructural presentado en la Expresión~\ref{expr:modelo-costos-estructural}. De esta manera, \texttt{segments} prioriza la independencia exterior que puede expresarse directamente mediante una agrupación aplicativa, mientras \texttt{split} determina dónde conservar una composición monádica cuando una dependencia impide realizar esa agrupación.
+En su formulación óptima, la función \texttt{split} considera nuevamente las separaciones $i\in\{1,\ldots,n-1\}$, pero con un propósito distinto. Para cada $i$, aplica \texttt{rearrange} recursivamente al prefijo y al sufijo, y luego compone ambos resultados de manera secuencial. Entre estas alternativas selecciona aquella que minimiza el costo definido por el modelo estructural de la Expresión~\ref{expr:modelo-costos-estructural}. De esta manera, \texttt{segments} prioriza la independencia exterior que puede expresarse directamente mediante una agrupación aplicativa, mientras que \texttt{split} determina dónde conservar una composición monádica cuando una dependencia impide realizar esa agrupación.
 
-El resultado de la etapa \textit{rearrange} es la expresión abstracta \verb|do l' e|. Aunque $l'$ puede tener una estructura de árbol con secuencias y agrupaciones aplicativas, el algoritmo no permuta statements: si se eliminan las formas paralelas y se concatenan sus ramas de izquierda a derecha, se recupera la secuencia original $\{s_1;\ldots;s_n\}$ \cite[p.~95]{MarlowPJKM2016}.
+Para realizar esta tarea, \textsf{GHC} implementa dos estrategias. La estrategia predeterminada evita comparar exhaustivamente todos los puntos de separación de cada segmento indivisible y selecciona uno mediante una heurística, por lo que presenta una complejidad temporal de $O(n^2)$. Aunque esta estrategia suele encontrar el plan de menor costo, no lo garantiza en todos los casos. Por otra parte, la opción de compilación \texttt{-foptimal-applicative-do} activa una estrategia basada en programación dinámica, que reutiliza los resultados calculados para las subsecuencias y garantiza la obtención de un plan de costo estructural mínimo. Esta variante tiene complejidad temporal $O(n^3)$ \cite{GHCApplicativeDo}.
+
+La selección entre ambas estrategias se realiza antes de comenzar la construcción del plan de ejecución. Las dos comparten la lógica de \texttt{segments} para identificar grupos independientes, pero difieren en la estrategia utilizada para dividir los segmentos indivisibles mediante \texttt{split}. Si $n$ es la cantidad de statements procesados por \textit{rearrange}, sus complejidades temporales se resumen como:
+
+\begin{ReportExpression}{Complejidad temporal de las variantes de \textit{rearrange}.}{expr:complejidad-rearrange}
+\[
+T_{\mathrm{rearrange}}(n)=
+\begin{cases}
+O(n^2), & \text{variante heurística predeterminada},\\
+O(n^3), & \text{variante óptima con programación dinámica}.
+\end{cases}
+\]
+\end{ReportExpression}
+
+Finalmente, el resultado de la etapa \textit{rearrange} es la expresión abstracta \verb|do l' e|. Aunque $l'$ puede tener una estructura de árbol con secuencias y agrupaciones aplicativas, el algoritmo no permuta statements: si se eliminan las formas paralelas y se concatenan sus ramas de izquierda a derecha, se recupera la secuencia original $\{s_1;\ldots;s_n\}$ \cite[p.~95]{MarlowPJKM2016}.
 
 \subsection{Etapa de Desugaring}
 \label{sec:applicative-do-desugaring}
@@ -60,7 +178,107 @@ La Figura~\ref{fig:desugaring-marlow} define el proceso mediante cinco casos rec
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.6\textwidth]{imagenes/desugar.png}
+  \begingroup
+  \small
+  \setlength{\jot}{2pt}
+  \shorthandoff{<>}
+  \newcommand{\AdoFn}[1]{\mathsf{#1}}
+  \newcommand{\AdoFmap}{\mathbin{\text{\ttfamily <\$>}}}
+  \newcommand{\AdoApply}{\mathbin{\text{\ttfamily <*>}}}
+  \newcommand{\AdoBind}{\mathbin{\text{\ttfamily >>=}}}
+  \newcommand{\AdoEquals}{\mathrel{\text{\ttfamily ==}}}
+  \newcommand{\AdoLine}[2]{%
+    \noindent\hspace*{#1}\(#2\)\par
+  }
+  \newcommand{\AdoTaggedLine}[2]{%
+    \noindent\makebox[\linewidth][l]{\(#1\)\hfill\textit{(#2)}}\par
+  }
+  \newcommand{\AdoBlockGap}{\vspace{1.5\baselineskip}}
+  \begin{minipage}{0.6\textwidth}
+  \setlength{\parindent}{0pt}
+  \setlength{\parskip}{0pt}
+  \raggedright
+  \AdoLine{0pt}{
+    \AdoFn{desugar}
+      :: \mathit{Stmts}\to\mathit{Expr}\to\mathit{Expr}
+  }
+
+  \AdoBlockGap
+  \AdoTaggedLine{
+    \AdoFn{desugar}\,\{\}\,e = \AdoFn{pure}\,e
+  }{0}
+
+  \AdoBlockGap
+  \AdoTaggedLine{
+    \AdoFn{desugar}\,\{p\leftarrow e\}\,e'
+  }{1}
+  \AdoLine{2.4em}{
+    \begin{array}{@{}l@{\;}c@{\;}l@{}}
+    \mid\ p\AdoEquals e'
+      & = & e\\
+    \mid\ \text{otherwise}
+      & = & (\lambda p\to e')\AdoFmap e
+    \end{array}
+  }
+
+  \AdoBlockGap
+  \AdoTaggedLine{
+    \AdoFn{desugar}\,\{p\leftarrow e;\,l\}\,e'
+      = e\AdoBind\lambda p\to\AdoFn{desugar}\,l\,e'
+  }{2}
+
+  \AdoBlockGap
+  \AdoTaggedLine{
+    \AdoFn{desugar}\,\{(l_1\mid\ldots\mid l_n)\}\,e
+  }{3}
+  \AdoLine{2.4em}{
+    = (\lambda p_1\ldots p_n\to e)
+      \AdoFmap e_1\AdoApply\ldots\AdoApply e_n
+  }
+  \AdoLine{2.4em}{
+    \text{\bfseries where}\; (p_i,e_i)
+      = \AdoFn{desugar}_{\mathit{arg}}\,l_i\,\AdoFn{fv}(e)
+  }
+
+  \AdoBlockGap
+  \AdoTaggedLine{
+    \AdoFn{desugar}\,\{(l_1\mid\ldots\mid l_n);\,s\}\,e
+  }{4}
+  \AdoLine{2.4em}{
+    = \AdoFn{join}\bigl((\lambda p_1\ldots p_n\to e')
+      \AdoFmap e_1\AdoApply\ldots\AdoApply e_n\bigr)
+  }
+  \AdoLine{2.4em}{\text{\bfseries where}}
+  \AdoLine{5em}{
+    e' = \AdoFn{desugar}\,s\,e
+  }
+  \AdoLine{5em}{
+    (p_i,e_i)
+      = \AdoFn{desugar}_{\mathit{arg}}\,l_i\,\AdoFn{fv}(e')
+  }
+
+  \AdoBlockGap
+  \AdoLine{0pt}{
+    \AdoFn{desugar}_{\mathit{arg}}
+      :: \mathit{Stmts}\to\mathit{Set}\;\mathit{Var}
+        \to(\mathit{Pat},\mathit{Expr})
+  }
+  \AdoLine{0pt}{
+    \AdoFn{desugar}_{\mathit{arg}}\,\{p\leftarrow e\}\,vs
+      = (p,e)
+  }
+  \AdoLine{0pt}{
+    \AdoFn{desugar}_{\mathit{arg}}\,l\,vs
+      = \bigl((v_1,\ldots,v_k),
+        \AdoFn{desugar}\,l\,(v_1,\ldots,v_k)\bigr)
+  }
+  \AdoLine{2.4em}{\text{\bfseries where}}
+  \AdoLine{2.4em}{
+    v_1\ldots v_k = \AdoFn{bv}(l)\cap vs
+  }
+  \end{minipage}
+  \endgroup
+  \captionsetup{skip=14pt}
   \caption{Etapa de \textit{desugaring} propuesta por Marlow et al. \cite[p.~96]{MarlowPJKM2016}.}
   \label{fig:desugaring-marlow}
 \end{figure}
@@ -85,12 +303,12 @@ La función auxiliar \texttt{desugar\_arg} determina el patrón y la expresión 
 Para ilustrar ambas etapas se retomará el modelo probabilístico del estudiante presentado en el Código~\ref{lst:main-example}. Con el fin de concentrar la derivación en la estructura del programa, las cuatro expresiones monádicas del lado derecho de los enlaces se representarán temporalmente mediante \texttt{expr1}, \texttt{expr2}, \texttt{expr3} y \texttt{expr4}:
 
 \begin{lstlisting}[style=haskell,caption={Representación abreviada del modelo probabilístico para aplicar \texttt{ApplicativeDo}.},label={lst:applicative-do-main-example-abstract}]
-studentResults = do
-    preparation <- expr1
-    quiz <- expr2
-    difficulty <- expr3
-    finalExam <- expr4
-    return (preparation, quiz, difficulty, finalExam)
+    studentResults = do
+        preparation <- expr1
+        quiz <- expr2
+        difficulty <- expr3
+        finalExam <- expr4
+        return (preparation, quiz, difficulty, finalExam)
 \end{lstlisting}
 
 Estas expresiones son metavariables y no definiciones independientes de \textsf{Haskell}: \texttt{expr2} conserva el uso libre de \texttt{preparation}, mientras que \texttt{expr4} conserva los usos de \texttt{preparation} y \texttt{difficulty}. Por su parte, \texttt{expr1} y \texttt{expr3} no utilizan variables definidas por otros statements del bloque. Denotando los cuatro statements por $s_1$, $s_2$, $s_3$ y $s_4$, respectivamente, la entrada abstracta de \textit{rearrange} es:
@@ -125,25 +343,26 @@ i=3 &\quad\Longrightarrow\quad
 La primera y la tercera alternativa tienen el mismo costo mínimo. Para continuar la derivación se toma la primera, que coincide con el plan producido por \textsf{GHC} para el orden original, mostrado también en la Tabla~\ref{tab:main-example-plans}. Al sustituir nuevamente los patrones de los statements, el objeto entregado a la etapa de \textit{desugaring} tiene la siguiente estructura intermedia:
 
 \begin{lstlisting}[style=haskell,caption={Plan intermedio producido por la etapa de \textit{rearrange}.},label={lst:applicative-do-main-example-rearranged}]
-do {
-    preparation <- expr1;
-    (quiz <- expr2 |
-        { difficulty <- expr3;
-          finalExam <- expr4 })
-} (preparation, quiz, difficulty, finalExam)
+    do {
+        preparation <- expr1;
+        (quiz <- expr2 |
+            { difficulty <- expr3;
+              finalExam <- expr4 })
+    } (preparation, quiz, difficulty, finalExam)
 \end{lstlisting}
 
 El primer enlace permanece secuencial porque los dos componentes posteriores necesitan \texttt{preparation}. Después de obtener ese valor, la expresión asociada al quiz puede combinarse aplicativamente con la secuencia que obtiene la dificultad y, a partir de ella, el resultado del examen final. Al aplicar las reglas de \textit{desugaring}, se obtiene primero la expresión abreviada:
 
+\newpage
 \begin{lstlisting}[style=haskell,caption={Resultado del desazucarado expresado mediante \texttt{expr1}--\texttt{expr4}.},label={lst:applicative-do-main-example-desugared-abstract}]
-studentResults =
-    expr1 >>= \preparation ->
-        (\quiz (difficulty, finalExam) ->
-            (preparation, quiz, difficulty, finalExam))
-        <$> expr2
-        <*> (expr3 >>= \difficulty ->
-                (\finalExam -> (difficulty, finalExam))
-                <$> expr4)
+    studentResults =
+        expr1 >>= \preparation ->
+            (\quiz (difficulty, finalExam) ->
+                (preparation, quiz, difficulty, finalExam))
+            <$> expr2
+            <*> (expr3 >>= \difficulty ->
+                    (\finalExam -> (difficulty, finalExam))
+                    <$> expr4)
 \end{lstlisting}
 
 En esta expresión, \texttt{expr2} se evalúa dentro del alcance de \texttt{preparation}. La segunda rama conserva un enlace monádico entre \texttt{expr3} y \texttt{expr4}, ya que la última requiere \texttt{difficulty}; el par producido por esa rama permite entregar ambos valores a la función ubicada a la izquierda de \verb|(<$>)|. Este caso no requiere \texttt{join}, porque la agrupación aplicativa es el último componente del plan.
@@ -151,14 +370,14 @@ En esta expresión, \texttt{expr2} se evalúa dentro del alcance de \texttt{prep
 Finalmente, al reemplazar cada metavariable por la expresión correspondiente del programa original, se obtiene la forma explícita generada conceptualmente por las dos etapas de \texttt{ApplicativeDo}:
 
 \begin{lstlisting}[style=haskell,caption={Desazucarado aplicativo del modelo probabilístico del estudiante.},label={lst:applicative-do-main-example-desugared}]
-studentResults =
-    Dist.uniform [Low, High] >>= \preparation ->
-        (\quiz (difficulty, finalExam) ->
-            (preparation, quiz, difficulty, finalExam))
-        <$> quizGiven preparation
-        <*> (Dist.uniform [Easy, Hard] >>= \difficulty ->
-                (\finalExam -> (difficulty, finalExam))
-                <$> examGiven preparation difficulty)
+    studentResults =
+        Dist.uniform [Low, High] >>= \preparation ->
+            (\quiz (difficulty, finalExam) ->
+                (preparation, quiz, difficulty, finalExam))
+            <$> quizGiven preparation
+            <*> (Dist.uniform [Easy, Hard] >>= \difficulty ->
+                    (\finalExam -> (difficulty, finalExam))
+                    <$> examGiven preparation difficulty)
 \end{lstlisting}
 
-La expresión resultante combina operaciones monádicas y aplicativas según las dependencias del programa, pero al aplanar su plan conserva el orden relativo $[1,2,3,4]$. La posibilidad de evaluar órdenes alternativos queda fuera del algoritmo descrito y constituye la limitación que se desarrolla en el capítulo siguiente.
+La expresión resultante combina operaciones monádicas y aplicativas según las dependencias del programa, pero al aplanar su plan conserva el orden relativo $[1,2,3,4]$. La posibilidad de evaluar reordenamientos válidos bajo una hipótesis explícita de conmutatividad queda fuera del algoritmo descrito y constituye la limitación que se desarrolla en el capítulo siguiente.

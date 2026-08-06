@@ -2,7 +2,7 @@
 
 \section{Limitaciones}
 
-La primera limitación es semántica: \textsf{GHC} no prueba que una mónada sea conmutativa. El mecanismo implementado se basa en una declaración explícita del programador mediante \texttt{CD.do}. Si esa declaración es incorrecta, el compilador puede aceptar reordenamientos que cambien efectos observables, como ilustra el control con \texttt{IO}.
+La primera limitación es semántica: \textsf{GHC} no prueba que una mónada sea conmutativa. El mecanismo implementado se basa en una declaración explícita del programador mediante \texttt{CD.do}. Si esa declaración es incorrecta, el compilador puede aceptar reordenamientos válidos respecto de las dependencias locales que cambien efectos observables, como ilustra el control con \texttt{IO}.
 
 La segunda limitación es combinatoria. Enumerar ordenamientos topológicos puede ser costoso cuando el bloque tiene muchos statements independientes. El prototipo permite estudiar exhaustivamente casos pequeños y medianos, pero requiere estrategias adicionales para escalar a programas de mayor tamaño.
 

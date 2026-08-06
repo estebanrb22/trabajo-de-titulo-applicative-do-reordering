@@ -1,62 +1,75 @@
 \babel@toc {spanish}{}\relax 
 \contentsline {chapter}{\numberline {1}Introducción}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Contexto}{1}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Problema y Enfoque de Solución}{3}{section.1.2}%
+\contentsline {section}{\numberline {1.2}Problema y enfoque de solución}{3}{section.1.2}%
 \contentsline {section}{\numberline {1.3}Objetivos}{6}{section.1.3}%
 \contentsline {section}{\numberline {1.4}Contribuciones}{6}{section.1.4}%
-\contentsline {chapter}{\numberline {2}Marco Teórico}{7}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Fundamentos de Haskell}{7}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Abstracciones Funcionales}{9}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Functores}{9}{subsection.2.2.1}%
-\contentsline {subsection}{\numberline {2.2.2}Aplicativos}{10}{subsection.2.2.2}%
-\contentsline {subsection}{\numberline {2.2.3}Mónadas}{12}{subsection.2.2.3}%
-\contentsline {section}{\numberline {2.3}Do-Notation}{14}{section.2.3}%
-\contentsline {section}{\numberline {2.4}Mónadas Conmutativas}{15}{section.2.4}%
-\contentsline {section}{\numberline {2.5}Mónadas de Probabilidad}{16}{section.2.5}%
-\contentsline {section}{\numberline {2.6}ApplicativeDo}{19}{section.2.6}%
-\contentsline {subsection}{\numberline {2.6.1}Etapa de Rearrange}{19}{subsection.2.6.1}%
-\contentsline {subsection}{\numberline {2.6.2}Etapa de Desugaring}{21}{subsection.2.6.2}%
-\contentsline {subsection}{\numberline {2.6.3}Aplicación del algoritmo}{23}{subsection.2.6.3}%
-\contentsline {chapter}{\numberline {3}Problema}{26}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Limitación del Orden Sintáctico de ApplicativeDo}{26}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Evidencia del Problema y Oportunidad}{27}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Formulación}{29}{section.3.3}%
-\contentsline {chapter}{\numberline {4}Solución}{31}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Enfoque Propuesto}{31}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Diseño Algorítmico}{32}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Modelo de Dependencias}{33}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Construcción del Grafo de Precedencia}{35}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Enumeración de Reordenamientos Válidos}{36}{subsection.4.2.3}%
-\contentsline {subsubsection}{Algoritmo de Kahn}{36}{section*.13}%
-\contentsline {subsubsection}{Enumeración Exhaustiva}{37}{section*.15}%
-\contentsline {subsection}{\numberline {4.2.4}Evaluación y Selección de Candidatos}{39}{subsection.4.2.4}%
-\contentsline {section}{\numberline {4.3}Implementación en GHC}{39}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Ubicación en el Pipeline del Compilador}{40}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Activación Declarativa mediante QualifiedDo}{41}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {4.3.3}Representación de Statements y Construcción del Grafo}{41}{subsection.4.3.3}%
-\contentsline {subsection}{\numberline {4.3.4}Generación de Permutaciones}{43}{subsection.4.3.4}%
-\contentsline {subsection}{\numberline {4.3.5}Integración con ApplicativeDo}{44}{subsection.4.3.5}%
-\contentsline {subsection}{\numberline {4.3.6}Selección Forzada para Validación}{45}{subsection.4.3.6}%
-\contentsline {chapter}{\numberline {5}Validación}{47}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Metodología}{47}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Artefactos de Validación}{48}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Métricas}{48}{section.5.3}%
-\contentsline {section}{\numberline {5.4}Corpus}{49}{section.5.4}%
-\contentsline {subsection}{\numberline {5.4.1}Corpus Sintético Maybe}{49}{subsection.5.4.1}%
-\contentsline {subsection}{\numberline {5.4.2}Corpus Sintético Probabilístico}{50}{subsection.5.4.2}%
-\contentsline {subsection}{\numberline {5.4.3}Control IO}{50}{subsection.5.4.3}%
-\contentsline {section}{\numberline {5.5}Resultados}{51}{section.5.5}%
-\contentsline {section}{\numberline {5.6}Amenazas a la Validez}{52}{section.5.6}%
-\contentsline {chapter}{\numberline {6}Conclusión}{53}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Resumen del Trabajo}{53}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Cumplimiento de Objetivos}{53}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Limitaciones}{54}{section.6.3}%
-\contentsline {section}{\numberline {6.4}Trabajo Futuro}{55}{section.6.4}%
-\contentsline {section}{\numberline {6.5}Cierre}{55}{section.6.5}%
-\contentsline {chapter}{\numberline {}Bibliograf\'ia}{57}{chapter*.18}%
-\contentsline {chapter}{Ap\'{e}ndice \numberline {A}Anexos Técnicos}{58}{Appendix.1.Alph1}%
-\contentsline {section}{\numberline {A.1}Reproducibilidad}{58}{section.1.Alph1.1}%
-\contentsline {section}{\numberline {A.2}Pipeline de Validación}{58}{section.1.Alph1.2}%
-\contentsline {section}{\numberline {A.3}Logs y Trazas}{58}{section.1.Alph1.3}%
-\contentsline {section}{\numberline {A.4}Corpus}{59}{section.1.Alph1.4}%
-\contentsline {section}{\numberline {A.5}Detalles de Implementación}{59}{section.1.Alph1.5}%
+\contentsline {chapter}{\numberline {2}Marco Teórico}{8}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Fundamentos de Haskell}{8}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Abstracciones funcionales}{10}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Functores}{10}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Aplicativos}{11}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Mónadas}{13}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Do-Notation}{15}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Mónadas Conmutativas}{16}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Mónadas de Probabilidad}{17}{section.2.5}%
+\contentsline {section}{\numberline {2.6}ApplicativeDo}{20}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Etapa de Rearrange}{20}{subsection.2.6.1}%
+\contentsline {subsection}{\numberline {2.6.2}Etapa de Desugaring}{23}{subsection.2.6.2}%
+\contentsline {subsection}{\numberline {2.6.3}Aplicación del algoritmo}{25}{subsection.2.6.3}%
+\contentsline {chapter}{\numberline {3}Problema}{28}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Limitación del orden sintáctico de ApplicativeDo}{28}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Evidencia del problema y oportunidad}{29}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Formulación del problema}{31}{section.3.3}%
+\contentsline {chapter}{\numberline {4}Diseño de Solución}{33}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Flujo general de la extensión}{33}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Grafo de precedencia RAW}{34}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Modelo de dependencias}{35}{subsection.4.2.1}%
+\contentsline {section}{\numberline {4.3}Generación de reordenamientos válidos}{37}{section.4.3}%
+\contentsline {chapter}{\numberline {5}Implementación de la Solución}{39}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Flujo de compilación de GHC}{39}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Activación mediante CommutativeDo}{41}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Integración en el Renamer}{42}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Construcción del Grafo de Precedencia RAW}{44}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Generación de Reordenamientos Válidos}{45}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Generación y Selección de Planes}{47}{section.5.6}%
+\contentsline {chapter}{\numberline {6}Validación}{49}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Metodología}{49}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Corpus de validación}{53}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Familias compartidas}{53}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}Familias específicas}{54}{subsection.6.2.2}%
+\contentsline {subsection}{\numberline {6.2.3}Control negativo con IO}{55}{subsection.6.2.3}%
+\contentsline {section}{\numberline {6.3}Alcance y limitaciones de la validación}{55}{section.6.3}%
+\contentsline {chapter}{\numberline {7}Resultados}{57}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Resultados generales}{57}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Casos destacables}{58}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}Formas de dependencia}{59}{subsection.7.2.1}%
+\contentsline {subsubsection}{Cadena completa}{59}{section*.20}%
+\contentsline {subsubsection}{Diamante de seis statements}{59}{section*.22}%
+\contentsline {subsubsection}{Grafo sin aristas}{60}{section*.24}%
+\contentsline {subsubsection}{Dos cadenas independientes}{61}{section*.26}%
+\contentsline {subsection}{\numberline {7.2.2}Dependencias introducidas por statements let}{62}{subsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.2.3}Binders definidos mediante patrones}{62}{subsection.7.2.3}%
+\contentsline {subsection}{\numberline {7.2.4}Distribuciones con parámetros dependientes}{63}{subsection.7.2.4}%
+\contentsline {subsection}{\numberline {7.2.5}Condicionamiento de una distribución dependiente}{64}{subsection.7.2.5}%
+\contentsline {subsection}{\numberline {7.2.6}Identidades únicas frente a shadowing}{65}{subsection.7.2.6}%
+\contentsline {section}{\numberline {7.3}Selección por costo}{65}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}Todos los candidatos con el mismo costo}{66}{subsection.7.3.1}%
+\contentsline {subsection}{\numberline {7.3.2}Orden original no mínimo}{67}{subsection.7.3.2}%
+\contentsline {subsection}{\numberline {7.3.3}Mínimo único}{67}{subsection.7.3.3}%
+\contentsline {subsection}{\numberline {7.3.4}Varios candidatos mínimos}{68}{subsection.7.3.4}%
+\contentsline {section}{\numberline {7.4}Control negativo con IO}{69}{section.7.4}%
+\contentsline {section}{\numberline {7.5}Discusión}{71}{section.7.5}%
+\contentsline {chapter}{\numberline {8}Conclusión}{73}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Resumen del Trabajo}{73}{section.8.1}%
+\contentsline {section}{\numberline {8.2}Cumplimiento de Objetivos}{73}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Limitaciones}{74}{section.8.3}%
+\contentsline {section}{\numberline {8.4}Trabajo Futuro}{75}{section.8.4}%
+\contentsline {section}{\numberline {8.5}Cierre}{75}{section.8.5}%
+\contentsline {chapter}{\numberline {}Bibliograf\'ia}{78}{chapter*.40}%
+\contentsline {chapter}{Ap\'{e}ndice \numberline {A}Anexos Técnicos}{79}{Appendix.1.Alph1}%
+\contentsline {section}{\numberline {A.1}Reproducibilidad}{79}{section.1.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Pipeline de Validación}{79}{section.1.Alph1.2}%
+\contentsline {section}{\numberline {A.3}Logs y Trazas}{79}{section.1.Alph1.3}%
+\contentsline {section}{\numberline {A.4}Corpus}{80}{section.1.Alph1.4}%
+\contentsline {section}{\numberline {A.5}Detalles de Implementación}{80}{section.1.Alph1.5}%

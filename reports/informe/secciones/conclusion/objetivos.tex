@@ -5,14 +5,13 @@
 La Tabla siguiente resume el cumplimiento de los objetivos definidos en la Introducción.
 
 \begin{center}
-\begin{tabular}{p{0.46\textwidth}p{0.40\textwidth}}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.46\textwidth}>{\raggedright\arraybackslash}p{0.40\textwidth}}
 \hline
 Objetivo & Resultado \\
 \hline
-Analizar \texttt{ApplicativeDo} en \textsf{GHC}. & Se identificó el flujo del Renamer para \texttt{HsDo}, el punto donde se procesa \texttt{ApplicativeDo} y la construcción de statements aplicativos. \\
-Diseñar un modelo de dependencias locales. & Se definió un grafo RAW usando variables definidas, variables libres y lecturas locales por statement. \\
-Implementar la extensión experimental en \textsf{GHC}. & Se integraron el reconocimiento de la marca explícita, la generación de permutaciones topológicas, la evaluación de candidatos y la selección automática o forzada dentro del flujo de \texttt{ApplicativeDo}. \\
-Evaluar la preservación de resultados y la reducción potencial del costo estructural. & Se probaron los corpus sintéticos de \texttt{Maybe} y \texttt{Dist.T Rational} con logs reproducibles de costos, grafos y salidas; además, el control negativo con \texttt{IO} mostró el riesgo de una declaración de conmutatividad incorrecta. \\
+Caracterizar los reordenamientos válidos según las dependencias locales del bloque. & Se definió un grafo de precedencia RAW y se estableció que sus ordenamientos topológicos corresponden a las secuencias completas que preservan dichas dependencias. \\
+Ampliar el conjunto de planes de ejecución considerado por \texttt{ApplicativeDo} bajo una hipótesis explícita de conmutatividad. & Se integraron el reconocimiento de la marca explícita, la generación de reordenamientos válidos, su evaluación con \texttt{ApplicativeDo} para formar candidatos y la selección automática del primer candidato de costo mínimo. \\
+Comprobar experimentalmente la preservación del resultado observable y la selección de un plan de costo estructural mínimo. & Se probaron los corpus sintéticos de \texttt{Maybe} y \texttt{Dist.T Rational} con logs reproducibles de costos, grafos y salidas; además, el control negativo con \texttt{IO} mostró el riesgo de una declaración de conmutatividad incorrecta. \\
 \hline
 \end{tabular}
 \end{center}

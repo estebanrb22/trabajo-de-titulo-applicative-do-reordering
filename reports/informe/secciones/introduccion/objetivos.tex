@@ -2,13 +2,13 @@
 
 \section{Objetivos}
 
-El objetivo general de esta memoria es extender experimentalmente la implementación de \texttt{ApplicativeDo} en \textsf{GHC} para que pueda explorar reordenamientos de statements que preserven las dependencias locales dentro de bloques \texttt{do} marcados explícitamente bajo una hipótesis de conmutatividad. Con ello, se busca ampliar el espacio de planes de ejecución evaluados por el compilador y seleccionar, según el modelo de costos adoptado, un plan de menor costo cuando algún reordenamiento admisible lo permita.
+El objetivo general de esta memoria es ampliar experimentalmente el espacio de planes de ejecución que \texttt{ApplicativeDo} puede evaluar en \textsf{GHC}, considerando reordenamientos válidos de statements dentro de bloques \texttt{do} marcados explícitamente bajo una hipótesis de conmutatividad. Con ello, se busca seleccionar, según el modelo de costos adoptado, un plan de menor costo cuando alguno de estos reordenamientos válidos lo permita.
 
 Los objetivos específicos son los siguientes:
 
 \begin{enumerate}
-    \item Analizar y describir el funcionamiento de \texttt{ApplicativeDo} dentro de \textsf{GHC}, en particular el procesamiento de bloques \texttt{do} y la generación de planes de ejecución.
-    \item Diseñar un modelo de dependencias locales entre statements que permita identificar reordenamientos que preserven las relaciones entre las variables definidas y sus usos.
-    \item Implementar una extensión experimental de \textsf{GHC} que reconozca bloques marcados bajo una hipótesis de conmutatividad, genere reordenamientos admisibles, evalúe cada alternativa mediante el algoritmo existente de \texttt{ApplicativeDo} y seleccione un plan de costo mínimo.
-    \item Evaluar experimentalmente la preservación de resultados y la reducción potencial del costo estructural frente a \texttt{ApplicativeDo} aplicado al orden original, mediante corpus sintéticos basados en \texttt{Maybe} y \texttt{Dist.T Rational}, junto con un control negativo basado en \texttt{IO}.
+    \item Caracterizar los reordenamientos válidos de los statements de un bloque \texttt{do} según las dependencias locales que deben preservarse.
+  \captionsetup{skip=14pt}
+    \item Ampliar el conjunto de planes de ejecución que \texttt{ApplicativeDo} puede considerar para bloques \texttt{do} bajo una hipótesis explícita de conmutatividad, de modo que se pueda seleccionar un plan de ejecución con un costo estructural mínimo entre los obtenidos a partir de reordenamientos válidos.
+    \item Comprobar experimentalmente, en los casos conmutativos evaluados, que los reordenamientos válidos preservan el resultado observable del programa y que la selección realizada corresponde a un plan de ejecución con costo estructural mínimo.
 \end{enumerate}

@@ -1,9 +1,0 @@
-% !TEX root = ../main.tex
-
-\chapter{Solución}
-
-Este capítulo presenta la extensión experimental desarrollada para ampliar el espacio de planes que \texttt{ApplicativeDo} puede evaluar sobre bloques \texttt{do} declarados como conmutativos. Primero se expone el enfoque conceptual y las condiciones que mantienen el comportamiento estándar de \textsf{GHC} para los demás bloques. Luego se desarrolla el diseño algorítmico basado en dependencias, ordenamientos topológicos y evaluación de candidatos. Finalmente, se describe su implementación dentro del Renamer, desde la activación mediante \texttt{QualifiedDo} hasta la selección automática o forzada del árbol de statements que continúa por el flujo normal del compilador.
-
-\input{secciones/solucion/enfoque_propuesto}
-\input{secciones/solucion/diseno_algoritmico}
-\input{secciones/solucion/implementacion_ghc}
